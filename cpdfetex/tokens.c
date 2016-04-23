@@ -285,7 +285,7 @@ input_from_external_file (void) {
      * command code to the state to get a single number that characterizes both.
      */
     switch (state + cur_cmd) {
-    case any_state_plus (ignore):
+    case any_state_plus (IGNORE_CODE):
     case skip_blanks + spacer:
     case new_line + spacer:
       do_something;

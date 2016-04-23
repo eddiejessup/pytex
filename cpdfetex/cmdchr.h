@@ -34,7 +34,9 @@ extern int first_count; /* another variable for pseudoprinting */
 #define mac_param 6
 #define sup_mark 7
 #define sub_mark 8
-#define ignore 9
+// Avoid calling macro ignore to stop clobbering people using this
+ // as a variable.
+#define IGNORE_CODE 9
 #define endv 9
 #define spacer 10
 #define letter 11

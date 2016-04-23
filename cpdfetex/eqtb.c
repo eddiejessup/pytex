@@ -756,7 +756,7 @@ eqtb_initialize_init (void) {
   cat_code ('\\') = escape;
   cat_code ('%') = comment;
   cat_code (invalid_code) = invalid_char;
-  cat_code (null_code) = ignore;
+  cat_code (null_code) = IGNORE_CODE;
   for (k = 0; k <= 9; k++)
 	math_code (k) = hi (k + var_code);
   for (k = 'A'; k <= 'Z'; k++) {
