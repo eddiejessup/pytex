@@ -1,4 +1,5 @@
-
+#ifndef CPDFETEX_TYPES_H
+#define CPDFETEX_TYPES_H
 
 typedef long int integer;
 typedef double glue_ratio;
@@ -522,3 +523,4 @@ typedef struct {
 /* module 1624 */
 typedef unsigned int save_pointer; /* index into |save_stack| */
 
+#endif /* not CPDFETEX_TYPES_H */

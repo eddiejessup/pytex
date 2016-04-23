@@ -1,3 +1,5 @@
+#include "globals.h"
+#include "types.h"
 
 EXTERN void         main_init (int ac, string * av);
 EXTERN int          main (int ac,  string *av);
