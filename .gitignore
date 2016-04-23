@@ -1,3 +1,5 @@
+built/
+
 config.cache
 config.log
 config.status
@@ -35,3 +37,4 @@ texk/kpathsea/.libs/kpsewhich
 texk/kpathsea/libtool
 texk/kpathsea/stamp-auto
 texk/kpathsea/stamp-paths
+
