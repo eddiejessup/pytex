@@ -1,4 +1,10 @@
+.DS_Store
+
 built/
+
+*.dvi
+*.log
+*.pdf
 
 config.cache
 config.log
