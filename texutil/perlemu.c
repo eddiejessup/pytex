@@ -41,7 +41,7 @@ char *my_concat3 (char **d, const char *s, const char *t, const char *u) {
 }
 
 
-char *strndup (char *in,int num) {
+char *strndup (const char *in,size_t num) {
   char *out = safe_malloc(num*sizeof(char *)+1);
   int k =0;
   for (k=0;(k<num && in[k]);k++) {
@@ -53,7 +53,7 @@ char *strndup (char *in,int num) {
 
 
 /* strstr, but case-insensitive */
-char *strcasestr (char *haystack, char *needle) {
+char *strcasestr (const char *haystack, const char *needle) {
   char *a = strdup(haystack);
   char *b = strdup(needle);
   char *r;

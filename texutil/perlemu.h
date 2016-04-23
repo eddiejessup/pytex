@@ -3,9 +3,9 @@ extern char *my_concat (char **d, const char *s, const char *t) ;
 
 extern char *my_concat3 (char **d, const char *s, const char *t, const char *u);
 
-extern char *strndup (char *in,int num);
+extern char *strndup (const char *in,size_t num);
 
-extern char *strcasestr (char *haystack, char *needle);
+extern char *strcasestr (const char *haystack, const char *needle);
 
 
 /* This is the size of the line buffer for 'text' input files .
