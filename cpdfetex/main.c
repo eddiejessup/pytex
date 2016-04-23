@@ -109,7 +109,6 @@ static string user_progname;
 const_string job_name;
 
 /* The main body of the WEB is transformed into this procedure.  */
-extern int main_body (void);
 
 static void
 parse_options(int, string *);
