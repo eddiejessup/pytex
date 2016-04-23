@@ -304,7 +304,7 @@ unsave (void) { 	/* pops the top level off the save stack */
 		  info (p) = cur_tok;
 		  link (p) = loc;
 		  loc = p;
-		  start = p;
+		  START_FIELD = p;
 		  if (cur_tok < right_brace_limit) {
 		    if (cur_tok < left_brace_limit) {
 			  decr (align_state);

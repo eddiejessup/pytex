@@ -258,7 +258,7 @@ begin_file_reading (void) {
   grp_stack[index] = cur_boundary;
   if_stack[index] = cond_ptr;
   line_stack[index] = line;
-  start = first;
+  START_FIELD = first;
   state = mid_line;
   name = 0; /* |terminal_input| is now |true| */ 
 };
@@ -271,7 +271,7 @@ begin_file_reading (void) {
  */
 void
 end_file_reading (void) {
-  first = start;
+  first = START_FIELD;
   line = line_stack[index];
   if ((name == 18) || (name == 19)) {
 	pseudo_close();
@@ -1090,7 +1090,7 @@ start_input (void) { /* \TeX\ will \.{\\input} something */
 	buffer[limit] = end_line_char;
   }
   first = limit + 1;
-  loc = start;
+  loc = START_FIELD;
   /* end expansion of Read the first line of the new file */
 }
 

@@ -146,7 +146,7 @@ pseudo_start (void) {
   /* module 1700 */
   begin_file_reading();
   /* set up |cur_file| and new level of input */ line = 0;
-  limit = start;
+  limit = START_FIELD;
   loc = limit + 1; /* force line read */ 
   if (tracing_scan_tokens > 0) {
 	if (term_offset > (unsigned)max_print_line - 3) {

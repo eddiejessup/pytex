@@ -162,14 +162,16 @@ extern int first_count; /* another variable for pseudoprinting */
  */
 #define state  cur_input . state_field
 #define index  cur_input . index_field
-#define start  cur_input . start_field
+// Rename this macro to avoid conflict with people who want to use
+// start as a variable. Like, everyone ever.
+#define START_FIELD  cur_input . start_field
 #define limit  cur_input . limit_field
 #define name  cur_input . name_field
 
 /* module 303 */
 
 /* Let's look more closely now at the control variables
- * (|state|,~|index|,~|start|,~|loc|,~|limit|,~|name|),
+ * (|state|,~|index|,~|START_FIELD|,~|loc|,~|limit|,~|name|),
  * assuming that \TeX\ is reading a line of characters that have been input
  * from some file or from the user's terminal. There is an array called
  * |buffer| that acts as a stack of all lines of characters that are
@@ -182,7 +184,7 @@ extern int first_count; /* another variable for pseudoprinting */
  * letting the buffer entries grow downward from the top of the string pool
  * and checking that these two tables don't bump into each other.)
  * 
- * The line we are currently working on begins in position |start| of the
+ * The line we are currently working on begins in position |START_FIELD| of the
  * buffer; the next character we are about to read is |buffer[loc]|; and
  * |limit| is the location of the last character present. If |loc>limit|,
  * the line has been completely read. Usually |buffer[limit]| is the
@@ -239,7 +241,7 @@ extern int first_count; /* another variable for pseudoprinting */
  * the node that will be read next. If |loc=null|, the token list has been
  * fully read.
  * 
- * \yskip\hang|start| points to the first node of the token list; this node
+ * \yskip\hang|START_FIELD| points to the first node of the token list; this node
  * may or may not contain a reference count, depending on the type of token
  * list involved.
  * 

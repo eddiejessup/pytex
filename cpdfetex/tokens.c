@@ -242,16 +242,16 @@ firm_up_the_line (void) {
     if (interaction > nonstop_mode) {
       wake_up_terminal;
       print_ln();
-      if (start < limit)
-		for (k = start; k <= limit - 1; k++)
+      if (START_FIELD < limit)
+		for (k = START_FIELD; k <= limit - 1; k++)
 		  zprint (buffer[k]);
       first = limit;
       prompt_input ("=>"); /* wait for user response */ 
       if (last > first) {
 		for (k = first; k <= (integer)last - 1; k++)
 		  /* move line down in buffer */
-		  buffer[k + start - first] = buffer[k];
-		limit = start + last - first;
+		  buffer[k + START_FIELD - first] = buffer[k];
+		limit = START_FIELD + last - first;
       };
     };
   };
@@ -498,7 +498,7 @@ input_from_external_file (void) {
 	 |goto restart| if the file has ended */
       /* module 362 */
       incr (line);
-      first = start;
+      first = START_FIELD;
       if (!force_eof) {
 	if (name <= 19) {
 	  if (pseudo_input()) {	/* not end of file */
@@ -549,7 +549,7 @@ input_from_external_file (void) {
 	buffer[limit] = end_line_char;
       };
       first = limit + 1;
-      loc = start; /* ready to read */
+      loc = START_FIELD; /* ready to read */
       /* end expansion of Read next line of file into |buffer|, or ...*/
     } else {
       if (!terminal_input) {	/* \.{\\read} line has ended */
@@ -568,10 +568,10 @@ input_from_external_file (void) {
       if (interaction > nonstop_mode) {
 	if (end_line_char_inactive)
 	  incr (limit);
-	if (limit == start)	/* previous line was empty */
+	if (limit == START_FIELD)	/* previous line was empty */
 	  print_nl_string("(Please type a command or say `\\end')");
 	print_ln();
-	first = start;
+	first = START_FIELD;
 	prompt_input ("*"); /* input on-line into |buffer| */
 	limit = last;
 	if (end_line_char_inactive) {
@@ -580,7 +580,7 @@ input_from_external_file (void) {
 	  buffer[limit] = end_line_char;
 	};
 	first = limit + 1;
-	loc = start;
+	loc = START_FIELD;
       } else {
 	fatal_error ("*** (job aborted, no legal \\end found)");
 	/* nonstop mode, which is intended for overnight batch processing, 

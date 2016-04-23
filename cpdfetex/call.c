@@ -512,7 +512,7 @@ expand (void) {
 		p = get_avail ();
 		info (p) = cs_token_flag + frozen_dont_expand;
 		link (p) = loc;
-		start = p;
+		START_FIELD = p;
 		loc = p;
 	  };
 	  /* end expansion of Suppress expansion of the next token */

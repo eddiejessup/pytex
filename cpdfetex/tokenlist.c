@@ -710,7 +710,7 @@ read_toks (int n, pointer r, halfword j) {
 	  buffer[limit] = end_line_char;
 	}
 	first = limit + 1;
-	loc = start;
+	loc = START_FIELD;
 	state = new_line;
 	/* begin expansion of Handle \.{\\readline} and |goto done| */
 	/* module 1706 */

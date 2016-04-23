@@ -1625,7 +1625,7 @@ show_context (void) { /* prints where the scanner is */
 		  }
 		  /* determine the effective end of the line */
 		  if (j > 0)
-			for (i = start; i <= j - 1; i++) {
+			for (i = START_FIELD; i <= j - 1; i++) {
 		      if (i == (unsigned)loc)
 				set_trick_count;
 		      zprint (buffer[i]);
@@ -1638,9 +1638,9 @@ show_context (void) { /* prints where the scanner is */
 		  /* module 319 */
 		  begin_pseudoprint;
 		  if (token_type < macro) {
-		    show_token_list (start, loc, 100000);
+		    show_token_list (START_FIELD, loc, 100000);
 		  } else {
-		    show_token_list (link (start), loc, 100000);	/* avoid reference count */
+		    show_token_list (link (START_FIELD), loc, 100000);	/* avoid reference count */
 		  };
 		  /* end expansion of Pseudoprint the token list */
 		};
@@ -1706,7 +1706,7 @@ void
 begin_token_list (pointer p, quarterword t) {
   push_input;
   state = token_list;
-  start = p;
+  START_FIELD = p;
   token_type = t;
   if (t >= macro) {	/* the token list starts with a reference count */
 	add_token_ref (p);
@@ -1748,9 +1748,9 @@ void
 end_token_list (void) {	/* leave a token-list input level */
   if (token_type >= backed_up) { /* token list to be deleted */
       if (token_type <= inserted) {
-		flush_list (start);
+		flush_list (START_FIELD);
 	  } else {
-		delete_token_ref (start); /* update reference count */
+		delete_token_ref (START_FIELD); /* update reference count */
 		if (token_type == macro)	    /* parameters must be flushed */
 		  while (param_ptr > (unsigned)param_start) {
 			decr (param_ptr);
@@ -1795,7 +1795,7 @@ back_input (void) {	/* undoes one token of input */
   }
   push_input;
   state = token_list;
-  start = p;
+  START_FIELD = p;
   token_type = backed_up;
   loc = p;
   /* that was |back_list(p)|, without procedure overhead */
@@ -1822,7 +1822,7 @@ cmdchr_initialize (void) {
   warning_index = null;
   first = 1;
   state = new_line;
-  start = 1;
+  START_FIELD = 1;
   index = 0;
   line = 0;
   name = 0;
