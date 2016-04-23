@@ -5,9 +5,9 @@ VERSION=0.51
 
 all:
 	cd texk/kpathsea && ./configure && $(MAKE)
-	cd cpdfetex && $(MAKE)         && cp cpdfetex.exe cpdfetex ../built 
-	cd texutil  && $(MAKE) texutil && cp texutil.exe  texutil  ../built
-	cd texutil  && $(MAKE) texexec && cp texexec.exe  texexec  ../built
+	cd cpdfetex && $(MAKE)         && cp cpdfetex ../built
+	cd texutil  && $(MAKE) texutil && cp texutil  ../built
+	cd texutil  && $(MAKE) texexec && cp texexec  ../built
 
 clean:
 	cd texk/kpathsea && $(MAKE) clean
