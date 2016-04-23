@@ -235,7 +235,7 @@ static char *cs_start;
 
 static cs_entry *cs_tab, *cs_ptr, *cs_notdef;
 static char *cs_dict_start, *cs_dict_end;
-static int cs_count, cs_size, cs_size_pos;
+static int chs_count, cs_size, cs_size_pos;
 
 static cs_entry *subr_tab;
 static char *subr_array_start, *subr_array_end;
@@ -1431,7 +1431,7 @@ static void cs_init(void)
 {
     cs_ptr = cs_tab = 0;
     cs_dict_start =  cs_dict_end = 0;
-    cs_count = cs_size = cs_size_pos = 0;
+    chs_count = cs_size = cs_size_pos = 0;
     subr_tab = 0;
     subr_array_start = subr_array_end = 0;
     subr_max = subr_size = subr_size_pos = 0;
@@ -1543,7 +1543,7 @@ static void t1_flush_cs(boolean is_subr)
         size_pos = cs_size_pos;
         tab =  cs_tab;
         end_tab = cs_ptr;
-        count = cs_count;
+        count = chs_count;
     }
     t1_line_ptr = t1_line;
     for (p = start_line; p - start_line < size_pos;)
@@ -1680,9 +1680,9 @@ static void t1_subset_charstrings(void)
             pdftex_fail("This Type 1 font uses mismatched subroutine begin/end token pairs.");
         t1_subr_flush();
     }
-    for (cs_count = 0, ptr = cs_tab; ptr < cs_ptr; ptr++)
+    for (chs_count = 0, ptr = cs_tab; ptr < cs_ptr; ptr++)
         if (ptr->used)
-            cs_count++;
+            chs_count++;
     t1_cs_flush();
 }
 
