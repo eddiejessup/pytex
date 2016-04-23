@@ -9,7 +9,7 @@ CFLAGS = $(DEBUGFLAGS) -Wall $(XCFLAGS)
 LDFLAGS =  $(DEBUGFLAGS)  $(XLDFLAGS)
 CXX_LINK = $(CXX) -o $@ $(LDFLAGS)
 #LIBS = -nodefaultlibs -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lm -lgcc_eh -lgcc -lc -lglib-2.0
-LIBS =  
+LIBS =
 LOADLIBES = $(LIBS) $(XLOADLIBES)
 LIBDIR = ../libs
 
@@ -26,12 +26,20 @@ sources = adjust.c align.c box.c buildpage.c calc.c call.c cmdchr.c control.c di
 
 objects = $(sources:.c=.o)
 
-cpdfetex: $(headers) $(objects)
+TEX_ARGS = $(objects) pdftex/libpdf.a  $(kpathsea) $(LIBXPDF) $(LIBPNG) $(LIBZLIB) $(LOADLIBES)
+TEX_DEPS = $(headers) $(objects) tex_deps
+
+cpdfetex: $(TEX_DEPS)
+	$(CXX_LINK) $(TEX_ARGS)
+
+libcpdfetex.so: $(TEX_DEPS)
+	$(CXX_LINK) -shared $(TEX_ARGS)
+
+tex_deps:
 	cd pdftex           && $(MAKE)
 	cd $(LIBDIR)/xpdf   && $(MAKE)
 	cd $(LIBDIR)/zlib   && $(MAKE)
 	cd $(LIBDIR)/libpng && $(MAKE)
-	$(CXX_LINK) $(objects) pdftex/libpdf.a  $(kpathsea) $(LIBXPDF) $(LIBPNG) $(LIBZLIB) $(LOADLIBES)
 
 $(objects): %.o: %.c
 	$(CC) -c $(CFLAGS) -I$(kpathsea_parent)  $< -o $@
