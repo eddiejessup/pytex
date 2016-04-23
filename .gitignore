@@ -55,5 +55,8 @@ texk/kpathsea/stamp-paths
 texutil/texexec
 texutil/texutil
 
+# cpdfetex output binaries
+cpdfetex/cpdfetex
+
 # Cython auxiliary files
 cy_test.c
