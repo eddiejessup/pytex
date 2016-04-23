@@ -38,3 +38,5 @@ texk/kpathsea/libtool
 texk/kpathsea/stamp-auto
 texk/kpathsea/stamp-paths
 
+texutil/texexec
+texutil/texutil
