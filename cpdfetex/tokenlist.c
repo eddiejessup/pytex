@@ -193,7 +193,7 @@ token_show (pointer p) {
 void
 print_meaning (void) {
   print_cmd_chr (cur_cmd, cur_chr);
-  if (cur_cmd >= call) {
+  if (cur_cmd >= CALL_CODE) {
 	print_char (':');
 	print_ln();
 	token_show (cur_chr);
@@ -566,7 +566,7 @@ scan_toks (boolean macro_def, boolean xpand) {
 	   */
 	  loop {
 		get_next();
-		if (cur_cmd >= call)
+		if (cur_cmd >= CALL_CODE)
 		  if (info (link (cur_chr)) == protected_token) {
 			cur_cmd = relax;
 			cur_chr = no_expand_flag;

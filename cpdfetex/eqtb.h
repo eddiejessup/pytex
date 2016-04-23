@@ -16,7 +16,7 @@
 #define convert          (max_command  + 8)
 #define the              (max_command  + 9)
 #define top_bot_mark     (max_command  + 10)
-#define call             (max_command  + 11)
+#define CALL_CODE        (max_command  + 11)
 #define long_call        (max_command  + 12)
 #define outer_call       (max_command  + 13)
 #define long_outer_call  (max_command  + 14)

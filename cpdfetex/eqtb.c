@@ -512,7 +512,7 @@ show_eqtb (pointer n) {
 	sprint_cs (n);
 	print_char ('=');
 	print_cmd_chr (eq_type (n), equiv (n));
-	if (eq_type (n) >= call) {
+	if (eq_type (n) >= CALL_CODE) {
 	  print_char (':');
 	  show_token_list (link (equiv (n)), null, 32);
 	};

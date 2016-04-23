@@ -66,7 +66,7 @@ pointer pstack[9]; /* arguments supplied to a macro */
  * If |long_state=outer_call|, a runaway argument has already been reported.
  */
 
-#define report_a_runaway  { if (get_long_state() == call) {	\
+#define report_a_runaway  { if (get_long_state() == CALL_CODE) {	\
 		    runaway();\
 		    print_err  ("Paragraph ended before ");\
 		    sprint_cs (warning_index);\
@@ -304,7 +304,7 @@ macro_call (void) {				/* invokes a user-defined control sequence */
 				 "argument that might be the root of the problem. But if",
 				 "your `}' was spurious, just type `2' and it will go away.");
 		  incr (align_state);
-		  set_long_state(call);
+		  set_long_state(CALL_CODE);
 		  cur_tok = par_token;
 		  ins_error();
 		  /* a white lie; the \.{\\par} won't always trigger a runaway */
@@ -414,7 +414,7 @@ expand (void) {
   co_backup = cur_order;
   backup_backup = link (backup_head);
  RESWITCH:
-  if (cur_cmd < call) {
+  if (cur_cmd < CALL_CODE) {
 	/* begin expansion of Expand a nonmacro */
 	/* module 367 */
 	if (tracing_commands > 1)

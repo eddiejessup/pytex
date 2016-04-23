@@ -121,7 +121,7 @@ static void
 eq_destroy (memory_word w) { /* gets ready to forget |w| */
   pointer q; /* |equiv| field of |w| */
   switch (eq_type_field (w)) {
-  case call:
+  case CALL_CODE:
   case long_call:
   case outer_call:
   case long_outer_call:

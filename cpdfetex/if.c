@@ -283,7 +283,7 @@ conditional (void) {
 	get_next();
 	if (cur_cmd != p) {
 	  b = false;
-	} else if (cur_cmd < call) {
+	} else if (cur_cmd < CALL_CODE) {
 	  b = (cur_chr == q);
 	} else {
 	  /* begin expansion of Test if two macro texts match */

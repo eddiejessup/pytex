@@ -1131,11 +1131,11 @@ print_cmd_chr (quarterword cmd, halfword chr_code) {
   case undefined_cs:
 	zprint_string("undefined");
 	break;
-  case call:
+  case CALL_CODE:
   case long_call:
   case outer_call:
   case long_outer_call:
-	n = cmd - call;
+	n = cmd - CALL_CODE;
 	if (info (link (chr_code)) == protected_token)
 	  n = n + 4;
 	if (odd (n / 4))

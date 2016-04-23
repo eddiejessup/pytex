@@ -494,7 +494,7 @@ prefixed_command (void) {
 		link (q) = link (def_ref);
 		link (def_ref) = q;
 	  };
-	  DEFINE (p, call + (a % 4), def_ref);
+	  DEFINE (p, CALL_CODE + (a % 4), def_ref);
 	};
 	break;
 	/* module 1366 */
@@ -520,7 +520,7 @@ prefixed_command (void) {
 		cur_tok = q;
 		back_input(); /* look ahead, then back up */ 
 	  }; /* note that |back_input| doesn't affect |cur_cmd|, |cur_chr| */
-	  if (cur_cmd >= call)
+	  if (cur_cmd >= CALL_CODE)
 		add_token_ref (cur_chr);
 	  DEFINE (p, cur_cmd, cur_chr);
 	};
@@ -628,7 +628,7 @@ prefixed_command (void) {
 	  get_r_token();
 	  p = cur_cs;
 	  read_toks (n, p, j);
-	  DEFINE (p, call, cur_val);
+	  DEFINE (p, CALL_CODE, cur_val);
 	};
 	break;
 	/* module 1371 */
@@ -687,7 +687,7 @@ prefixed_command (void) {
 			sa_define (p, null) (p, undefined_cs, null);
 		  } else {
 			add_token_ref (q);
-			sa_define (p, q) (p, call, q);
+			sa_define (p, q) (p, CALL_CODE, q);
 		  };
 		  goto DONE;
 		}
@@ -708,7 +708,7 @@ prefixed_command (void) {
 		  link (q) = link (def_ref);
 		  link (def_ref) = q;
 		};
-		sa_define (p, def_ref) (p, call, def_ref);
+		sa_define (p, def_ref) (p, CALL_CODE, def_ref);
 	  };
 	};
 	break;

@@ -753,7 +753,7 @@ get_x_token (void) { /* sets |cur_cmd|, |cur_chr|, |cur_tok|, and expands macros
   get_next();
   if (cur_cmd <= max_command)
     goto DONE;
-  if (cur_cmd >= call) {
+  if (cur_cmd >= CALL_CODE) {
     if (cur_cmd < end_template) {
 	  macro_call();
 	} else {
@@ -805,7 +805,7 @@ get_x_or_protected (void) {
     get_token();
     if (cur_cmd <= max_command)
       return;
-    if ((cur_cmd >= call) && (cur_cmd < end_template))
+    if ((cur_cmd >= CALL_CODE) && (cur_cmd < end_template))
       if (info (link (cur_chr)) == protected_token)
 		return;
     expand();
