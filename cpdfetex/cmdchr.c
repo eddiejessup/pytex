@@ -1090,7 +1090,7 @@ print_cmd_chr (quarterword cmd, halfword chr_code) {
 	  print_esc_string ("openin");
 	};
 	break;
-  case message:
+  case MESSAGE_CODE:
 	if (chr_code == 0) {
 	  print_esc_string ("message");
 	} else {

@@ -737,7 +737,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	/* The user can issue messages to the terminal, regardless of the
 	 * current mode.
 	 */
-  case ANY_MODE (message):
+  case ANY_MODE (MESSAGE_CODE):
 	issue_message();
 	break;
 	/* module 1430 */

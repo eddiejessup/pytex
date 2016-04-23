@@ -1117,8 +1117,8 @@ void init_prim (int noninit) {	/* initialize all the primitives */
   primitive_str("openin", in_stream, 1);
   primitive_str("closein", in_stream, 0);
   /* module 1422 */
-  primitive_str("message", message, 0);
-  primitive_str("errmessage", message, 1);
+  primitive_str("message", MESSAGE_CODE, 0);
+  primitive_str("errmessage", MESSAGE_CODE, 1);
   /* module 1431 */
   primitive_str("lowercase", case_shift, lc_code_base);
   primitive_str("uppercase", case_shift, uc_code_base);

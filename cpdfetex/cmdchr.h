@@ -97,7 +97,9 @@ extern int first_count; /* another variable for pseudoprinting */
 #define non_script 55
 #define vcenter 56
 #define case_shift 57
-#define message 58
+// Rename this macro to avoid conflict with people who want to use
+ // message as a variable. Like, everyone ever.
+#define MESSAGE_CODE 58
 #define extension 59
 #define in_stream 60
 #define begin_group 61
