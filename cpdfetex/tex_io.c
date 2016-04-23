@@ -260,7 +260,7 @@ begin_file_reading (void) {
   line_stack[index] = line;
   START_FIELD = first;
   state = mid_line;
-  name = 0; /* |terminal_input| is now |true| */ 
+  NAME_FIELD = 0; /* |terminal_input| is now |true| */
 };
 
 
@@ -273,10 +273,10 @@ void
 end_file_reading (void) {
   first = START_FIELD;
   line = line_stack[index];
-  if ((name == 18) || (name == 19)) {
+  if ((NAME_FIELD == 18) || (NAME_FIELD == 19)) {
 	pseudo_close();
   } else {
-	if (name > 17)
+	if (NAME_FIELD > 17)
 	  a_close (cur_file);
   }  /* forget it */
   pop_input;
@@ -1050,13 +1050,13 @@ start_input (void) { /* \TeX\ will \.{\\input} something */
     prompt_file_name ("input file name","");
   };
  DONE:
-  name = a_make_name_string (cur_file);
-  source_filename_stack[in_open] = name;
+  NAME_FIELD = a_make_name_string (cur_file);
+  source_filename_stack[in_open] = NAME_FIELD;
   full_source_filename_stack[in_open] = make_full_name_string();
-  if (name == str_ptr - 1)	{/* we can try to conserve string pool space now */
-	temp_str = search_string (name);
+  if (NAME_FIELD == str_ptr - 1)	{/* we can try to conserve string pool space now */
+	temp_str = search_string (NAME_FIELD);
 	if (temp_str > 0) {
-	  name = temp_str;
+	  NAME_FIELD = temp_str;
 	  flush_string;
 	};
   };

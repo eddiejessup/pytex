@@ -154,12 +154,12 @@ pseudo_start (void) {
 	} else if ((term_offset > 0) || (file_offset > 0)) {
 	  print_char (' ');
 	}
-	name = 19;
+	NAME_FIELD = 19;
 	zprint_string("( ");
 	incr (open_parens);
 	update_terminal;
   } else {
-    name = 18;
+    NAME_FIELD = 18;
   }
   /* end expansion of Initiate input from new pseudo file */
 };

@@ -170,7 +170,8 @@ extern int first_count; /* another variable for pseudoprinting */
 // start as a variable. Like, everyone ever.
 #define START_FIELD  cur_input . start_field
 #define limit  cur_input . limit_field
-#define name  cur_input . name_field
+// Avoid calling this macro 'name' to avoid breaking variables called this.
+#define NAME_FIELD  cur_input . name_field
 
 /* module 303 */
 
@@ -223,7 +224,7 @@ extern int first_count; /* another variable for pseudoprinting */
 #define new_line (3  +  max_char_code  +  max_char_code)
 
 /* module 304 */
-#define terminal_input ( name  == 0 )
+#define terminal_input ( NAME_FIELD  == 0 )
 #define cur_file  input_file [ index ]
 
 /* module 305 */

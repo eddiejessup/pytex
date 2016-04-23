@@ -107,7 +107,7 @@ check_outer_validity (void) {
 	 * since the error recovery for \.{\\read} is not very powerful.
 	 */
 	if (cur_cs != 0) {
-	  if ((state == token_list) || (name < 1) || (name > 17)) {
+	  if ((state == token_list) || (NAME_FIELD < 1) || (NAME_FIELD > 17)) {
 		p = get_avail ();
 		info (p) = cs_token_flag + cur_cs;
 		back_list (p);
@@ -493,14 +493,14 @@ input_from_external_file (void) {
     /* All of the easy branches of |get_next| have now been taken care of.
      * There is one more branch.
      */
-    if (name > 17) {
+    if (NAME_FIELD > 17) {
       /* begin expansion of Read next line of file into |buffer|, or 
 	 |goto restart| if the file has ended */
       /* module 362 */
       incr (line);
       first = START_FIELD;
       if (!force_eof) {
-	if (name <= 19) {
+	if (NAME_FIELD <= 19) {
 	  if (pseudo_input()) {	/* not end of file */
 	    firm_up_the_line();	/* this sets |limit| */
 	  } else if ((every_eof != null) && !eof_seen[index]) {
@@ -531,7 +531,7 @@ input_from_external_file (void) {
 	  if ((grp_stack[in_open] != cur_boundary) || (if_stack[in_open] != cond_ptr))
 	    file_warning();
 	/* give warning for some unfinished groups and/or conditionals */
-	if (name >= 19) {
+	if (NAME_FIELD >= 19) {
 	  print_char (')');
 	  decr (open_parens);
 	  update_terminal; /* show user that file has been read */

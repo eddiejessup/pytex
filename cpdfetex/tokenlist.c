@@ -674,7 +674,7 @@ read_toks (int n, pointer r, halfword j) {
 	/* begin expansion of Input and store tokens from the next line of the file */
 	/* module 483 */
 	begin_file_reading();
-	name = m + 1;
+	NAME_FIELD = m + 1;
 	if (read_open[m] == closed) {
 	  /* begin expansion of Input for \.{\\read} from the terminal */
 	  /* module 484 */

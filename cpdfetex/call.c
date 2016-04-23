@@ -367,7 +367,7 @@ macro_call (void) {				/* invokes a user-defined control sequence */
   while ((state == token_list) && (loc == null) && (token_type != v_template))
     end_token_list(); /* conserve stack space */ 
   begin_token_list (ref_count, macro);
-  name = warning_index;
+  NAME_FIELD = warning_index;
   loc = link (r);
   if (n > 0) {
 	if (param_ptr + n > (unsigned)max_param_stack) {

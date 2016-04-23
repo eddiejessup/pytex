@@ -1567,7 +1567,7 @@ show_context (void) { /* prints where the scanner is */
   loop {
     cur_input = input_stack[base_ptr];	/* enter into the context */
     if ((state != token_list)) {
-      if ((name > 19) || (base_ptr == 0)) {
+      if ((NAME_FIELD > 19) || (base_ptr == 0)) {
 		bottom_line = true;
 	  }
 	}
@@ -1586,7 +1586,7 @@ show_context (void) { /* prints where the scanner is */
 		   * indication of where the current line resides in the input file.
 		   * For example, on some systems it is best to zprint both a page and line number.
 		   */
-		  if (name <= 17) {
+		  if (NAME_FIELD <= 17) {
 		    if (terminal_input) {
 			  if (base_ptr == 0) {
 				print_nl_string("<*>");
@@ -1595,10 +1595,10 @@ show_context (void) { /* prints where the scanner is */
 			  };
 			} else {
 			  print_nl_string("<read ");
-			  if (name == 17) {
+			  if (NAME_FIELD == 17) {
 			    print_char ('*');
 			  } else {
-			    print_int (name - 1);
+			    print_int (NAME_FIELD - 1);
 			  };
 			  print_char ('>');
 			};
@@ -1633,7 +1633,7 @@ show_context (void) { /* prints where the scanner is */
 		  /* end expansion of Pseudoprint the line */
 		} else {
 		  /* Print type of token list */
-		  print_tokenlist_type(token_type,loc,name);
+		  print_tokenlist_type(token_type,loc,NAME_FIELD);
 		  /* begin expansion of Pseudoprint the token list */
 		  /* module 319 */
 		  begin_pseudoprint;
@@ -1825,7 +1825,7 @@ cmdchr_initialize (void) {
   START_FIELD = 1;
   index = 0;
   line = 0;
-  name = 0;
+  NAME_FIELD = 0;
   force_eof = false;
   shown_mode = 0;
 }
