@@ -1,16 +1,21 @@
+# Mac auxiliary files
 .DS_Store
 
+# Build directory
 built/
 
+# TeX output and auxiliary files
 *.dvi
 *.log
 *.pdf
 
+# Makefile auxiliary files
 config.cache
 config.log
 config.status
 depend
 
+# C output
 *.o
 *.a
 *.so
@@ -19,6 +24,7 @@ depend
 *.lai
 *.dylib
 
+# Build auxiliary files
 cpdfetex.exe.stackdump
 texk/kpathsea/Makefile
 texk/kpathsea/c-auto.h
@@ -40,9 +46,11 @@ texk/kpathsea/readlink.1
 texk/kpathsea/sedscript
 texk/kpathsea/.libs/kpsewhich
 
+# kpathsea output binaries
 texk/kpathsea/libtool
 texk/kpathsea/stamp-auto
 texk/kpathsea/stamp-paths
 
+# texutil output binaries
 texutil/texexec
 texutil/texutil
