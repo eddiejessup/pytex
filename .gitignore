@@ -30,6 +30,7 @@ texk/kpathsea/mktextfm.1
 texk/kpathsea/readlink
 texk/kpathsea/readlink.1
 texk/kpathsea/sedscript
+texk/kpathsea/.libs/kpsewhich
 
 texk/kpathsea/libtool
 texk/kpathsea/stamp-auto
