@@ -6,6 +6,10 @@ depend
 *.o
 *.a
 *.so
+*.lo
+*.la
+*.lai
+*.dylib
 
 cpdfetex.exe.stackdump
 texk/kpathsea/Makefile
@@ -13,6 +17,19 @@ texk/kpathsea/c-auto.h
 texk/kpathsea/paths.h
 texk/kpathsea/texmf.cnf
 texk/kpathsea/texmf.sed
+texk/kpathsea/access
+texk/kpathsea/access.1
+texk/kpathsea/kpsestat
+texk/kpathsea/kpsestat.1
+texk/kpathsea/kpsewhich
+texk/kpathsea/kpsewhich.1
+texk/kpathsea/mktexlsr.1
+texk/kpathsea/mktexmf.1
+texk/kpathsea/mktexpk.1
+texk/kpathsea/mktextfm.1
+texk/kpathsea/readlink
+texk/kpathsea/readlink.1
+texk/kpathsea/sedscript
 
 texk/kpathsea/libtool
 texk/kpathsea/stamp-auto
