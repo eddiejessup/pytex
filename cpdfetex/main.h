@@ -17,6 +17,9 @@ void parse_options(int, string *);
 extern int argc;
 extern char **argv;
 extern char *user_progname;
+extern long mem_top;
+extern long mem_min;
+extern long mem_max;
 
 /* lib defines these*/
 void usage(const_string str);
