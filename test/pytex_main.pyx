@@ -49,44 +49,6 @@ interaction_option_map = {
     'default': 4,
 }
 
-cdef parse_options_py(av_list, parsed_args):
-    # Unfortunately, this parsing seems to have some side-effect that is
-    # important, so we can't just remove it.
-    # Maybe it gobbles up the options so that all that is left is the file
-    # name to open?
-    cdef int argc = len(av_list)
-    cdef char **argv = to_cstring_array(av_list)
-    cdef int option_index
-    while True:
-        g = getopt_long_only(argc, argv, "+", long_options, &option_index)
-        if g == -1:
-            # End of arguments, exit the loop.
-            break
-    free(argv)
-
-    global user_progname
-    if parsed_args.progname is not None:
-        user_progname = parsed_args.progname
-
-    global job_name
-    if parsed_args.jobname is not None:
-        job_name = parsed_args.jobname
-
-    global ini_version
-    if parsed_args.ini:
-        ini_version = True
-
-    global dump_name
-    global dump_option
-    if parsed_args.efm is not None:
-        dump_name = parsed_args.efm
-        if not user_progname:
-            user_progname = parsed_args.efm
-        dump_option = True
-
-    global interaction_option
-    interaction_option = interaction_option_map[parsed_args.interaction]
-
 
 cdef char **to_cstring_array(list_str):
     cdef char **ret = <char **>malloc(len(list_str) * sizeof(char *))
@@ -100,26 +62,54 @@ def main_init_py(av_list, parsed_args):
     argc = len(av_list)
     global argv
     argv = to_cstring_array(av_list)
-    parse_options_py(av_list, parsed_args)
-    kpse_set_program_name(argv[0], user_progname)
 
-    # Local variable.
+    # Unfortunately, this parsing seems to have some side-effect that is
+    # important, so we can't just remove it.
+    # Maybe it gobbles up the options so that all that is left is the file
+    # name to open?
+    cdef int option_index
+    while True:
+        g = getopt_long_only(argc, argv, "+", long_options, &option_index)
+        if g == -1:
+            # End of arguments, exit the loop.
+            break
+
+    global user_progname
+    if parsed_args.progname is not None:
+        user_progname = parsed_args.progname
+
+    global job_name
+    if parsed_args.jobname is not None:
+        job_name = parsed_args.jobname
+
+    global ini_version
+    if parsed_args.ini:
+        ini_version = True
+
+    kpse_set_program_name(argv[0], user_progname)
     global dump_name
-    if not dump_name:
+    global dump_option
+    if parsed_args.efm is not None:
+        dump_name = parsed_args.efm
+        if not user_progname:
+            user_progname = parsed_args.efm
+        dump_option = True
+    else:
         dump_name = kpse_program_name
 
-    if dump_name:
-        TEX_format_default_py = b" {}.efm".format(dump_name)
-        global TEX_format_default
-        TEX_format_default = TEX_format_default_py
-        # Not sure why need -1, maybe to do with C-strings being
-        # null-terminated? Not even sure what that means, just heard it.
-        # Or maybe to get index of last character.
-        # We are trying to match result of: `strlen(TEX_format_default + 1)`.
-        global format_default_length
-        format_default_length = len(TEX_format_default) - 1
-    else:
-        sys.exit()
+    global interaction_option
+    interaction_option = interaction_option_map[parsed_args.interaction]
+
+    TEX_format_default_py = b" {}.efm".format(dump_name)
+    global TEX_format_default
+    TEX_format_default = TEX_format_default_py
+    # Not sure why need -1, maybe to do with C-strings being
+    # null-terminated? Not even sure what that means, just heard it.
+    # Or maybe to get index of last character.
+    # We are trying to match result of: `strlen(TEX_format_default + 1)`.
+    global format_default_length
+    format_default_length = len(TEX_format_default) - 1
+
     global shell_enabled_p
     shell_enabled_p = 1
 
