@@ -1,3 +1,6 @@
+from libc.stdlib cimport malloc, free
+from cpython.string cimport PyString_AsString
+
 import sys
 
 cdef extern from "main.h":
@@ -142,6 +145,13 @@ cdef parse_options_py(int argc,  char **argv):
             pass
 
 
+cdef char **to_cstring_array(list_str):
+    cdef char **ret = <char **>malloc(len(list_str) * sizeof(char *))
+    for i in range(len(list_str)):
+        ret[i] = PyString_AsString(list_str[i])
+    return ret
+
+
 cdef main_init_py(int ac, char **av):
     global argc
     argc = ac
@@ -189,10 +199,10 @@ cdef main_init_py(int ac, char **av):
     global shell_enabled_p
     shell_enabled_p = 1
 
-
-def test(fname):
-    cdef char **b = ["cytex", "-ini", fname]
-    cdef int i = 3
-    main_init_py(i, b)
+def test(av_list):
+    i = len(av_list)
+    cdef char **av = to_cstring_array(av_list)
+    main_init_py(i, av)
     cdef int ret = main_body()
+    free(av)
     return ret
