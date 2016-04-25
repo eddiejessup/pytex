@@ -45,6 +45,13 @@ cdef extern from "tex_io.h":
 cdef extern:
     option[] long_options
 
+interaction_option_map = {
+    'batchmode': 0,
+    'nonstopmode': 1,
+    'scrollmode': 2,
+    'errorstopmode': 3,
+    'default': 4,
+}
 
 cdef parse_options_py(av_list, parsed_args):
     # Unfortunately, this parsing seems to have some side-effect that is
@@ -82,18 +89,7 @@ cdef parse_options_py(av_list, parsed_args):
         dump_option = True
 
     global interaction_option
-    if parsed_args.interaction is not None:
-        # TODO: This mapping can easily be done earlier and betterly
-        if parsed_args.interaction == b"batchmode":
-            interaction_option = 0
-        elif parsed_args.interaction == b"nonstopmode":
-            interaction_option = 1
-        elif parsed_args.interaction == b"scrollmode":
-            interaction_option = 2
-        elif parsed_args.interaction == b"errorstopmode":
-            interaction_option = 3
-        else:
-            raise ValueError('Unknown interaction mode')
+    interaction_option = interaction_option_map[parsed_args.interaction]
 
 
 cdef char **to_cstring_array(list_str):
@@ -108,8 +104,6 @@ def main_init_py(av_list, parsed_args):
     argc = len(av_list)
     global argv
     argv = to_cstring_array(av_list)
-    global interaction_option
-    interaction_option = 4
     parse_options_py(av_list, parsed_args)
     kpse_set_program_name(argv[0], user_progname)
 

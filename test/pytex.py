@@ -13,8 +13,8 @@ def main():
     parser.add_argument('-ini', '--ini', action='store_true',
                         help='be pdfeinitex, for dumping formats; this is '
                              'implicitly true if the program name is pdfeinitex')
-    parser.add_argument('-interaction', '--interaction',
-                        choices=['batchmode', 'nonstopmode',
+    parser.add_argument('-interaction', '--interaction', default='default',
+                        choices=['default', 'batchmode', 'nonstopmode',
                                  'scrollmode', 'errorstopmode'],
                         help='Set interaction mode')
     parser.add_argument('-jobname', '--jobname',
