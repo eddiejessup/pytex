@@ -47,14 +47,13 @@ cdef extern:
 
 
 cdef parse_options_py(av_list, parsed_args):
-    cdef int argc = len(av_list)
-    cdef char **argv = to_cstring_array(av_list)
-    cdef int option_index
-
     # Unfortunately, this parsing seems to have some side-effect that is
     # important, so we can't just remove it.
     # Maybe it gobbles up the options so that all that is left is the file
     # name to open?
+    cdef int argc = len(av_list)
+    cdef char **argv = to_cstring_array(av_list)
+    cdef int option_index
     while True:
         g = getopt_long_only(argc, argv, "+", long_options, &option_index)
         if g == -1:
