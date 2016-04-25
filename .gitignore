@@ -1,6 +1,9 @@
 # Mac auxiliary files
 .DS_Store
 
+# Python auxiliary files
+*.pyc
+
 # Build directory
 built/
 
