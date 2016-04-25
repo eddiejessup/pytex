@@ -1527,8 +1527,6 @@ void allocate_memory_for_arrays() {
 int
 main_body (void) {	 /* |start_here| */
   history = fatal_error_stop; /* in case we quit during initialization */
-  if (ready_already == 314159)
-    goto START_OF_TEX;
   /* begin expansion of Check the ``constant'' values... */
   /* module 14 */
   /* Later on we will say `\ignorespaces|if mem_max>=max_halfword then bad:=14|',
@@ -1605,7 +1603,6 @@ main_body (void) {	 /* |start_here| */
   } else {
 	init_prim(1);
   }
-  ready_already = 314159;
  START_OF_TEX:
   /* begin expansion of Initialize the output routines */
   print_initialize ();
