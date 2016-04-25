@@ -44,7 +44,7 @@ cdef main_init_py(int ac, char **av):
     parse_options(ac, av)
     kpse_set_program_name(argv[0], user_progname)
 
-    # Local variable
+    # Local variable.
     virversion = False
     global ini_version
     global mltex_p
