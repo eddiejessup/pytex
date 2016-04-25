@@ -2,7 +2,6 @@ import sys
 
 cdef extern from "main.h":
     int main(int ac, char **av)
-    void main_init(int ac, char **av)
     int main_body()
     void parse_options(int argc, char **argv)
 
