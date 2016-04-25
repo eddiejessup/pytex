@@ -11,6 +11,7 @@ EXTERN integer      getrandomseed(void);
 EXTERN void         setup_bound_variable (integer * var,  const_string var_name,  integer dflt);
 void set_up_bound_variables(void);
 void limit_constant_values(void);
+void allocate_memory_for_arrays(void);
 int main_body (void);
 void parse_options(int, string *);
 
