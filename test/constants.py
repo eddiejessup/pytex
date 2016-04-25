@@ -82,3 +82,17 @@ dest_names_size = 20000
 error_line = 79
 half_error_line = 50
 max_print_line = 79
+
+file_name_size = 256
+
+font_base = 0
+max_font_max = 2000
+
+# From globals.h
+min_quarterword = 0
+max_quarterword = 255
+min_halfword = -268435455
+max_halfword = 268435455
+
+# From hash.h
+HASH_SIZE = 256 * 256 * 16

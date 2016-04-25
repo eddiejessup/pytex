@@ -8,7 +8,6 @@ import constants
 cdef extern from "main.h":
     int main_body()
     void allocate_memory_for_arrays()
-    void check_for_bad_constants()
     int argc
     char **argv
     char *user_progname
@@ -51,6 +50,9 @@ cdef extern from "globals.h":
     long save_size
     # Size of the output buffer; must be a multiple of 8.
     long dvi_buf_size
+
+cdef extern from "hash.h":
+    const int hash_prime
 
 cdef extern from "tex_string.h":
     # Maximum number of strings.
@@ -209,8 +211,56 @@ def set_up_bound_variables_py():
   global mem_max; mem_max = mem_top;
 
 
+def check_for_bad_constants_py():
+    global bad; bad = 0
+    if (half_error_line < 30) or (half_error_line > error_line - 15):
+        bad = 1
+    if max_print_line < 60:
+        bad = 2
+    if dvi_buf_size % 8 != 0:
+        bad = 3
+    if constants.mem_bot + 1100 > mem_top:
+        bad = 4
+    if hash_prime > constants.HASH_SIZE:
+        bad = 5
+    if max_in_open >= 128:
+        bad = 6
+    if mem_top < 256 + 11:
+        bad = 7
+    if (mem_min != constants.mem_bot) or (mem_max != mem_top):
+        bad = 10
+    if (mem_min > constants.mem_bot) or (mem_max < mem_top):
+        bad = 10
+    if (constants.min_quarterword > 0) or (constants.max_quarterword < 127):
+        bad = 11
+    if (constants.min_halfword > 0) or (constants.max_halfword < 32767):
+        bad = 12
+    if (constants.min_quarterword < constants.min_halfword) or (constants.max_quarterword > constants.max_halfword):
+        bad = 13
+    if (mem_min < constants.min_halfword) or (mem_max >= constants.max_halfword)or (constants.mem_bot - mem_min > constants.max_halfword + 1):
+        bad = 14
+    if (constants.max_font_max < constants.min_halfword) or (constants.max_font_max > constants.max_halfword):
+        bad = 15
+    if font_max > constants.font_base + constants.max_font_max:
+        bad = 16
+    if (save_size > constants.max_halfword) or (max_strings > constants.max_halfword):
+        bad = 17
+    if buf_size > constants.max_halfword:
+        bad = 18
+    if constants.max_quarterword - constants.min_quarterword < 255:
+        bad = 19
+    # Check is disabled because eqtb_size's definition lead to an insanely
+    # long series of dependent macros.
+    # if cs_token_flag + eqtb_size > constants.max_halfword:
+    #     bad = 21;
+    if format_default_length > constants.file_name_size:
+        bad = 31
+    if 2 * constants.max_halfword < mem_top - mem_min:
+        bad = 41
+
+
 def main_body_py():
     set_up_bound_variables_py();
     allocate_memory_for_arrays();
-    check_for_bad_constants();
+    check_for_bad_constants_py();
     return main_body()
