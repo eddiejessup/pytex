@@ -1,6 +1,5 @@
-int
-main_body (void) {   /* |start_here| */
-  /* Bounds that may be set from the configuration file. We want the user to be able to specify 
+int main_body (void) {   /* |start_here| */
+  /* Bounds that may be set from the configuration file. We want the user to be able to specify
      the names with underscores, but \.{TANGLE} removes underscores, so we're stuck giving the
      names twice, once as a string, once as the identifier. How ugly. */
   /* then, someone writes a version of  \.{TANGLE} that retains underscores. Goody, the code
@@ -64,7 +63,7 @@ main_body (void) {   /* |start_here| */
   const_chk (dest_names_size,inf_dest_names_size,sup_dest_names_size);
   if (error_line > ssup_error_line)
     error_line = ssup_error_line;
-  /* array memory allocation */ 
+  /* array memory allocation */
   buffer = xmalloc_array (ASCII_code, buf_size);
   nest = xmalloc_array (list_state_record, nest_size);
   save_stack = xmalloc_array (memory_word, save_size);
@@ -95,7 +94,7 @@ main_body (void) {   /* |start_here| */
   str_start = xmalloc_array (pool_pointer, max_strings);
   str_pool = xmalloc_array (packed_ASCII_code, pool_size);
   history = fatal_error_stop; /* in case we quit during initialization */
-  t_open_out;   /* open the terminal for output */ 
+  t_open_out;   /* open the terminal for output */
   if (ready_already == 314159)
     goto START_OF_TEX;
   /* begin expansion of Check the ``constant'' values... */
@@ -118,7 +117,7 @@ main_body (void) {   /* |start_here| */
     bad = 6;
   if (mem_top < 256 + 11)
     bad = 7; /* we will want |null_list>255| */
-  /* module 111 */  
+  /* module 111 */
   /* Here are the inequalities that the quarterword and halfword values
    * must satisfy (or rather, the inequalities that they mustn't satisfy):
    */
@@ -172,20 +171,20 @@ main_body (void) {   /* |start_here| */
     init_pool_ptr = pool_ptr;
     fix_date_and_time;
   } else {
-  init_prim(1);
+    init_prim(1);
   }
   ready_already = 314159;
  START_OF_TEX:
   /* begin expansion of Initialize the output routines */
-  print_initialize ();
-  /* module 61 */ 
+  print_initialize();
+  /* module 61 */
   /* Here is the very first thing that \TeX\ prints: a headline that identifies
    * the version number and format package. The |term_offset| variable is temporarily
    * incorrect, but the discrepancy is not serious since we assume that the banner
    * and format identifier together will occupy at most |max_print_line|
    * character positions.
    */
-  fprintf ( term_out , "%s%c%s%c%s",banner);
+  fprintf (term_out, "%s%c%s%c%s", banner);
   wterm_string (version_string);
   if (format_ident > 0)
     slow_print (format_ident);
@@ -207,7 +206,7 @@ main_body (void) {   /* |start_here| */
   /* When we begin the following code, \TeX's tables may still contain garbage;
    * the strings might not even be present. Thus we must proceed cautiously to get
    * bootstrapped in.
-   * 
+   *
    * But when we finish this part of the program, \TeX\ is ready to call on the
    * |main_control| routine to do its work.
    */
@@ -222,7 +221,7 @@ main_body (void) {   /* |start_here| */
     /* end expansion of Initialize the input routines */
     /* begin expansion of Enable \eTeX, if requested */
     /* module 1591 */
-  /* 
+    /*
      * The program has two modes of operation: (1)~In \TeX\ compatibility mode
      * it fully deserves the name \TeX\ and there are neither extended features
      * nor additional primitive commands. There are, however, a few
@@ -231,15 +230,15 @@ main_body (void) {   /* |start_here| */
      * unit conversion during |ship_out|. (2)~In extended mode there are
      * additional primitive commands and the extended features of \eTeX\ are
      * available.
-     * 
+     *
      * The distinction between these two modes of operation initially takes
      * place when a `virgin' \.{eINITEX} starts without reading a format file.
      * Later on the values of all \eTeX\ state variables are inherited when
      * \.{eVIRTEX} (or \.{eINITEX}) reads a format file.
-     * 
+     *
      * The code below is designed to work for cases where `$|init|\ldots|tini|$'
      * is a run-time switch.
-     */    
+     */
     if ((buffer[loc] == '*') && (format_ident == slow_make_tex_string(" (INITEX)"))) {
       set_no_new_control_sequence (false);
       /* begin expansion of Generate all \eTeX\ primitives */
@@ -247,19 +246,19 @@ main_body (void) {   /* |start_here| */
       /* end expansion of Generate all \eTeX\ primitives */
       incr (loc);
       eTeX_mode = 1; /* enter extended mode */
-      /* begin expansion of Initialize variables for \eTeX\ extended mode */  
+      /* begin expansion of Initialize variables for \eTeX\ extended mode */
       /* module 1758 */
       max_reg_num = 32767;
       max_reg_help_line = "A register number must be between 0 and 32767.";
       /* end expansion of Initialize variables for \eTeX\ extended mode */
-  }
+    }
     if (!is_no_new_control_sequence()){ /* just entered extended mode ? */
       set_no_new_control_sequence (true);
     } else {
       /* end expansion of Enable \eTeX, if requested */
       if ((format_ident == 0) || (buffer[loc] == '&') || dump_line) {
     if (format_ident != 0)
-      initialize(); /* erase preloaded format */ 
+      initialize(); /* erase preloaded format */
     if (!(open_fmt_file()))
       goto FINAL_END;
     if (!(load_fmt_file())) {
@@ -300,22 +299,22 @@ main_body (void) {   /* |start_here| */
     /* end expansion of Initialize the print |selector|... */
     if ((loc < limit) && (cat_code (buffer[loc]) != escape)) {
     start_input(); /* \.{\\input} assumed */
-  } 
+  }
     /* begin expansion of Read values from config file if necessary */
     read_values_from_config_file();
     /* end expansion of Read values from config file if necessary */
   };
   /* end expansion of Get the first line of input and prepare to start */
-  history = spotless; /* ready to go! */ 
-  main_control(); /* come to life */ 
-  final_cleanup(); /* prepare for death */ 
+  history = spotless; /* ready to go! */
+  main_control(); /* come to life */
+  final_cleanup(); /* prepare for death */
   close_files_and_terminate();
  FINAL_END:
-  update_terminal ; 
-  ready_already   = 0 ;
-  if ( ( history   !=  spotless )  && ( history   !=  warning_issued )) {
-  return 1 ; 
-  } else { 
-  return 0 ;
-  }; 
+  update_terminal;
+  ready_already = 0;
+  if ((history != spotless) && (history != warning_issued)) {
+    return 1;
+  } else {
+    return 0;
+  };
 };
