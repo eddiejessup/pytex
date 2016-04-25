@@ -4,32 +4,32 @@ int main_body (void) {   /* |start_here| */
      names twice, once as a string, once as the identifier. How ugly. */
   /* then, someone writes a version of  \.{TANGLE} that retains underscores. Goody, the code
    just got even uglier, because now the \.{WEB2C} library is the limiting factor. Cool. */
-  setup_bound_var (250000,"main_memory",main_memory); /* |memory_word|s for |mem| in \.{INITEX} */
-  setup_bound_var (0,"extra_mem_top",extra_mem_top); /* increase high mem in \.{VIRTEX} */
-  setup_bound_var (0,"extra_mem_bot",extra_mem_bot); /* increase low mem in \.{VIRTEX} */
-  setup_bound_var (50000,"pool_size",pool_size);
-  setup_bound_var (750,"string_vacancies",string_vacancies);
-  setup_bound_var (500,"pool_free",pool_free); /* min pool avail after fmt */
-  setup_bound_var (300,"max_strings",max_strings);
-  setup_bound_var (100,"strings_free",strings_free);
-  setup_bound_var (100000,"font_mem_size",font_mem_size);
-  setup_bound_var (500,"font_max",font_max);
-  setup_bound_var (20000,"trie_size",trie_size);   /* if |ssup_trie_size| increases, recompile */
-  setup_bound_var (659,"hyph_size",hyph_size);
-  setup_bound_var (3000,"buf_size",buf_size);
-  setup_bound_var (50,"nest_size",nest_size);
-  setup_bound_var (15,"max_in_open",max_in_open);
-  setup_bound_var (60,"param_size",param_size);
-  setup_bound_var (4000,"save_size",save_size);
-  setup_bound_var (300,"stack_size",stack_size);
-  setup_bound_var (16384,"dvi_buf_size",dvi_buf_size);
-  setup_bound_var (79,"error_line",error_line);
-  setup_bound_var (50,"half_error_line",half_error_line);
-  setup_bound_var (79,"max_print_line",max_print_line);
-  setup_bound_var (65536,"obj_tab_size",obj_tab_size);
-  setup_bound_var (65536,"pdf_mem_size",pdf_mem_size);
-  setup_bound_var (20000,"dest_names_size",dest_names_size);
-  const_chk (main_memory,inf_main_memory,sup_main_memory);
+  setup_bound_var(250000,"main_memory",main_memory); /* |memory_word|s for |mem| in \.{INITEX} */
+  setup_bound_var(0,"extra_mem_top",extra_mem_top); /* increase high mem in \.{VIRTEX} */
+  setup_bound_var(0,"extra_mem_bot",extra_mem_bot); /* increase low mem in \.{VIRTEX} */
+  setup_bound_var(50000,"pool_size",pool_size);
+  setup_bound_var(750,"string_vacancies",string_vacancies);
+  setup_bound_var(500,"pool_free",pool_free); /* min pool avail after fmt */
+  setup_bound_var(300,"max_strings",max_strings);
+  setup_bound_var(100,"strings_free",strings_free);
+  setup_bound_var(100000,"font_mem_size",font_mem_size);
+  setup_bound_var(500,"font_max",font_max);
+  setup_bound_var(20000,"trie_size",trie_size);   /* if |ssup_trie_size| increases, recompile */
+  setup_bound_var(659,"hyph_size",hyph_size);
+  setup_bound_var(3000,"buf_size",buf_size);
+  setup_bound_var(50,"nest_size",nest_size);
+  setup_bound_var(15,"max_in_open",max_in_open);
+  setup_bound_var(60,"param_size",param_size);
+  setup_bound_var(4000,"save_size",save_size);
+  setup_bound_var(300,"stack_size",stack_size);
+  setup_bound_var(16384,"dvi_buf_size",dvi_buf_size);
+  setup_bound_var(79,"error_line",error_line);
+  setup_bound_var(50,"half_error_line",half_error_line);
+  setup_bound_var(79,"max_print_line",max_print_line);
+  setup_bound_var(65536,"obj_tab_size",obj_tab_size);
+  setup_bound_var(65536,"pdf_mem_size",pdf_mem_size);
+  setup_bound_var(20000,"dest_names_size",dest_names_size);
+  const_chk(main_memory,inf_main_memory,sup_main_memory);
   if (ini_version) {
     extra_mem_top = 0;
     extra_mem_bot = 0;
@@ -42,57 +42,57 @@ int main_body (void) {   /* |start_here| */
   mem_min = mem_bot;
   mem_max = mem_top;
   /* Check other constants against their sup and inf. */
-  const_chk (trie_size,inf_trie_size,sup_trie_size);
-  const_chk (hyph_size,inf_hyph_size,sup_hyph_size);
-  const_chk (buf_size,inf_buf_size,sup_buf_size);
-  const_chk (nest_size,inf_nest_size,sup_nest_size);
-  const_chk (max_in_open,inf_max_in_open,sup_max_in_open);
-  const_chk (param_size,inf_param_size,sup_param_size);
-  const_chk (save_size,inf_save_size,sup_save_size);
-  const_chk (stack_size,inf_stack_size,sup_stack_size);
-  const_chk (dvi_buf_size,inf_dvi_buf_size,sup_dvi_buf_size);
-  const_chk (pool_size,inf_pool_size,sup_pool_size);
-  const_chk (string_vacancies,inf_string_vacancies,sup_string_vacancies);
-  const_chk (pool_free,inf_pool_free,sup_pool_free);
-  const_chk (max_strings,inf_max_strings,sup_max_strings);
-  const_chk (strings_free,inf_strings_free,sup_strings_free);
-  const_chk (font_mem_size,inf_font_mem_size,sup_font_mem_size);
-  const_chk (font_max,inf_font_max,sup_font_max);
-  const_chk (obj_tab_size,inf_obj_tab_size,sup_obj_tab_size);
-  const_chk (pdf_mem_size,inf_pdf_mem_size,sup_pdf_mem_size);
-  const_chk (dest_names_size,inf_dest_names_size,sup_dest_names_size);
+  const_chk(trie_size,inf_trie_size,sup_trie_size);
+  const_chk(hyph_size,inf_hyph_size,sup_hyph_size);
+  const_chk(buf_size,inf_buf_size,sup_buf_size);
+  const_chk(nest_size,inf_nest_size,sup_nest_size);
+  const_chk(max_in_open,inf_max_in_open,sup_max_in_open);
+  const_chk(param_size,inf_param_size,sup_param_size);
+  const_chk(save_size,inf_save_size,sup_save_size);
+  const_chk(stack_size,inf_stack_size,sup_stack_size);
+  const_chk(dvi_buf_size,inf_dvi_buf_size,sup_dvi_buf_size);
+  const_chk(pool_size,inf_pool_size,sup_pool_size);
+  const_chk(string_vacancies,inf_string_vacancies,sup_string_vacancies);
+  const_chk(pool_free,inf_pool_free,sup_pool_free);
+  const_chk(max_strings,inf_max_strings,sup_max_strings);
+  const_chk(strings_free,inf_strings_free,sup_strings_free);
+  const_chk(font_mem_size,inf_font_mem_size,sup_font_mem_size);
+  const_chk(font_max,inf_font_max,sup_font_max);
+  const_chk(obj_tab_size,inf_obj_tab_size,sup_obj_tab_size);
+  const_chk(pdf_mem_size,inf_pdf_mem_size,sup_pdf_mem_size);
+  const_chk(dest_names_size,inf_dest_names_size,sup_dest_names_size);
   if (error_line > ssup_error_line)
     error_line = ssup_error_line;
   /* array memory allocation */
-  buffer = xmalloc_array (ASCII_code, buf_size);
-  nest = xmalloc_array (list_state_record, nest_size);
-  save_stack = xmalloc_array (memory_word, save_size);
-  input_stack = xmalloc_array (in_state_record,stack_size);
-  input_file = xmalloc_array (FILE *, max_in_open);
-  line_stack = xmalloc_array (integer, max_in_open);
-  eof_seen = xmalloc_array (boolean, max_in_open);
-  grp_stack = xmalloc_array (save_pointer, max_in_open);
-  if_stack = xmalloc_array (pointer, max_in_open);
-  source_filename_stack = xmalloc_array (str_number, max_in_open);
-  full_source_filename_stack = xmalloc_array (str_number, max_in_open);
-  param_stack = xmalloc_array (halfword, param_size);
-  dvi_buf = xmalloc_array (eight_bits, dvi_buf_size);
-  hyph_word = xmalloc_array (str_number, hyph_size);
-  hyph_list = xmalloc_array (halfword, hyph_size);
-  hyph_link = xmalloc_array (hyph_pointer, hyph_size);
-  obj_tab = xmalloc_array (obj_entry, obj_tab_size);
-  pdf_mem = xmalloc_array (integer, pdf_mem_size);
-  dest_names = xmalloc_array (dest_name_entry, dest_names_size);
+  buffer = xmalloc_array(ASCII_code, buf_size);
+  nest = xmalloc_array(list_state_record, nest_size);
+  save_stack = xmalloc_array(memory_word, save_size);
+  input_stack = xmalloc_array(in_state_record,stack_size);
+  input_file = xmalloc_array(FILE *, max_in_open);
+  line_stack = xmalloc_array(integer, max_in_open);
+  eof_seen = xmalloc_array(boolean, max_in_open);
+  grp_stack = xmalloc_array(save_pointer, max_in_open);
+  if_stack = xmalloc_array(pointer, max_in_open);
+  source_filename_stack = xmalloc_array(str_number, max_in_open);
+  full_source_filename_stack = xmalloc_array(str_number, max_in_open);
+  param_stack = xmalloc_array(halfword, param_size);
+  dvi_buf = xmalloc_array(eight_bits, dvi_buf_size);
+  hyph_word = xmalloc_array(str_number, hyph_size);
+  hyph_list = xmalloc_array(halfword, hyph_size);
+  hyph_link = xmalloc_array(hyph_pointer, hyph_size);
+  obj_tab = xmalloc_array(obj_entry, obj_tab_size);
+  pdf_mem = xmalloc_array(integer, pdf_mem_size);
+  dest_names = xmalloc_array(dest_name_entry, dest_names_size);
   if (ini_version) {
-    yzmem = xmalloc_array (memory_word, mem_top - mem_bot);
+    yzmem = xmalloc_array(memory_word, mem_top - mem_bot);
     mem = yzmem - mem_bot; /* Some compilers require |mem_bot=0| */
-    eqtb = xmalloc_array (memory_word, eqtb_size);
-    font_info = xmalloc_array (fmemory_word, font_mem_size);
+    eqtb = xmalloc_array(memory_word, eqtb_size);
+    font_info = xmalloc_array(fmemory_word, font_mem_size);
   }
   hash_initialize();
   /* strings init is needed always ... */
-  str_start = xmalloc_array (pool_pointer, max_strings);
-  str_pool = xmalloc_array (packed_ASCII_code, pool_size);
+  str_start = xmalloc_array(pool_pointer, max_strings);
+  str_pool = xmalloc_array(packed_ASCII_code, pool_size);
   history = fatal_error_stop; /* in case we quit during initialization */
   t_open_out;   /* open the terminal for output */
   if (ready_already == 314159)
@@ -160,7 +160,7 @@ int main_body (void) {   /* |start_here| */
   if (bad > 0) {
     fprintf(term_out,"%s%s%ld\n", "Ouch---my internal constants have been clobbered!", "---case ", (integer) bad);
     goto FINAL_END;
-  };
+  }
   /* get_strings_started is needed always and before initialize  */
   if (!(get_strings_started()))
     goto FINAL_END;
@@ -264,11 +264,11 @@ int main_body (void) {   /* |start_here| */
     if (!(load_fmt_file())) {
       w_close (fmt_file);
       goto FINAL_END;
-    };
+    }
     w_close (fmt_file);
     while ((loc < limit) && (buffer[loc] == ' '))
       incr (loc);
-      };
+      }
     }
     if (eTeX_ex)
       wterm_string("entering extended mode\n");
@@ -279,18 +279,18 @@ int main_body (void) {   /* |start_here| */
     }
     if (mltex_enabled_p) {
       wterm_string ("MLTeX v2.2 enabled\n");
-    };
+    }
     fix_date_and_time;
     if (trie_not_ready) { /* initex without format loaded */
       trie_xmalloc(trie_size);
       /* Allocate and initialize font arrays */
       font_xmalloc(font_max);
       pdffont_xmalloc(font_max);
-    vf_xmalloc(font_max);
+      vf_xmalloc(font_max);
       pdffont_initialize_init(font_max);
-    font_initialize_init();
-    };
-    font_used = xmalloc_array (boolean, font_max);
+      font_initialize_init();
+    }
+    font_used = xmalloc_array(boolean, font_max);
     for (font_k = font_base; font_k <= font_max; font_k++)
       font_used[font_k] = false;
     /* Compute the magic offset */ /* not used */
@@ -298,12 +298,12 @@ int main_body (void) {   /* |start_here| */
     initialize_selector;
     /* end expansion of Initialize the print |selector|... */
     if ((loc < limit) && (cat_code (buffer[loc]) != escape)) {
-    start_input(); /* \.{\\input} assumed */
-  }
+      start_input(); /* \.{\\input} assumed */
+    }
     /* begin expansion of Read values from config file if necessary */
     read_values_from_config_file();
     /* end expansion of Read values from config file if necessary */
-  };
+  }
   /* end expansion of Get the first line of input and prepare to start */
   history = spotless; /* ready to go! */
   main_control(); /* come to life */
@@ -316,5 +316,5 @@ int main_body (void) {   /* |start_here| */
     return 1;
   } else {
     return 0;
-  };
-};
+  }
+}
