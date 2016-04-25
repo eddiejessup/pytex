@@ -2,4 +2,10 @@ import sys
 
 import cy_test
 
-ret = cy_test.test(sys.argv)
+
+def main():
+    cy_test.main_init_py(sys.argv)
+    cy_test.main_body_py()
+
+if __name__ == '__main__':
+    main()

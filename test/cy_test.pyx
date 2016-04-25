@@ -152,7 +152,9 @@ cdef char **to_cstring_array(list_str):
     return ret
 
 
-cdef main_init_py(int ac, char **av):
+def main_init_py(av_list):
+    ac = len(av_list)
+    cdef char **av = to_cstring_array(av_list)
     global argc
     argc = ac
     global argv
@@ -199,10 +201,5 @@ cdef main_init_py(int ac, char **av):
     global shell_enabled_p
     shell_enabled_p = 1
 
-def test(av_list):
-    i = len(av_list)
-    cdef char **av = to_cstring_array(av_list)
-    main_init_py(i, av)
-    cdef int ret = main_body()
-    free(av)
-    return ret
+def main_body_py():
+    return main_body()
