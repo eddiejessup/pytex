@@ -105,15 +105,12 @@ char **argv;
 int argc;
 
 /* If the user overrides argv[0] with -progname.  */
-static string user_progname;
+string user_progname;
 
 /* The C version of the jobname, if given. */
 const_string job_name;
 
 /* The main body of the WEB is transformed into this procedure.  */
-
-static void
-parse_options(int, string *);
 
 /* TeX globals we use in this file */
 
@@ -262,8 +259,7 @@ static struct option long_options[]
       { "jobname",                1, 0, 0 },
       { 0, 0, 0, 0 } };
 
-static void
-parse_options(int argc,  string * argv)
+void parse_options(int argc,  string * argv)
 {
   int g;   /* `getopt' return code.  */
   int option_index;
