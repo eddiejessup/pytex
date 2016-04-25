@@ -96,3 +96,9 @@ max_halfword = 268435455
 
 # From hash.h
 HASH_SIZE = 256 * 256 * 16
+
+# From tex_error.h
+spotless = 0
+warning_issued = 1
+error_message_issued = 2
+fatal_error_stop = 3

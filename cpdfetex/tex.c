@@ -1555,7 +1555,6 @@ void check_for_bad_constants() {
 
 int
 main_body (void) {	 /* |start_here| */
-  history = fatal_error_stop; /* in case we quit during initialization */
   if (bad > 0) {
     fprintf(term_out,"%s%s%ld\n", "Ouch---my internal constants have been clobbered!", "---case ", (integer) bad);
     return exit_program();

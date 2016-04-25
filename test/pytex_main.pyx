@@ -76,6 +76,7 @@ cdef extern from "tex_error.h":
     long error_line
     long half_error_line
     unsigned char interaction_option
+    unsigned char history
 
 cdef extern from "print.h":
     long max_print_line
@@ -263,4 +264,6 @@ def main_body_py():
     set_up_bound_variables_py()
     allocate_memory_for_arrays()
     check_for_bad_constants_py()
+    # In case we quit during initialization
+    global history; history = constants.fatal_error_stop
     return main_body()
