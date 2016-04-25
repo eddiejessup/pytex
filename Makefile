@@ -10,7 +10,7 @@ all:
 	cd texutil  && $(MAKE) texutil && cp texutil  ../built
 	cd texutil  && $(MAKE) texexec && cp texexec  ../built
 	cd test && python setup.py build_ext --inplace
-	cd test && install_name_tool -change libcpdfetex.so ../cpdfetex/libcpdfetex.so cy_test.so
+	cd test && install_name_tool -change libcpdfetex.so ../cpdfetex/libcpdfetex.so pytex_main.so
 
 clean:
 	cd texk/kpathsea && $(MAKE) clean

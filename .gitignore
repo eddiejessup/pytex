@@ -59,4 +59,4 @@ texutil/texutil
 cpdfetex/cpdfetex
 
 # Cython auxiliary files
-cy_test.c
+pytex_main.c
