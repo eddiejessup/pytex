@@ -1,6 +1,5 @@
 int
 main_body (void) {   /* |start_here| */
-  int paranoid;
   /* Bounds that may be set from the configuration file. We want the user to be able to specify 
      the names with underscores, but \.{TANGLE} removes underscores, so we're stuck giving the
      names twice, once as a string, once as the identifier. How ugly. */
@@ -105,8 +104,6 @@ main_body (void) {   /* |start_here| */
    * or something similar. (We can't do that until |max_halfword| has been defined.)
    */
   bad = 0;
-  paranoid = 0; /* this is for gcc, so that there are no compares between
-           bare integers: "XXX will never be executed" */ 
   if ((half_error_line < 30) || (half_error_line > error_line - 15))
     bad = 1;
   if (max_print_line < 60)
@@ -115,7 +112,7 @@ main_body (void) {   /* |start_here| */
     bad = 3;
   if (mem_bot + 1100 > mem_top)
     bad = 4;
-  if (paranoid || (hash_prime > HASH_SIZE))
+  if (hash_prime > HASH_SIZE)
     bad = 5;
   if (max_in_open >= 128)
     bad = 6;
@@ -129,15 +126,15 @@ main_body (void) {   /* |start_here| */
     bad = 10;
   if ((mem_min > mem_bot) || (mem_max < mem_top))
     bad = 10;
-  if (paranoid || ((min_quarterword > 0) || (max_quarterword < 127)))
+  if ((min_quarterword > 0) || (max_quarterword < 127))
     bad = 11;
-  if (paranoid || ((min_halfword > 0) || (max_halfword < 32767)))
+  if ((min_halfword > 0) || (max_halfword < 32767))
     bad = 12;
-  if (paranoid || ((min_quarterword < min_halfword)|| (max_quarterword > max_halfword)))
+  if ((min_quarterword < min_halfword) || (max_quarterword > max_halfword))
     bad = 13;
   if ((mem_min < min_halfword)|| (mem_max >= max_halfword)|| (mem_bot - mem_min > max_halfword + 1))
     bad = 14;
-  if (paranoid || ((max_font_max < min_halfword)|| (max_font_max > max_halfword)))
+  if ((max_font_max < min_halfword)|| (max_font_max > max_halfword))
     bad = 15;
   if (font_max > font_base + max_font_max)
     bad = 16;
@@ -145,13 +142,13 @@ main_body (void) {   /* |start_here| */
     bad = 17;
   if (buf_size > max_halfword)
     bad = 18;
-  if (paranoid || (max_quarterword - min_quarterword < 255))
+  if (max_quarterword - min_quarterword < 255)
     bad = 19;
   /* module 290 */
   if (cs_token_flag + eqtb_size > max_halfword)
     bad = 21;
   /* module 522 */
-  if (paranoid || (format_default_length > file_name_size))
+  if (format_default_length > file_name_size)
     bad = 31;
   /* module 1394 */
   /* Here's something that isn't quite so obvious. It guarantees that
