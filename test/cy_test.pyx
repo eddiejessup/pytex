@@ -1,6 +1,6 @@
 cdef extern from "main.h":
-    int main(int ac, char *av[])
-    void main_init(int ac, char *av[])
+    int main(int ac, char **av)
+    void main_init(int ac, char **av)
     int main_body()
 
 cdef extern from "main.h":
