@@ -32,12 +32,10 @@ main_body (void) {   /* |start_here| */
   setup_bound_var (65536,"pdf_mem_size",pdf_mem_size);
   setup_bound_var (20000,"dest_names_size",dest_names_size);
   const_chk (main_memory,inf_main_memory,sup_main_memory);
-#ifdef INIT
   if (ini_version) {
     extra_mem_top = 0;
     extra_mem_bot = 0;
   }
-#endif /* INIT */
   if (extra_mem_bot > sup_main_memory)
     extra_mem_bot = sup_main_memory;
   if (extra_mem_top > sup_main_memory)
@@ -87,14 +85,12 @@ main_body (void) {   /* |start_here| */
   obj_tab = xmalloc_array (obj_entry, obj_tab_size);
   pdf_mem = xmalloc_array (integer, pdf_mem_size);
   dest_names = xmalloc_array (dest_name_entry, dest_names_size);
-#ifdef INIT
   if (ini_version) {
     yzmem = xmalloc_array (memory_word, mem_top - mem_bot);
     mem = yzmem - mem_bot; /* Some compilers require |mem_bot=0| */
     eqtb = xmalloc_array (memory_word, eqtb_size);
     font_info = xmalloc_array (fmemory_word, font_mem_size);
   }
-#endif /* INIT */
   hash_initialize();
   /* strings init is needed always ... */
   str_start = xmalloc_array (pool_pointer, max_strings);
@@ -129,10 +125,8 @@ main_body (void) {   /* |start_here| */
   /* Here are the inequalities that the quarterword and halfword values
    * must satisfy (or rather, the inequalities that they mustn't satisfy):
    */
-#ifdef INIT
   if ((mem_min != mem_bot) || (mem_max != mem_top))
     bad = 10;
-#endif /* INIT */
   if ((mem_min > mem_bot) || (mem_max < mem_top))
     bad = 10;
   if (paranoid || ((min_quarterword > 0) || (max_quarterword < 127)))
