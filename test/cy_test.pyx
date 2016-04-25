@@ -27,8 +27,6 @@ cdef extern:
     # Defined in texio.c
     long format_default_length
     char *TEX_format_default
-    # Library function
-    size_t strlen(const char *s)
 
 
 cdef main_init_py(int ac, char **av):
@@ -69,8 +67,12 @@ cdef main_init_py(int ac, char **av):
         TEX_format_default_py = b" {}.efm".format(dump_name)
         global TEX_format_default
         TEX_format_default = TEX_format_default_py
+        # Not sure why need -1, maybe to do with C-strings being
+        # null-terminated? Not even sure what that means, just heard it.
+        # Or maybe to get index of last character.
+        # We are trying to match result of: `strlen(TEX_format_default + 1)`.
         global format_default_length
-        format_default_length = strlen(TEX_format_default + 1)
+        format_default_length = len(TEX_format_default) - 1
     else:
         sys.exit()
     global shell_enabled_p
