@@ -202,50 +202,11 @@ def set_up_bound_variables_py():
   global half_error_line; half_error_line = constants.half_error_line
   global max_print_line; max_print_line = constants.max_print_line
 
-
-def limit_value(value, minimum, maximum):
-    return max(min(value, maximum), minimum)
-
-
-def limit_constant_values_py():
-  global main_memory; main_memory = limit_value(main_memory, constants.inf_main_memory, constants.sup_main_memory)
-  global extra_mem_top
-  global extra_mem_bot
-  if ini_version:
-      extra_mem_top = 0;
-      extra_mem_bot = 0;
-  if extra_mem_bot > constants.sup_main_memory:
-      extra_mem_bot = constants.sup_main_memory;
-  if extra_mem_top > constants.sup_main_memory:
-      extra_mem_top = constants.sup_main_memory;
   global mem_top; mem_top = constants.mem_bot + main_memory;
   global mem_min; mem_min = constants.mem_bot;
   global mem_max; mem_max = mem_top;
 
-  global pool_size; pool_size = limit_value(pool_size, constants.inf_pool_size, constants.sup_pool_size)
-  global string_vacancies; string_vacancies = limit_value(string_vacancies, constants.inf_string_vacancies, constants.sup_string_vacancies)
-  global pool_free; pool_free = limit_value(pool_free, constants.inf_pool_free, constants.sup_pool_free)
-  global max_strings; max_strings = limit_value(max_strings, constants.inf_max_strings, constants.sup_max_strings)
-  global strings_free; strings_free = limit_value(strings_free, constants.inf_strings_free, constants.sup_strings_free)
-  global font_mem_size; font_mem_size = limit_value(font_mem_size, constants.inf_font_mem_size, constants.sup_font_mem_size)
-  global font_max; font_max = limit_value(font_max, constants.inf_font_max, constants.sup_font_max)
-  global trie_size; trie_size = limit_value(trie_size, constants.inf_trie_size, constants.sup_trie_size)
-  global hyph_size; hyph_size = limit_value(hyph_size, constants.inf_hyph_size, constants.sup_hyph_size)
-  global buf_size; buf_size = limit_value(buf_size, constants.inf_buf_size, constants.sup_buf_size)
-  global nest_size; nest_size = limit_value(nest_size, constants.inf_nest_size, constants.sup_nest_size)
-  global max_in_open; max_in_open = limit_value(max_in_open, constants.inf_max_in_open, constants.sup_max_in_open)
-  global param_size; param_size = limit_value(param_size, constants.inf_param_size, constants.sup_param_size)
-  global save_size; save_size = limit_value(save_size, constants.inf_save_size, constants.sup_save_size)
-  global stack_size; stack_size = limit_value(stack_size, constants.inf_stack_size, constants.sup_stack_size)
-  global dvi_buf_size; dvi_buf_size = limit_value(dvi_buf_size, constants.inf_dvi_buf_size, constants.sup_dvi_buf_size)
-  global obj_tab_size; obj_tab_size = limit_value(obj_tab_size, constants.inf_obj_tab_size, constants.sup_obj_tab_size)
-  global pdf_mem_size; pdf_mem_size = limit_value(pdf_mem_size, constants.inf_pdf_mem_size, constants.sup_pdf_mem_size)
-  global dest_names_size; dest_names_size = limit_value(dest_names_size, constants.inf_dest_names_size, constants.sup_dest_names_size)
-  global error_line
-  if error_line > constants.ssup_error_line:
-      error_line = constants.ssup_error_line
 
 def main_body_py():
     set_up_bound_variables_py();
-    limit_constant_values_py();
     return main_body()
