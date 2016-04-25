@@ -3,6 +3,8 @@ from cpython.string cimport PyString_AsString
 
 import sys
 
+import constants
+
 cdef extern from "main.h":
     int main_body()
     int argc
@@ -108,62 +110,6 @@ interaction_option_map = {
 
 # FILENAME_MAX is a standard-library macro, representing the
 # maximum length of a file-name string.
-mem_bot = 0
-ssup_error_line = 255
-ssup_max_strings = 262143
-ssup_trie_opcode = 65535
-ssup_trie_size = 262143
-ssup_hyph_size = 65535
-iinf_hyphen_size = 610
-max_font_max = 2000
-font_base = 0
-inf_trie_size = 8000
-sup_trie_size = ssup_trie_size
-inf_main_memory = 2999
-sup_main_memory = 32000000
-inf_max_strings = 3000
-sup_max_strings = ssup_max_strings
-inf_strings_free = 100
-sup_strings_free = sup_max_strings
-inf_buf_size = 500
-sup_buf_size = 300000
-inf_nest_size = 40
-sup_nest_size = 4000
-inf_max_in_open = 6
-sup_max_in_open = 127
-inf_param_size = 60
-sup_param_size = 6000
-inf_save_size = 600
-sup_save_size = 40000
-inf_stack_size = 200
-sup_stack_size = 30000
-inf_dvi_buf_size = 800
-sup_dvi_buf_size = 65536
-inf_font_mem_size = 20000
-sup_font_mem_size = 1000000
-sup_font_max = max_font_max
-# Could be smaller, but why?
-inf_font_max = 50
-inf_pool_size = 32000
-sup_pool_size = 40000000
-inf_pool_free = 1000
-sup_pool_free = sup_pool_size
-inf_string_vacancies = 8000
-sup_string_vacancies = sup_pool_size-23000
-sup_hyph_size = ssup_hyph_size
-# Must be not less than |hyph_prime|!
-inf_hyph_size = iinf_hyphen_size
-# min size of the cross-reference table for PDF output
-inf_obj_tab_size = 32000
-# max size of the cross-reference table for PDF output
-sup_obj_tab_size = 8388607
-# min size of the |pdf_mem| array
-inf_pdf_mem_size = 32000
-# max size of the |pdf_mem| array
-sup_pdf_mem_size = 524288
-inf_dest_names_size = 10000
-sup_dest_names_size = 131072
-ssup_error_line = 255
 
 cdef char **to_cstring_array(list_str):
     cdef char **ret = <char **>malloc(len(list_str) * sizeof(char *))
@@ -230,31 +176,31 @@ def main_init_py(av_list, parsed_args):
 
 
 def set_up_bound_variables_py():
-  global main_memory; main_memory = 250000
-  global extra_mem_top; extra_mem_top = 0
-  global extra_mem_bot; extra_mem_bot = 0
-  global pool_size; pool_size = 50000
-  global string_vacancies; string_vacancies = 750
-  global pool_free; pool_free = 500
-  global max_strings; max_strings = 300
-  global strings_free; strings_free = 100
-  global font_mem_size; font_mem_size = 100000
-  global font_max; font_max = 500
-  global trie_size; trie_size = 20000
-  global hyph_size; hyph_size = 659
-  global buf_size; buf_size = 3000
-  global nest_size; nest_size = 50
-  global max_in_open; max_in_open = 15
-  global param_size; param_size = 60
-  global save_size; save_size = 4000
-  global stack_size; stack_size = 300
-  global dvi_buf_size; dvi_buf_size = 16384
-  global obj_tab_size; obj_tab_size = 65536
-  global pdf_mem_size; pdf_mem_size = 65536
-  global dest_names_size; dest_names_size = 20000
-  global error_line; error_line = 79
-  global half_error_line; half_error_line = 50
-  global max_print_line; max_print_line = 79
+  global main_memory; main_memory = constants.main_memory
+  global extra_mem_top; extra_mem_top = constants.extra_mem_top
+  global extra_mem_bot; extra_mem_bot = constants.extra_mem_bot
+  global pool_size; pool_size = constants.pool_size
+  global string_vacancies; string_vacancies = constants.string_vacancies
+  global pool_free; pool_free = constants.pool_free
+  global max_strings; max_strings = constants.max_strings
+  global strings_free; strings_free = constants.strings_free
+  global font_mem_size; font_mem_size = constants.font_mem_size
+  global font_max; font_max = constants.font_max
+  global trie_size; trie_size = constants.trie_size
+  global hyph_size; hyph_size = constants.hyph_size
+  global buf_size; buf_size = constants.buf_size
+  global nest_size; nest_size = constants.nest_size
+  global max_in_open; max_in_open = constants.max_in_open
+  global param_size; param_size = constants.param_size
+  global save_size; save_size = constants.save_size
+  global stack_size; stack_size = constants.stack_size
+  global dvi_buf_size; dvi_buf_size = constants.dvi_buf_size
+  global obj_tab_size; obj_tab_size = constants.obj_tab_size
+  global pdf_mem_size; pdf_mem_size = constants.pdf_mem_size
+  global dest_names_size; dest_names_size = constants.dest_names_size
+  global error_line; error_line = constants.error_line
+  global half_error_line; half_error_line = constants.half_error_line
+  global max_print_line; max_print_line = constants.max_print_line
 
 
 def limit_value(value, minimum, maximum):
@@ -262,42 +208,42 @@ def limit_value(value, minimum, maximum):
 
 
 def limit_constant_values_py():
-  global main_memory; main_memory = limit_value(main_memory, inf_main_memory, sup_main_memory)
+  global main_memory; main_memory = limit_value(main_memory, constants.inf_main_memory, constants.sup_main_memory)
   global extra_mem_top
   global extra_mem_bot
   if ini_version:
       extra_mem_top = 0;
       extra_mem_bot = 0;
-  if extra_mem_bot > sup_main_memory:
-      extra_mem_bot = sup_main_memory;
-  if extra_mem_top > sup_main_memory:
-      extra_mem_top = sup_main_memory;
-  global mem_top; mem_top = mem_bot + main_memory;
-  global mem_min; mem_min = mem_bot;
+  if extra_mem_bot > constants.sup_main_memory:
+      extra_mem_bot = constants.sup_main_memory;
+  if extra_mem_top > constants.sup_main_memory:
+      extra_mem_top = constants.sup_main_memory;
+  global mem_top; mem_top = constants.mem_bot + main_memory;
+  global mem_min; mem_min = constants.mem_bot;
   global mem_max; mem_max = mem_top;
 
-  global pool_size; pool_size = limit_value(pool_size, inf_pool_size, sup_pool_size)
-  global string_vacancies; string_vacancies = limit_value(string_vacancies, inf_string_vacancies, sup_string_vacancies)
-  global pool_free; pool_free = limit_value(pool_free, inf_pool_free, sup_pool_free)
-  global max_strings; max_strings = limit_value(max_strings, inf_max_strings, sup_max_strings)
-  global strings_free; strings_free = limit_value(strings_free, inf_strings_free, sup_strings_free)
-  global font_mem_size; font_mem_size = limit_value(font_mem_size, inf_font_mem_size, sup_font_mem_size)
-  global font_max; font_max = limit_value(font_max, inf_font_max, sup_font_max)
-  global trie_size; trie_size = limit_value(trie_size, inf_trie_size, sup_trie_size)
-  global hyph_size; hyph_size = limit_value(hyph_size, inf_hyph_size, sup_hyph_size)
-  global buf_size; buf_size = limit_value(buf_size, inf_buf_size, sup_buf_size)
-  global nest_size; nest_size = limit_value(nest_size, inf_nest_size, sup_nest_size)
-  global max_in_open; max_in_open = limit_value(max_in_open, inf_max_in_open, sup_max_in_open)
-  global param_size; param_size = limit_value(param_size, inf_param_size, sup_param_size)
-  global save_size; save_size = limit_value(save_size, inf_save_size, sup_save_size)
-  global stack_size; stack_size = limit_value(stack_size, inf_stack_size, sup_stack_size)
-  global dvi_buf_size; dvi_buf_size = limit_value(dvi_buf_size, inf_dvi_buf_size, sup_dvi_buf_size)
-  global obj_tab_size; obj_tab_size = limit_value(obj_tab_size, inf_obj_tab_size, sup_obj_tab_size)
-  global pdf_mem_size; pdf_mem_size = limit_value(pdf_mem_size, inf_pdf_mem_size, sup_pdf_mem_size)
-  global dest_names_size; dest_names_size = limit_value(dest_names_size, inf_dest_names_size, sup_dest_names_size)
+  global pool_size; pool_size = limit_value(pool_size, constants.inf_pool_size, constants.sup_pool_size)
+  global string_vacancies; string_vacancies = limit_value(string_vacancies, constants.inf_string_vacancies, constants.sup_string_vacancies)
+  global pool_free; pool_free = limit_value(pool_free, constants.inf_pool_free, constants.sup_pool_free)
+  global max_strings; max_strings = limit_value(max_strings, constants.inf_max_strings, constants.sup_max_strings)
+  global strings_free; strings_free = limit_value(strings_free, constants.inf_strings_free, constants.sup_strings_free)
+  global font_mem_size; font_mem_size = limit_value(font_mem_size, constants.inf_font_mem_size, constants.sup_font_mem_size)
+  global font_max; font_max = limit_value(font_max, constants.inf_font_max, constants.sup_font_max)
+  global trie_size; trie_size = limit_value(trie_size, constants.inf_trie_size, constants.sup_trie_size)
+  global hyph_size; hyph_size = limit_value(hyph_size, constants.inf_hyph_size, constants.sup_hyph_size)
+  global buf_size; buf_size = limit_value(buf_size, constants.inf_buf_size, constants.sup_buf_size)
+  global nest_size; nest_size = limit_value(nest_size, constants.inf_nest_size, constants.sup_nest_size)
+  global max_in_open; max_in_open = limit_value(max_in_open, constants.inf_max_in_open, constants.sup_max_in_open)
+  global param_size; param_size = limit_value(param_size, constants.inf_param_size, constants.sup_param_size)
+  global save_size; save_size = limit_value(save_size, constants.inf_save_size, constants.sup_save_size)
+  global stack_size; stack_size = limit_value(stack_size, constants.inf_stack_size, constants.sup_stack_size)
+  global dvi_buf_size; dvi_buf_size = limit_value(dvi_buf_size, constants.inf_dvi_buf_size, constants.sup_dvi_buf_size)
+  global obj_tab_size; obj_tab_size = limit_value(obj_tab_size, constants.inf_obj_tab_size, constants.sup_obj_tab_size)
+  global pdf_mem_size; pdf_mem_size = limit_value(pdf_mem_size, constants.inf_pdf_mem_size, constants.sup_pdf_mem_size)
+  global dest_names_size; dest_names_size = limit_value(dest_names_size, constants.inf_dest_names_size, constants.sup_dest_names_size)
   global error_line
-  if error_line > ssup_error_line:
-      error_line = ssup_error_line
+  if error_line > constants.ssup_error_line:
+      error_line = constants.ssup_error_line
 
 def main_body_py():
     set_up_bound_variables_py();
