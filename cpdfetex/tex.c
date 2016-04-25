@@ -1427,41 +1427,43 @@ integer ready_already; /* a sacrifice of purity for economy */
 #define const_chk(arg,infarg,suparg) {  if (  arg  <  infarg  )   { arg   =  infarg; }\
                else {   if (  arg  >  suparg )  {  arg   =  suparg; } } }
 
-#define setup_bound_var(a,b,c)  setup_bound_variable (address_of (c), b , a )
-
-int
-main_body (void) {	 /* |start_here| */
-  int paranoid;
+void set_up_bound_variables() {
   /* Bounds that may be set from the configuration file. We want the user to be able to specify 
      the names with underscores, but \.{TANGLE} removes underscores, so we're stuck giving the
      names twice, once as a string, once as the identifier. How ugly. */
   /* then, someone writes a version of  \.{TANGLE} that retains underscores. Goody, the code
 	 just got even uglier, because now the \.{WEB2C} library is the limiting factor. Cool. */
-  setup_bound_var (250000,"main_memory",main_memory); /* |memory_word|s for |mem| in \.{INITEX} */
-  setup_bound_var (0,"extra_mem_top",extra_mem_top); /* increase high mem in \.{VIRTEX} */
-  setup_bound_var (0,"extra_mem_bot",extra_mem_bot); /* increase low mem in \.{VIRTEX} */
-  setup_bound_var (50000,"pool_size",pool_size);
-  setup_bound_var (750,"string_vacancies",string_vacancies);
-  setup_bound_var (500,"pool_free",pool_free); /* min pool avail after fmt */
-  setup_bound_var (300,"max_strings",max_strings);
-  setup_bound_var (100,"strings_free",strings_free);
-  setup_bound_var (100000,"font_mem_size",font_mem_size);
-  setup_bound_var (500,"font_max",font_max);
-  setup_bound_var (20000,"trie_size",trie_size);   /* if |ssup_trie_size| increases, recompile */
-  setup_bound_var (659,"hyph_size",hyph_size);
-  setup_bound_var (3000,"buf_size",buf_size);
-  setup_bound_var (50,"nest_size",nest_size);
-  setup_bound_var (15,"max_in_open",max_in_open);
-  setup_bound_var (60,"param_size",param_size);
-  setup_bound_var (4000,"save_size",save_size);
-  setup_bound_var (300,"stack_size",stack_size);
-  setup_bound_var (16384,"dvi_buf_size",dvi_buf_size);
-  setup_bound_var (79,"error_line",error_line);
-  setup_bound_var (50,"half_error_line",half_error_line);
-  setup_bound_var (79,"max_print_line",max_print_line);
-  setup_bound_var (65536,"obj_tab_size",obj_tab_size);
-  setup_bound_var (65536,"pdf_mem_size",pdf_mem_size);
-  setup_bound_var (20000,"dest_names_size",dest_names_size);
+  setup_bound_variable(&main_memory, "main_memory", 250000); /* |memory_word|s for |mem| in \.{INITEX} */
+  setup_bound_variable(&extra_mem_top, "extra_mem_top", 0); /* increase high mem in \.{VIRTEX} */
+  setup_bound_variable(&extra_mem_bot, "extra_mem_bot", 0); /* increase low mem in \.{VIRTEX} */
+  setup_bound_variable(&pool_size, "pool_size", 50000);
+  setup_bound_variable(&string_vacancies, "string_vacancies", 750);
+  setup_bound_variable(&pool_free, "pool_free", 500); /* min pool avail after fmt */
+  setup_bound_variable(&max_strings, "max_strings", 300);
+  setup_bound_variable(&strings_free, "strings_free", 100);
+  setup_bound_variable(&font_mem_size, "font_mem_size", 100000);
+  setup_bound_variable(&font_max, "font_max", 500);
+  setup_bound_variable(&trie_size, "trie_size", 20000);   /* if |ssup_trie_size| increases, recompile */
+  setup_bound_variable(&hyph_size, "hyph_size", 659);
+  setup_bound_variable(&buf_size, "buf_size", 3000);
+  setup_bound_variable(&nest_size, "nest_size", 50);
+  setup_bound_variable(&max_in_open, "max_in_open", 15);
+  setup_bound_variable(&param_size, "param_size", 60);
+  setup_bound_variable(&save_size, "save_size", 4000);
+  setup_bound_variable(&stack_size, "stack_size", 300);
+  setup_bound_variable(&dvi_buf_size, "dvi_buf_size", 16384);
+  setup_bound_variable(&error_line, "error_line", 79);
+  setup_bound_variable(&half_error_line, "half_error_line", 50);
+  setup_bound_variable(&max_print_line, "max_print_line", 79);
+  setup_bound_variable(&obj_tab_size, "obj_tab_size", 65536);
+  setup_bound_variable(&pdf_mem_size, "pdf_mem_size", 65536);
+  setup_bound_variable(&dest_names_size, "dest_names_size", 20000);
+}
+
+int
+main_body (void) {	 /* |start_here| */
+  int paranoid;
+  set_up_bound_variables();
   const_chk (main_memory,inf_main_memory,sup_main_memory);
 #ifdef INIT
   if (ini_version) {
