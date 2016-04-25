@@ -19,8 +19,68 @@ cdef extern from "dump.h":
 
 cdef extern from "globals.h":
     # Defined in tex.c
-    # If are we INITEX
+    # If we are initex.
     int ini_version
+    # Total number of memory words allocated in initex.
+    long main_memory
+    long extra_mem_bot
+    long extra_mem_top
+    # Number of words of font_info for all fonts.
+    long font_mem_size
+    long font_max
+    # Maximum number of hyphen exceptions.
+    long hyph_size
+    # Maximum number of characters simultaneously present in
+    # current lines of open files and in control sequences.
+    long buf_size
+    # Maximum number of simultaneous input sources.
+    long stack_size
+    # Maximum number of simultaneous ongoing input files and error insertions.
+    long max_in_open
+    # Maximum number of simultaneous macro parameters.
+    long param_size
+    # Maximum number of semantic levels simultaneously active.
+    long nest_size
+    # Space for saving values outside of current group.
+    long save_size
+    # Size of the output buffer; must be a multiple of 8.
+    long dvi_buf_size
+
+cdef extern from "tex_string.h":
+    # Maximum number of strings.
+    long max_strings
+    # Number of strings available after format loaded.
+    long strings_free
+    # The minimum number of characters that should be available.
+    long string_vacancies
+    long pool_size
+    long pool_free
+
+cdef extern from "trie.h":
+    long trie_size
+
+cdef extern from "tex_io.h":
+    long format_default_length
+    char *TEX_format_default
+
+cdef extern from "tex_error.h":
+    # Width of context lines in terminal error messages.
+    long error_line
+    long half_error_line
+    unsigned char interaction_option
+
+cdef extern from "print.h":
+    long max_print_line
+
+cdef extern from "pdfxref.h":
+    long obj_tab_size
+
+cdef extern from "pdfbasic.h":
+    long pdf_mem_size
+
+cdef extern from "pdfproc.h":
+    # Maximum number of names in name tree of PDF output file.
+    long dest_names_size
 
 cdef extern from "kpathsea/progname.h":
     void kpse_set_program_name(char *av0, char *progname)
@@ -32,15 +92,9 @@ cdef extern from "kpathsea/getopt.h":
     int getopt_long_only(int argc, char *const *argv, const char *shortopts,
                          const option *longopts, int *longind)
 
-cdef extern from "tex_error.h":
-    unsigned char interaction_option
-
-cdef extern from "tex_io.h":
-    long format_default_length
-    char *TEX_format_default
-
 cdef extern:
     option[] long_options
+
 
 interaction_option_map = {
     'batchmode': 0,
@@ -114,6 +168,35 @@ def main_init_py(av_list, parsed_args):
     global shell_enabled_p
     shell_enabled_p = 1
 
+
+def set_up_bound_variables_py():
+  global main_memory; main_memory = 250000
+  global extra_mem_top; extra_mem_top = 0
+  global extra_mem_bot; extra_mem_bot = 0
+  global pool_size; pool_size = 50000
+  global string_vacancies; string_vacancies = 750
+  global pool_free; pool_free = 500
+  global max_strings; max_strings = 300
+  global strings_free; strings_free = 100
+  global font_mem_size; font_mem_size = 100000
+  global font_max; font_max = 500
+  global trie_size; trie_size = 20000
+  global hyph_size; hyph_size = 659
+  global buf_size; buf_size = 3000
+  global nest_size; nest_size = 50
+  global max_in_open; max_in_open = 15
+  global param_size; param_size = 60
+  global save_size; save_size = 4000
+  global stack_size; stack_size = 300
+  global dvi_buf_size; dvi_buf_size = 16384
+  global error_line; error_line = 79
+  global half_error_line; half_error_line = 50
+  global max_print_line; max_print_line = 79
+  global obj_tab_size; obj_tab_size = 65536
+  global pdf_mem_size; pdf_mem_size = 65536
+  global dest_names_size; dest_names_size = 20000
+
+
 def main_body_py():
-    set_up_bound_variables();
+    set_up_bound_variables_py();
     return main_body()
