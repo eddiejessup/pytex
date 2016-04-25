@@ -92,7 +92,7 @@
 #define undump_int generic_undump
 
 
-EXTERN const_string dump_name;
+EXTERN string dump_name;
 
 EXTERN boolean dump_option;
 EXTERN boolean dump_line;

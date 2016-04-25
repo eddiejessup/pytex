@@ -7,7 +7,7 @@
 
 boolean dump_option; /* was the dump name option used? */ 
 boolean dump_line; /* was a \.{\%\AM format} line seen? */ 
-const_string dump_name; /* The C version of what might wind up in DUMP_VAR.  */
+string dump_name; /* The C version of what might wind up in DUMP_VAR.  */
 
 /* module 1816 */
 /* Are we printing extra info as we read the format file? */
