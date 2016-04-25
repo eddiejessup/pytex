@@ -27,9 +27,6 @@ cdef extern:
     # Defined in texio.c
     long format_default_length
     char *TEX_format_default
-    # Defined in kpathsea/concat3.c
-    # 'concatenate three strings'
-    char *concat3(char *s1, char* s2, char* s3)
     # Library function
     size_t strlen(const char *s)
 
@@ -69,8 +66,9 @@ cdef main_init_py(int ac, char **av):
             dump_name = kpse_program_name
 
     if dump_name:
+        TEX_format_default_py = b" {}.efm".format(dump_name)
         global TEX_format_default
-        TEX_format_default = concat3(" ", dump_name, ".efm")
+        TEX_format_default = TEX_format_default_py
         global format_default_length
         format_default_length = strlen(TEX_format_default + 1)
     else:
