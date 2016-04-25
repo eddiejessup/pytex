@@ -154,12 +154,10 @@ cdef char **to_cstring_array(list_str):
 
 
 def main_init_py(av_list):
-    ac = len(av_list)
-    cdef char **av = to_cstring_array(av_list)
     global argc
-    argc = ac
+    argc = len(av_list)
     global argv
-    argv = av
+    argv = to_cstring_array(av_list)
     global interaction_option
     interaction_option = 4
     parse_options_py(av_list)
