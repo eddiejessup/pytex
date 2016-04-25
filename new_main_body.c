@@ -1,4 +1,4 @@
-int main_body (void) {   /* |start_here| */
+void set_up_bound_vars() {
   /* Bounds that may be set from the configuration file. We want the user to be able to specify
      the names with underscores, but \.{TANGLE} removes underscores, so we're stuck giving the
      names twice, once as a string, once as the identifier. How ugly. */
@@ -29,6 +29,9 @@ int main_body (void) {   /* |start_here| */
   setup_bound_var(65536,"obj_tab_size",obj_tab_size);
   setup_bound_var(65536,"pdf_mem_size",pdf_mem_size);
   setup_bound_var(20000,"dest_names_size",dest_names_size);
+}
+
+void validate_bound_vars() {
   const_chk(main_memory,inf_main_memory,sup_main_memory);
   if (ini_version) {
     extra_mem_top = 0;
@@ -63,8 +66,10 @@ int main_body (void) {   /* |start_here| */
   const_chk(dest_names_size,inf_dest_names_size,sup_dest_names_size);
   if (error_line > ssup_error_line)
     error_line = ssup_error_line;
-  /* array memory allocation */
-  buffer = xmalloc_array(ASCII_code, buf_size);
+}
+
+void allocate_memory() {
+    buffer = xmalloc_array(ASCII_code, buf_size);
   nest = xmalloc_array(list_state_record, nest_size);
   save_stack = xmalloc_array(memory_word, save_size);
   input_stack = xmalloc_array(in_state_record,stack_size);
@@ -93,10 +98,9 @@ int main_body (void) {   /* |start_here| */
   /* strings init is needed always ... */
   str_start = xmalloc_array(pool_pointer, max_strings);
   str_pool = xmalloc_array(packed_ASCII_code, pool_size);
-  history = fatal_error_stop; /* in case we quit during initialization */
-  t_open_out;   /* open the terminal for output */
-  if (ready_already == 314159)
-    goto START_OF_TEX;
+}
+
+void check_constants_for_bad() {
   /* begin expansion of Check the ``constant'' values... */
   /* module 14 */
   /* Later on we will say `\ignorespaces|if mem_max>=max_halfword then bad:=14|',
@@ -156,7 +160,16 @@ int main_body (void) {   /* |start_here| */
    */
   if (2 * max_halfword < mem_top - mem_min)
     bad = 41;
-  /* end expansion of Check the ``constant'' values... */
+}
+
+int main_body (void) {   /* |start_here| */
+  set_up_bound_vars();
+  validate_bound_vars();
+  allocate_memory();
+  history = fatal_error_stop; /* in case we quit during initialization */
+  if (ready_already == 314159)
+    goto START_OF_TEX;
+  check_constants_for_bad();
   if (bad > 0) {
     fprintf(term_out,"%s%s%ld\n", "Ouch---my internal constants have been clobbered!", "---case ", (integer) bad);
     goto FINAL_END;
