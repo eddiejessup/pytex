@@ -260,7 +260,7 @@ def check_for_bad_constants_py():
 
 
 def main_body_py():
-    set_up_bound_variables_py();
-    allocate_memory_for_arrays();
-    check_for_bad_constants_py();
+    set_up_bound_variables_py()
+    allocate_memory_for_arrays()
+    check_for_bad_constants_py()
     return main_body()
