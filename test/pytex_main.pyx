@@ -8,11 +8,6 @@ cdef extern from "main.h":
     int argc
     char **argv
     char *user_progname
-    void usage(const char* str)
-    void usagehelp(const char** message)
-    void printversionandexit(const char* banner,
-                             const char* copyright_holder,
-                             const char* author)
 
 
 cdef extern from "exten.h":
@@ -50,9 +45,6 @@ cdef extern from "tex_io.h":
 cdef extern:
     option[] long_options
 
-COPYRIGHT_HOLDER = "The NTS Team (eTeX)/Han The Thanh (pdfTeX)/Elliot Marsden (PyTeX)"
-AUTHOR = "Elliot Marsden"
-BANNER = "This is PyTeX, Version 0.1"
 
 cdef parse_options_py(av_list, parsed_args):
     cdef int argc = len(av_list)
@@ -103,10 +95,6 @@ cdef parse_options_py(av_list, parsed_args):
             interaction_option = 3
         else:
             raise ValueError('Unknown interaction mode')
-
-    if parsed_args.version:
-        printversionandexit(BANNER, COPYRIGHT_HOLDER, AUTHOR)
-
 
 
 cdef char **to_cstring_array(list_str):

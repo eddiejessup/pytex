@@ -25,10 +25,8 @@ def main():
     parser.add_argument('-progname', '--progname',
                         help='Set program (and format) name'
                         )
-    parser.add_argument('-version', '--version', action='store_true',
-                        help='Output version information and exit'
-                        )
     args = parser.parse_args()
+
     # Pass in raw argument array too for compatibility purposes
     pytex_main.main_init_py(sys.argv, args)
     pytex_main.main_body_py()
