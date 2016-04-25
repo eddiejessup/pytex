@@ -1558,11 +1558,11 @@ main_body (void) {	 /* |start_here| */
   history = fatal_error_stop; /* in case we quit during initialization */
   if (bad > 0) {
     fprintf(term_out,"%s%s%ld\n", "Ouch---my internal constants have been clobbered!", "---case ", (integer) bad);
-    goto FINAL_END;
+    return exit_program();
   };
   /* get_strings_started is needed always and before initialize  */
   if (!(get_strings_started()))
-    goto FINAL_END;
+    return exit_program();
   initialize(); /* set global variables to their starting values */
   if (ini_version) {
     init_prim(0); /* call |primitive| for each primitive */
@@ -1613,7 +1613,7 @@ main_body (void) {	 /* |start_here| */
     cmdchr_initialize();
     /* next 4 lines where part of the above proc initially */
     if (!init_terminal())
-      goto FINAL_END;
+      return exit_program();
     limit = last;
     first = last + 1;    /* |init_terminal| has set |loc| and |last| */
     /* end expansion of Initialize the input routines */
@@ -1658,10 +1658,10 @@ main_body (void) {	 /* |start_here| */
 		if (format_ident != 0)
 		  initialize(); /* erase preloaded format */ 
 		if (!(open_fmt_file()))
-		  goto FINAL_END;
+		  return exit_program();
 		if (!(load_fmt_file())) {
 		  w_close (fmt_file);
-		  goto FINAL_END;
+		  return exit_program();
 		};
 		w_close (fmt_file);
 		while ((loc < limit) && (buffer[loc] == ' '))
@@ -1707,15 +1707,18 @@ main_body (void) {	 /* |start_here| */
   main_control(); /* come to life */ 
   final_cleanup(); /* prepare for death */ 
   close_files_and_terminate();
- FINAL_END:
-  update_terminal ; 
-  if ( ( history   !=  spotless )  && ( history   !=  warning_issued )) {
-	return 1 ; 
-  } else { 
-	return 0 ;
-  }; 
+  return exit_program();
 };
 
+
+int exit_program() {
+  fflush(term_out);
+  if ((history != spotless) && (history != warning_issued)) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
 
 /* module 1829 */
 
