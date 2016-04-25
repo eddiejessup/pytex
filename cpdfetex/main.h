@@ -16,4 +16,12 @@ extern int argc;
 extern char **argv;
 extern char *user_progname;
 
+/* lib defines these*/
+void usage(const_string str);
+void usagehelp(const_string *message);
+// Do not make the banner dummy argument `banner`, because this is a macro
+void printversionandexit(const_string the_banner,
+                         const_string copyright_holder,
+                         const_string author);
+
 #endif /* not TEX_MAIN_H */

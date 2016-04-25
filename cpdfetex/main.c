@@ -40,12 +40,6 @@ extern unsigned kpathsea_debug;
 
 typedef struct option getoptstruct;
 
-/* lib defines these*/
-
-extern void usage (const_string str);
-extern void usagehelp (const_string *);
-extern void printversionandexit (const_string, const_string, const_string);
-
 #include <time.h> /* For `struct tm'.  */
 #if defined (HAVE_SYS_TIME_H)
 #include <sys/time.h>
