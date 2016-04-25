@@ -4,26 +4,32 @@ cdef extern from "main.h":
     int main(int ac, char **av)
     int main_body()
     void parse_options(int argc, char **argv)
-
-cdef extern:
-    # Defined in exten.c
-    int shell_enabled_p
-    # Defined in main.c
     int argc
     char **argv
     char *user_progname
-    # Defined in dump.c
+
+cdef extern from "exten.h":
+    int shell_enabled_p
+
+cdef extern from "dump.h":
     char *dump_name
-    # Defined in a weird way in kpathsea/progname.c
+
+cdef extern from "globals.h":
+    # Defined in tex.c
+    # If are we INITEX
+    int ini_version
+
+cdef extern from "kpathsea/progname.h":
     void kpse_set_program_name(char *av0, char *progname)
     char *kpse_program_name
-    # Defined in tex.c
-    int ini_version
-    # Defined in tex_error.c
+
+cdef extern from "tex_error.h":
     unsigned char interaction_option
-    # Defined in mltex.c
+
+cdef extern from "mltex.h":
     int mltex_p
-    # Defined in texio.c
+
+cdef extern from "tex_io.h":
     long format_default_length
     char *TEX_format_default
 
