@@ -109,7 +109,6 @@ const_string job_name;
 /* TeX globals we use in this file */
 
 //extern unsigned char interaction_option;
-extern integer ready_already;
 
 
 /* The entry point: set up for reading the command line, which will

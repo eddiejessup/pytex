@@ -7,8 +7,6 @@ integer error_line; /* width of context lines on terminal error messages */
 integer half_error_line; /* width of first lines of contexts in terminal error
 						 messages; should be between 30 and |error_line-15| */
 
-extern integer ready_already; /* a sacrifice of purity for economy */
-
 /* module 13 */
 
 /* In case somebody has inadvertently made bad settings of the ``constants,''

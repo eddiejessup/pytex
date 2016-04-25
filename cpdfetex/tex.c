@@ -1387,41 +1387,10 @@ init_etex_prim(void) {
  * consumed by the auxiliary hyphenation tables and the numerous calls on
  * |primitive|, etc.
  * 
- * The \.{VIRTEX} program cannot read a format file instantaneously, of course;
- * the best implementations therefore allow for production versions of \TeX\ that
- * not only avoid the loading routine for \PASCAL\ object code, they also have
- * a format file pre-loaded. This is impossible to do if we stick to standard
- * \PASCAL; but there is a simple way to fool many systems into avoiding the
- * initialization, as follows:\quad(1)~We declare a global integer variable
- * called |ready_already|. The probability is negligible that this
- * variable holds any particular value like 314159 when \.{VIRTEX} is first
- * loaded.\quad(2)~After we have read in a format file and initialized
- * everything, we set |ready_already:=314159|.\quad(3)~Soon \.{VIRTEX}
- * will zprint `\.*', waiting for more input; and at this point we
- * interrupt the program and save its core image in some form that the
- * operating system can reload speedily.\quad(4)~When that core image is
- * activated, the program starts again at the beginning; but now
- * |ready_already=314159| and all the other global variables have
- * their initial values too. The former chastity has vanished!
- * 
- * In other words, if we allow ourselves to test the condition
- * |ready_already=314159|, before |ready_already| has been
- * assigned a value, we can avoid the lengthy initialization. Dirty tricks
- * rarely pay off so handsomely.
- * 
- * On systems that allow such preloading, the standard program called \.{TeX}
- * should be the one that has \.{plain} format preloaded, since that agrees
- * with {\sl The \TeX book}. Other versions, e.g., \.{AmSTeX}, should also
- * 
- * be provided for commonly used formats.
- */
-integer ready_already; /* a sacrifice of purity for economy */
 
 /* module 1477 */
 /* Now this is really it: \TeX\ starts and ends here.
  * 
- * The initial test involving |ready_already| should be deleted if the
- * \PASCAL\ runtime system is smart enough to detect such a ``mistake.''
  */
 
 #define const_chk(arg,infarg,suparg) {  if (  arg  <  infarg  )   { arg   =  infarg; }\
@@ -1740,7 +1709,6 @@ main_body (void) {	 /* |start_here| */
   close_files_and_terminate();
  FINAL_END:
   update_terminal ; 
-  ready_already   = 0 ;
   if ( ( history   !=  spotless )  && ( history   !=  warning_issued )) {
 	return 1 ; 
   } else { 

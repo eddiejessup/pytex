@@ -40,7 +40,7 @@ EXTERN char error_count; /* the number of scrolled errors since the last
 					 paragraph ended */
 
 /* module 81 */
-#define do_final_end  { update_terminal ; ready_already   = 0 ;\
+#define do_final_end  { update_terminal ;\
                         if ( ( history   !=  spotless )  && ( history   !=  warning_issued )) {\
                         uexit (1 ); } else { uexit (0 );}; }
 
