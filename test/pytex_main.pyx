@@ -27,16 +27,12 @@ cdef extern from "kpathsea/progname.h":
 
 cdef extern from "kpathsea/getopt.h":
     struct option:
-        const char* name
-    char *optarg
+        pass
     int getopt_long_only(int argc, char *const *argv, const char *shortopts,
                          const option *longopts, int *longind)
 
 cdef extern from "tex_error.h":
     unsigned char interaction_option
-
-cdef extern from "mltex.h":
-    int mltex_p
 
 cdef extern from "tex_io.h":
     long format_default_length
@@ -108,26 +104,9 @@ def main_init_py(av_list, parsed_args):
     kpse_set_program_name(argv[0], user_progname)
 
     # Local variable.
-    virversion = False
-    global ini_version
-    global mltex_p
-    if kpse_program_name == b"pdfeinitex":
-        ini_version = True
-    elif kpse_program_name == b"pdfevirtex":
-        virversion = True
-    elif kpse_program_name == b"mltex":
-        mltex_p = True
-    elif kpse_program_name == b"initex":
-        ini_version = True
-    elif kpse_program_name == b"virtex":
-        virversion = True
     global dump_name
     if not dump_name:
-        # Can't use ternary operator (x if b else y), does not compile
-        if virversion:
-            dump_name = b"plain"
-        else:
-            dump_name = kpse_program_name
+        dump_name = kpse_program_name
 
     if dump_name:
         TEX_format_default_py = b" {}.efm".format(dump_name)
