@@ -5,6 +5,8 @@
    
    This file is public domain.  */
 
+#include "main.h"
+
 #include "types.h"
 
 #include "c-compat.h"
