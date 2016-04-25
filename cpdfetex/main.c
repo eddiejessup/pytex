@@ -240,8 +240,7 @@ void topenin (void) {
    option table in a variable `long_options'.  */
 #define ARGUMENT_IS(a) STREQ (long_options[option_index].name, a)
 
-/* SunOS cc can't initialize automatic structs, so make this static.  */
-static struct option long_options[]
+struct option long_options[]
   = { { DUMP_OPTION,              1, 0, 0 },
       { "help",                   0, 0, 0 },
       { "ini",                    0, &ini_version, 1 },
