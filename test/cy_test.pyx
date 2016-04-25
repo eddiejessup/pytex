@@ -45,13 +45,13 @@ cdef main_init_py(int ac, char **av):
 
     # Local variable
     virversion = False
+    global ini_version
+    global mltex_p
     if kpse_program_name == b"pdfeinitex":
-        global ini_version
         ini_version = True
     elif kpse_program_name == b"pdfevirtex":
         virversion = True
     elif kpse_program_name == b"mltex":
-        global mltex_p
         mltex_p = True
     elif kpse_program_name == b"initex":
         ini_version = True
