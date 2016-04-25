@@ -4,9 +4,7 @@ from cpython.string cimport PyString_AsString
 import sys
 
 cdef extern from "main.h":
-    int main(int ac, char **av)
     int main_body()
-    void parse_options(int argc, char **argv)
     int argc
     char **argv
     char *user_progname
