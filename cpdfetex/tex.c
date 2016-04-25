@@ -1493,11 +1493,7 @@ void allocate_memory_for_arrays() {
   str_pool = xmalloc_array (packed_ASCII_code, pool_size);
 }
 
-int
-main_body (void) {	 /* |start_here| */
-  history = fatal_error_stop; /* in case we quit during initialization */
-  /* begin expansion of Check the ``constant'' values... */
-  /* module 14 */
+void check_for_bad_constants() {
   /* Later on we will say `\ignorespaces|if mem_max>=max_halfword then bad:=14|',
    * or something similar. (We can't do that until |max_halfword| has been defined.)
    */
@@ -1555,7 +1551,12 @@ main_body (void) {	 /* |start_here| */
    */
   if (2 * max_halfword < mem_top - mem_min)
     bad = 41;
-  /* end expansion of Check the ``constant'' values... */
+}
+
+int
+main_body (void) {	 /* |start_here| */
+  history = fatal_error_stop; /* in case we quit during initialization */
+  check_for_bad_constants();
   if (bad > 0) {
     fprintf(term_out,"%s%s%ld\n", "Ouch---my internal constants have been clobbered!", "---case ", (integer) bad);
     goto FINAL_END;
