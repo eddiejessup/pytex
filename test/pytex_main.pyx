@@ -258,6 +258,8 @@ def check_for_bad_constants_py():
         bad = 31
     if 2 * constants.max_halfword < mem_top - mem_min:
         bad = 41
+    if bad > 0:
+        raise ValueError("Internal constants have been clobbered! Bad = {}".format(bad))
 
 
 def main_body_py():

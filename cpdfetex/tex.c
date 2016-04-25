@@ -1555,10 +1555,6 @@ void check_for_bad_constants() {
 
 int
 main_body (void) {	 /* |start_here| */
-  if (bad > 0) {
-    fprintf(term_out,"%s%s%ld\n", "Ouch---my internal constants have been clobbered!", "---case ", (integer) bad);
-    return exit_program();
-  };
   /* get_strings_started is needed always and before initialize  */
   if (!(get_strings_started()))
     return exit_program();
