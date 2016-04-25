@@ -86,7 +86,9 @@ Usage: pdfetex [OPTION]... [TEXNAME[.tex]] [COMMANDS]
 -version                 output version information and exit
 '''
 
-cdef parse_options_py(int argc,  char **argv):
+cdef parse_options_py(av_list):
+    cdef int argc = len(av_list)
+    cdef char **argv = to_cstring_array(av_list)
     cdef int option_index
 
     while True:
@@ -143,6 +145,7 @@ cdef parse_options_py(int argc,  char **argv):
         else:
             # It was a flag; getopt has already done the assignment.
             pass
+    free(argv)
 
 
 cdef char **to_cstring_array(list_str):
@@ -161,7 +164,7 @@ def main_init_py(av_list):
     argv = av
     global interaction_option
     interaction_option = 4
-    parse_options_py(ac, av)
+    parse_options_py(av_list)
     kpse_set_program_name(argv[0], user_progname)
 
     # Local variable.
