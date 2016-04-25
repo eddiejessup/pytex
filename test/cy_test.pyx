@@ -36,9 +36,7 @@ cdef main_init_py(int ac, char **av):
     global interaction_option
     interaction_option = 4
     parse_options(ac, av)
-    # kpse_set_program_name(argv[0], user_progname)
-    global kpse_program_name
-    kpse_program_name = "cytex"
+    kpse_set_program_name(argv[0], user_progname)
 
     # Local variable
     virversion = False
