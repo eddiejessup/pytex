@@ -1526,7 +1526,6 @@ void allocate_memory_for_arrays() {
 
 int
 main_body (void) {	 /* |start_here| */
-  set_up_bound_variables();
   limit_constant_values();
   allocate_memory_for_arrays();
   history = fatal_error_stop; /* in case we quit during initialization */

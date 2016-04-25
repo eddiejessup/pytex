@@ -4,6 +4,7 @@ from cpython.string cimport PyString_AsString
 import sys
 
 cdef extern from "main.h":
+    void set_up_bound_variables()
     int main_body()
     int argc
     char **argv
@@ -114,4 +115,5 @@ def main_init_py(av_list, parsed_args):
     shell_enabled_p = 1
 
 def main_body_py():
+    set_up_bound_variables();
     return main_body()
