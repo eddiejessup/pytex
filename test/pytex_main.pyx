@@ -4,7 +4,7 @@ from cpython.string cimport PyString_AsString
 import sys
 
 cdef extern from "main.h":
-    void set_up_bound_variables()
+    void limit_constant_values()
     int main_body()
     int argc
     char **argv
@@ -199,4 +199,5 @@ def set_up_bound_variables_py():
 
 def main_body_py():
     set_up_bound_variables_py();
+    limit_constant_values();
     return main_body()
