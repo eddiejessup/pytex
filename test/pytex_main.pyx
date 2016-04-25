@@ -53,97 +53,60 @@ cdef extern:
 COPYRIGHT_HOLDER = "The NTS Team (eTeX)/Han The Thanh (pdfTeX)/Elliot Marsden (PyTeX)"
 AUTHOR = "Elliot Marsden"
 BANNER = "This is PyTeX, Version 0.1"
-PROGRAM_HELP = '''
-Usage: pdfetex [OPTION]... [TEXNAME[.tex]] [COMMANDS]
-   or: pdfetex [OPTION]... \\FIRST-LINE
-   or: pdfetex [OPTION]... &FMT ARGS
-  Run pdfeTeX on TEXNAME, usually creating TEXNAME.pdf.
-  Any remaining COMMANDS are processed as pdfeTeX input, after TEXNAME is read.
-  If the first line of TEXNAME is %&FMT, and FMT is an existing .fmt file,
-  use it.  Else use `NAME.efmt', where NAME is the program invocation name,
-  most commonly `pdfetex'.
 
-  Alternatively, if the first non-option argument begins with a backslash,
-  interpret all non-option arguments as a line of pdfeTeX input.
-
-  Alternatively, if the first non-option argument begins with a &, the
-  next word is taken as the FMT to read, overriding all else.  Any
-  remaining arguments are processed as above.
-
-  If no arguments or options are specified, prompt for input.
-
--efm=FMTNAME             use FMTNAME instead of program name or a %& line
--ini                     be pdfeinitex, for dumping formats; this is implicitly
-                          true if the program name is `pdfeinitex'
--interaction=STRING      set interaction mode (STRING=batchmode/nonstopmode/
-                          scrollmode/errorstopmode)
--jobname=STRING          set the job name to STRING
--mltex                   enable MLTeX extensions such as \\charsubdef
--progname=STRING         set program (and fmt) name to STRING
--help                    display this help and exit
--version                 output version information and exit
-'''
-
-cdef parse_options_py(av_list):
+cdef parse_options_py(av_list, parsed_args):
     cdef int argc = len(av_list)
     cdef char **argv = to_cstring_array(av_list)
     cdef int option_index
 
+    # Unfortunately, this parsing seems to have some side-effect that is
+    # important, so we can't just remove it.
+    # Maybe it gobbles up the options so that all that is left is the file
+    # name to open?
     while True:
         g = getopt_long_only(argc, argv, "+", long_options, &option_index)
-
         if g == -1:
             # End of arguments, exit the loop.
             break
-
-        if g == '?':  # Unknown option.
-            usage(argv[0])
-
-        assert g == 0
-
-        global user_progname
-        global dump_name
-        global dump_option
-        global job_name
-        global interaction_option
-        if long_options[option_index].name == b"progname":
-            user_progname = optarg
-
-        elif long_options[option_index].name == b"jobname":
-            job_name = optarg
-
-        elif long_options[option_index].name == b"efm":
-            dump_name = optarg
-            if not user_progname:
-                user_progname = optarg
-            dump_option = True
-
-        elif long_options[option_index].name == b"interaction":
-            # These numbers match @d's in *.ch
-            if optarg == b"batchmode":
-                interaction_option = 0
-            elif optarg == b"nonstopmode":
-                interaction_option = 1
-            elif optarg == b"scrollmode":
-                interaction_option = 2
-            elif optarg == b"errorstopmode":
-                interaction_option = 3
-            else:
-                raise Warning("Ignoring unknown argument `%s' to --interaction" % optarg)
-
-        elif long_options[option_index].name == b"help":
-            # The type conversion is not right here, but I think
-            # we are soon going to replace this whole thing with
-            # argparse, so just do nothing for now.
-            # usagehelp(PROGRAM_HELP)
-            pass
-
-        elif long_options[option_index].name == b"version":
-            printversionandexit(BANNER, COPYRIGHT_HOLDER, AUTHOR)
-        else:
-            # It was a flag; getopt has already done the assignment.
-            pass
     free(argv)
+
+    global user_progname
+    if parsed_args.progname is not None:
+        user_progname = parsed_args.progname
+
+    global job_name
+    if parsed_args.jobname is not None:
+        job_name = parsed_args.jobname
+
+    global ini_version
+    if parsed_args.ini:
+        ini_version = True
+
+    global dump_name
+    global dump_option
+    if parsed_args.efm is not None:
+        dump_name = parsed_args.efm
+        if not user_progname:
+            user_progname = parsed_args.efm
+        dump_option = True
+
+    global interaction_option
+    if parsed_args.interaction is not None:
+        # TODO: This mapping can easily be done earlier and betterly
+        if parsed_args.interaction == b"batchmode":
+            interaction_option = 0
+        elif parsed_args.interaction == b"nonstopmode":
+            interaction_option = 1
+        elif parsed_args.interaction == b"scrollmode":
+            interaction_option = 2
+        elif parsed_args.interaction == b"errorstopmode":
+            interaction_option = 3
+        else:
+            raise ValueError('Unknown interaction mode')
+
+    if parsed_args.version:
+        printversionandexit(BANNER, COPYRIGHT_HOLDER, AUTHOR)
+
 
 
 cdef char **to_cstring_array(list_str):
@@ -153,14 +116,14 @@ cdef char **to_cstring_array(list_str):
     return ret
 
 
-def main_init_py(av_list):
+def main_init_py(av_list, parsed_args):
     global argc
     argc = len(av_list)
     global argv
     argv = to_cstring_array(av_list)
     global interaction_option
     interaction_option = 4
-    parse_options_py(av_list)
+    parse_options_py(av_list, parsed_args)
     kpse_set_program_name(argv[0], user_progname)
 
     # Local variable.
