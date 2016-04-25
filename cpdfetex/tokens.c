@@ -503,9 +503,9 @@ input_from_external_file (void) {
 	if (NAME_FIELD <= 19) {
 	  if (pseudo_input()) {	/* not end of file */
 	    firm_up_the_line();	/* this sets |limit| */
-	  } else if ((every_eof != null) && !eof_seen[index]) {
+	  } else if ((every_eof != null) && !eof_seen[INDEX_FIELD]) {
 	    limit = first - 1;
-	    eof_seen[index] = true;	/* fake one empty line */
+	    eof_seen[INDEX_FIELD] = true;	/* fake one empty line */
 	    begin_token_list (every_eof, every_eof_text);
 	    Restart = 1;
 	    return Restart;
@@ -515,9 +515,9 @@ input_from_external_file (void) {
 	} else {
 	  if (input_next_line()) {		/* not end of file */
 	    firm_up_the_line();	/* this sets |limit| */
-	  } else if ((every_eof != null) && !eof_seen[index]) {
+	  } else if ((every_eof != null) && !eof_seen[INDEX_FIELD]) {
 	    limit = first - 1;
-	    eof_seen[index] = true; /* fake one empty line */
+	    eof_seen[INDEX_FIELD] = true; /* fake one empty line */
 	    begin_token_list (every_eof, every_eof_text);
 	    Restart = 1;
 	    return Restart;

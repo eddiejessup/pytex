@@ -253,11 +253,11 @@ begin_file_reading (void) {
   }
   incr (in_open);
   push_input;
-  index = in_open;
-  eof_seen[index] = false;
-  grp_stack[index] = cur_boundary;
-  if_stack[index] = cond_ptr;
-  line_stack[index] = line;
+  INDEX_FIELD = in_open;
+  eof_seen[INDEX_FIELD] = false;
+  grp_stack[INDEX_FIELD] = cur_boundary;
+  if_stack[INDEX_FIELD] = cond_ptr;
+  line_stack[INDEX_FIELD] = line;
   START_FIELD = first;
   state = mid_line;
   NAME_FIELD = 0; /* |terminal_input| is now |true| */
@@ -272,7 +272,7 @@ begin_file_reading (void) {
 void
 end_file_reading (void) {
   first = START_FIELD;
-  line = line_stack[index];
+  line = line_stack[INDEX_FIELD];
   if ((NAME_FIELD == 18) || (NAME_FIELD == 19)) {
 	pseudo_close();
   } else {

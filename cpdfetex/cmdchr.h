@@ -165,7 +165,7 @@ extern int first_count; /* another variable for pseudoprinting */
  * |cur_input| are defined in the same way:
  */
 #define state  cur_input . state_field
-#define index  cur_input . index_field
+#define INDEX_FIELD  cur_input . index_field
 // Rename this macro to avoid conflict with people who want to use
 // start as a variable. Like, everyone ever.
 #define START_FIELD  cur_input . start_field
@@ -176,7 +176,7 @@ extern int first_count; /* another variable for pseudoprinting */
 /* module 303 */
 
 /* Let's look more closely now at the control variables
- * (|state|,~|index|,~|START_FIELD|,~|loc|,~|limit|,~|name|),
+ * (|state|,~|INDEX_FIELD|,~|START_FIELD|,~|loc|,~|limit|,~|name|),
  * assuming that \TeX\ is reading a line of characters that have been input
  * from some file or from the user's terminal. There is an array called
  * |buffer| that acts as a stack of all lines of characters that are
@@ -225,7 +225,7 @@ extern int first_count; /* another variable for pseudoprinting */
 
 /* module 304 */
 #define terminal_input ( NAME_FIELD  == 0 )
-#define cur_file  input_file [ index ]
+#define cur_file  input_file [ INDEX_FIELD ]
 
 /* module 305 */
 #define skipping 1
@@ -250,7 +250,7 @@ extern int first_count; /* another variable for pseudoprinting */
  * may or may not contain a reference count, depending on the type of token
  * list involved.
  * 
- * \yskip\hang|token_type|, which takes the place of |index| in the
+ * \yskip\hang|token_type|, which takes the place of |INDEX_FIELD| in the
  * discussion above, is a code number that explains what kind of token list
  * is being scanned.
  * 
@@ -290,7 +290,7 @@ extern int first_count; /* another variable for pseudoprinting */
  * only if |token_type>=macro|.
  */
 #define token_list 0
-#define token_type  index
+#define token_type  INDEX_FIELD
 #define param_start  limit
 #define parameter 0
 #define u_template 1

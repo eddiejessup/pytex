@@ -1602,9 +1602,9 @@ show_context (void) { /* prints where the scanner is */
 			  };
 			  print_char ('>');
 			};
-		  } else if (index != in_open) { /* input from a pseudo file */
+		  } else if (INDEX_FIELD != in_open) { /* input from a pseudo file */
 		    print_nl_string("l.");
-		    print_int (line_stack[index + 1]);
+		    print_int (line_stack[INDEX_FIELD + 1]);
 		  } else {
 		    print_nl_string("l.");
 		    print_int (line);
@@ -1823,7 +1823,7 @@ cmdchr_initialize (void) {
   first = 1;
   state = new_line;
   START_FIELD = 1;
-  index = 0;
+  INDEX_FIELD = 0;
   line = 0;
   NAME_FIELD = 0;
   force_eof = false;
