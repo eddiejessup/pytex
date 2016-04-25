@@ -8,6 +8,7 @@ import constants
 cdef extern from "main.h":
     int main_body()
     void allocate_memory_for_arrays()
+    void check_for_bad_constants()
     int argc
     char **argv
     char *user_progname
@@ -211,4 +212,5 @@ def set_up_bound_variables_py():
 def main_body_py():
     set_up_bound_variables_py();
     allocate_memory_for_arrays();
+    check_for_bad_constants();
     return main_body()

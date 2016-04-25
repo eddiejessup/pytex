@@ -12,6 +12,7 @@ EXTERN void         setup_bound_variable (integer * var,  const_string var_name,
 void set_up_bound_variables(void);
 void limit_constant_values(void);
 void allocate_memory_for_arrays(void);
+void check_for_bad_constants(void);
 int main_body (void);
 void parse_options(int, string *);
 
