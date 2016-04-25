@@ -711,7 +711,7 @@ read_toks (int n, pointer r, halfword j) {
 	}
 	first = limit + 1;
 	loc = START_FIELD;
-	state = new_line;
+	STATE_FIELD = new_line;
 	/* begin expansion of Handle \.{\\readline} and |goto done| */
 	/* module 1706 */
 	if (j == 1) {

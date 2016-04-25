@@ -259,7 +259,7 @@ begin_file_reading (void) {
   if_stack[INDEX_FIELD] = cond_ptr;
   line_stack[INDEX_FIELD] = line;
   START_FIELD = first;
-  state = mid_line;
+  STATE_FIELD = mid_line;
   NAME_FIELD = 0; /* |terminal_input| is now |true| */
 };
 
@@ -1073,7 +1073,7 @@ start_input (void) { /* \TeX\ will \.{\\input} something */
   incr (open_parens);
   slow_print (full_source_filename_stack[in_open]);
   update_terminal;
-  state = new_line;
+  STATE_FIELD = new_line;
   /* begin expansion of Read the first line of the new file */
   /* module 538 */
   /* Here we have to remember to tell the |input_ln| routine not to

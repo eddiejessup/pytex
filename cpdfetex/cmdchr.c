@@ -1566,7 +1566,7 @@ show_context (void) { /* prints where the scanner is */
   bottom_line = false;
   loop {
     cur_input = input_stack[base_ptr];	/* enter into the context */
-    if ((state != token_list)) {
+    if ((STATE_FIELD != token_list)) {
       if ((NAME_FIELD > 19) || (base_ptr == 0)) {
 		bottom_line = true;
 	  }
@@ -1574,12 +1574,12 @@ show_context (void) { /* prints where the scanner is */
     if ((base_ptr == input_ptr) || bottom_line || (nn < error_context_lines)) {
 	  /* begin expansion of Display the current context */
 	  /* module 312 */
-	  if ((base_ptr == input_ptr) || (state != token_list)
+	  if ((base_ptr == input_ptr) || (STATE_FIELD != token_list)
 		  || (token_type != backed_up) || (loc != null)) {
 	    /* we omit backed-up token lists that have already been read */
 	    tally = 0; /* get ready to count characters */
 	    old_setting = selector;
-		if (state != token_list) {
+		if (STATE_FIELD != token_list) {
 		  /* begin expansion of Print location of current line */
 		  /* module 313 */
 		  /* This routine should be changed, if necessary, to give the best possible
@@ -1705,7 +1705,7 @@ show_context (void) { /* prints where the scanner is */
 void
 begin_token_list (pointer p, quarterword t) {
   push_input;
-  state = token_list;
+  STATE_FIELD = token_list;
   START_FIELD = p;
   token_type = t;
   if (t >= macro) {	/* the token list starts with a reference count */
@@ -1782,7 +1782,7 @@ end_token_list (void) {	/* leave a token-list input level */
 void
 back_input (void) {	/* undoes one token of input */
   pointer p;		/* a token list of length one */
-  while ((state == token_list) && (loc == null) && (token_type != v_template))
+  while ((STATE_FIELD == token_list) && (loc == null) && (token_type != v_template))
     end_token_list();		/* conserve stack space */
   p = get_avail ();
   info (p) = cur_tok;
@@ -1794,7 +1794,7 @@ back_input (void) {	/* undoes one token of input */
     };
   }
   push_input;
-  state = token_list;
+  STATE_FIELD = token_list;
   START_FIELD = p;
   token_type = backed_up;
   loc = p;
@@ -1821,7 +1821,7 @@ cmdchr_initialize (void) {
   scanner_status = normal;
   warning_index = null;
   first = 1;
-  state = new_line;
+  STATE_FIELD = new_line;
   START_FIELD = 1;
   INDEX_FIELD = 0;
   line = 0;

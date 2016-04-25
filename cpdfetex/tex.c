@@ -454,7 +454,7 @@ void final_cleanup (void) {
   if (jobname == 0)
 	open_log_file();
   while (input_ptr > 0)
-	if (state == token_list) {
+	if (STATE_FIELD == token_list) {
 	  end_token_list();
 	} else {
 	  end_file_reading();

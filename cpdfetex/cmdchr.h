@@ -164,7 +164,7 @@ extern int first_count; /* another variable for pseudoprinting */
  * in our discussion of basic input-output routines. The other components of
  * |cur_input| are defined in the same way:
  */
-#define state  cur_input . state_field
+#define STATE_FIELD  cur_input . state_field
 #define INDEX_FIELD  cur_input . index_field
 // Rename this macro to avoid conflict with people who want to use
 // start as a variable. Like, everyone ever.

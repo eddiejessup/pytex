@@ -364,7 +364,7 @@ macro_call (void) {				/* invokes a user-defined control sequence */
    * all token lists that have recently been depleted. Then a user macro that ends
    * with a call to itself will not require unbounded stack space.
    */
-  while ((state == token_list) && (loc == null) && (token_type != v_template))
+  while ((STATE_FIELD == token_list) && (loc == null) && (token_type != v_template))
     end_token_list(); /* conserve stack space */ 
   begin_token_list (ref_count, macro);
   NAME_FIELD = warning_index;

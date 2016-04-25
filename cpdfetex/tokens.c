@@ -107,7 +107,7 @@ check_outer_validity (void) {
 	 * since the error recovery for \.{\\read} is not very powerful.
 	 */
 	if (cur_cs != 0) {
-	  if ((state == token_list) || (NAME_FIELD < 1) || (NAME_FIELD > 17)) {
+	  if ((STATE_FIELD == token_list) || (NAME_FIELD < 1) || (NAME_FIELD > 17)) {
 		p = get_avail ();
 		info (p) = cs_token_flag + cur_cs;
 		back_list (p);
@@ -284,7 +284,7 @@ input_from_external_file (void) {
      * apart from each other by |max_char_code+1|, so we can add a character's
      * command code to the state to get a single number that characterizes both.
      */
-    switch (state + cur_cmd) {
+    switch (STATE_FIELD + cur_cmd) {
     case any_state_plus (IGNORE_CODE):
     case skip_blanks + spacer:
     case new_line + spacer:
@@ -318,11 +318,11 @@ input_from_external_file (void) {
 	cat = cat_code (cur_chr);
 	incr (k);
 	if (cat == letter) {
-	  state = skip_blanks;
+	  STATE_FIELD = skip_blanks;
 	} else if (cat == spacer) {
-	  state = skip_blanks;
+	  STATE_FIELD = skip_blanks;
 	} else {
-	  state = mid_line;
+	  STATE_FIELD = mid_line;
 	};
 	if ((cat == letter) && (k <= limit)) {
 	  /* begin expansion of Scan ahead in the buffer until finding a nonletter; 
@@ -358,23 +358,23 @@ input_from_external_file (void) {
       cur_chr = equiv (cur_cs);
       if (cur_cmd >= outer_call)
 	check_outer_validity();
-      /* end expansion of Scan a control sequence and set |state:=skip_blanks| or |mid_line| */
+      /* end expansion of Scan a control sequence and set |STATE_FIELD:=skip_blanks| or |mid_line| */
       break;
     case any_state_plus (active_char):
       /* begin expansion of Process an active-character control sequence 
-	 and set |state:=mid_line| */
+	 and set |STATE_FIELD:=mid_line| */
       /* module 353 */
       cur_cs = cur_chr + active_base;
       cur_cmd = eq_type (cur_cs);
       cur_chr = equiv (cur_cs);
-      state = mid_line;
+      STATE_FIELD = mid_line;
       if (cur_cmd >= outer_call)
 	check_outer_validity();
       /* end expansion of Process an active-character control sequence ... */
       break;
     case any_state_plus (sup_mark):
       /* begin expansion of If this |sup_mark| starts an expanded character like~\.{\^\^A}
-	 or~\.{\^\^df}, then |goto reswitch|, otherwise set |state:=mid_line| */
+	 or~\.{\^\^df}, then |goto reswitch|, otherwise set |STATE_FIELD:=mid_line| */
       /* module 352 */
       /* Notice that a code like \.{\^\^8} becomes \.x if not followed by a hex digit. */
       if (cur_chr == buffer[loc])
@@ -399,13 +399,13 @@ input_from_external_file (void) {
 	    goto RESWITCH;
 	  };
 	};
-      state = mid_line;
+      STATE_FIELD = mid_line;
       /* end expansion of If this |sup_mark| starts an expanded character like~\.{\^\^A} ...*/ 
       break;
     case any_state_plus (invalid_char):
       /* begin expansion of Decry the invalid character and |goto restart| */
       /* module 346 */
-      /* We go to |restart| instead of to |switch|, because |state| might equal
+      /* We go to |restart| instead of to |switch|, because |STATE_FIELD| might equal
        * |token_list| after the error has been dealt with
        * (cf.\ |clear_for_error_prompt|). 
        */
@@ -419,15 +419,15 @@ input_from_external_file (void) {
       return Restart;
       /* end expansion of Decry the invalid character and |goto restart| */
       break;
-      /* begin expansion of Handle situations involving spaces, braces, changes of state */
+      /* begin expansion of Handle situations involving spaces, braces, changes of STATE_FIELD */
       /* module 347 */
     case mid_line + spacer:
-      /* begin expansion of Enter |skip_blanks| state, emit a space */
+      /* begin expansion of Enter |skip_blanks| STATE_FIELD, emit a space */
       /* module 349 */
       /* The following code is performed only when |cur_cmd=spacer|. */
-      state = skip_blanks;
+      STATE_FIELD = skip_blanks;
       cur_chr = ' ';
-      /* end expansion of Enter |skip_blanks| state, emit a space */
+      /* end expansion of Enter |skip_blanks| STATE_FIELD, emit a space */
       break;
     case mid_line + car_ret:
       /* begin expansion of Finish line, emit a space */
@@ -466,7 +466,7 @@ input_from_external_file (void) {
       break;
     case skip_blanks + left_brace:
     case new_line + left_brace:
-      state = mid_line;
+      STATE_FIELD = mid_line;
       incr (align_state);
       break;
     case mid_line + right_brace:
@@ -474,19 +474,19 @@ input_from_external_file (void) {
       break;
     case skip_blanks + right_brace:
     case new_line + right_brace:
-      state = mid_line;
+      STATE_FIELD = mid_line;
       decr (align_state);
       break;
     case add_delims_to (skip_blanks):
     case add_delims_to (new_line):
-      state = mid_line;
+      STATE_FIELD = mid_line;
       break;
     default:
       do_nothing;
     };
     /* end expansion of Change state if necessary, and |goto switch| if the current ... */
   } else {
-    state = new_line;
+    STATE_FIELD = new_line;
     /* begin expansion of Move to next line of file, or |goto restart| if there is no next line,
      * or |return| if a \.{\\read} line has finished */
     /* module 360 */
@@ -614,7 +614,7 @@ get_next (void) {
   signed char Restart;
  RESTART:
   cur_cs = 0;
-  if (state != token_list) {
+  if (STATE_FIELD != token_list) {
     /* Input from external file, |goto restart| if no input found */
 	  //	  state_extfile++;
 	Restart = input_from_external_file();
