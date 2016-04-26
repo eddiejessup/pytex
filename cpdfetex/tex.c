@@ -1555,24 +1555,6 @@ void check_for_bad_constants() {
 
 int
 main_body (void) {
-  if (!is_no_new_control_sequence()) { /* just entered extended mode ? */
-    set_no_new_control_sequence (true);
-  } else {
-    /* end expansion of Enable \eTeX, if requested */
-    if ((format_ident == 0) || (buffer[loc] == '&') || dump_line) {
-      if (format_ident != 0)
-        initialize(); /* erase preloaded format */
-      if (!(open_fmt_file()))
-        return exit_program();
-      if (!(load_fmt_file())) {
-        w_close (fmt_file);
-        return exit_program();
-      };
-      w_close (fmt_file);
-      while ((loc < limit) && (buffer[loc] == ' '))
-        incr (loc);
-    };
-  }
   if (eTeX_ex)
     wterm_string("entering extended mode\n");
   if (end_line_char_inactive) {

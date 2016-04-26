@@ -1,4 +1,5 @@
 from libc.stdlib cimport malloc, free
+from libc.stdio cimport fclose, FILE
 from cpython.string cimport PyString_AsString
 
 import sys
@@ -39,7 +40,11 @@ cdef extern from "etex.h":
     unsigned char eTeX_mode
 
 cdef extern from "dump.h":
+    boolean open_fmt_file()
+    boolean load_fmt_file()
+    FILE *fmt_file
     char *dump_name
+    boolean dump_line
 
 cdef extern from "types.h":
     struct in_state_record:
@@ -393,6 +398,7 @@ def main_body_py():
     global loc
     # TODO: Set if this is wanted as command-line switch.
     etex_version = True
+    global eTeX_mode
     if etex_version and ini_version:
         global_no_new_control_sequence = False
         # Generate eTeX primitives.
@@ -403,7 +409,22 @@ def main_body_py():
         # loc += 1
         # Initialize variables for eTeX mode. This over-rides values set already
         # in initialize().
-        global eTeX_mode; eTeX_mode = 1
+        eTeX_mode = 1
         global max_reg_num; max_reg_num = constants.max_reg_num_etex
         global max_reg_help_line; max_reg_help_line = constants.max_reg_help_line_etex
+    global_no_new_control_sequence = True
+
+    # If not in extended mode (do not know why this check), and any of:
+    #  - not in initex mode
+    #  - first line of input is an ampersand
+    #  - a \%\AM format line was seen (not sure what this means)
+    if not eTeX_mode and ((not ini_version) or (buffer[loc] == '&') or dump_line):
+        if ini_version:
+            # Erase preloaded format.
+            initialize()
+        open_fmt_file()
+        load_fmt_file()
+        fclose(fmt_file)
+        while loc < cur_input.limit_field and buffer[loc] == ' ':
+            loc += 1
     return main_body()
