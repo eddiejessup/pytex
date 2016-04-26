@@ -338,6 +338,20 @@ def set_date_and_time_py():
     global year; year = now.year
 
 
+def initialize_output():
+    global selector; selector = constants.term_only
+    global tally; tally = 0
+    global term_offset; term_offset = 0
+    global file_offset; file_offset = 0
+    # Jobname becomes nonzero as soon as the true name is known.
+    # We have jobname = 0 if and only if the log file has not been
+    # opened, except for a short time just after jobname has become nonzero.
+    global jobname; jobname = 0
+    global name_in_progress; name_in_progress = False
+    global log_opened; log_opened = False
+    global output_file_name; output_file_name = 0
+
+
 def init_terminal_py():
     topenin()
     global loc
@@ -345,6 +359,36 @@ def init_terminal_py():
     while loc < last and buffer[loc] == ' ':
         loc += 1
 
+
+def initialize_input():
+    # Initialize the input routines.
+    # Get the first line of input and prepare to start.
+    # When we begin the following code, TeX's tables may still contain garbage;
+    # the strings might not even be present.
+    # This is initializing some globals.
+    cmdchr_initialize()
+    init_terminal_py()
+    global cur_input; cur_input.limit_field = last
+    global first; first = last + 1
+
+def initialize_etex():
+    # In extended mode there are additional primitive commands.
+    # The distinction between these two modes of operation initially takes
+    # place when an eINITEX starts without reading a format file.
+    # Later, the values of all eTeX state variables are inherited when
+    # eVIRTEX or eINITEX reads a format file.
+    global global_no_new_control_sequence; global_no_new_control_sequence = False
+    # Generate eTeX primitives.
+    init_etex_prim()
+    # This next line is disabled because it messed up the terminal
+    # position for reading the input file. Disable until we get to parsing
+    # the file name and can hopefully do it way better.
+    # global loc; loc += 1
+    # Initialize variables for eTeX mode. This over-rides values set already
+    # in initialize().
+    global eTeX_mode; eTeX_mode = 1
+    global max_reg_num; max_reg_num = constants.max_reg_num_etex
+    global max_reg_help_line; max_reg_help_line = constants.max_reg_help_line_etex
 
 def main_body_py():
     set_up_bound_variables_py()
@@ -365,54 +409,13 @@ def main_body_py():
 
     print('{} {}'.format(constants.banner, '(ini)' if ini_version else ''))
 
-    # Initialize the output routines.
-    global selector; selector = constants.term_only
-    global tally; tally = 0
-    global term_offset; term_offset = 0
-    global file_offset; file_offset = 0
-    # Jobname becomes nonzero as soon as the true name is known.
-    # We have jobname = 0 if and only if the log file has not been
-    # opened, except for a short time just after jobname has become nonzero.
-    global jobname; jobname = 0
-    global name_in_progress; name_in_progress = False
-    global log_opened; log_opened = False
-    global output_file_name; output_file_name = 0
-
-    # Initialize the input routines.
-    # Get the first line of input and prepare to start.
-    # When we begin the following code, TeX's tables may still contain garbage;
-    # the strings might not even be present.
-    # This is initializing some globals.
-    cmdchr_initialize()
-    init_terminal_py()
-
-    global cur_input; cur_input.limit_field = last
-    global first; first = last + 1
-
-    # Enable eTeX if requested
-    # In extended mode there are additional primitive commands
-    # The distinction between these two modes of operation initially takes
-    # place when an eINITEX starts without reading a format file.
-    # Later, the values of all eTeX state variables are inherited when
-    # eVIRTEX or eINITEX reads a format file.
-    global loc
+    initialize_output()
+    initialize_input()
     # TODO: Set if this is wanted as command-line switch.
     etex_version = True
-    global eTeX_mode
     if etex_version and ini_version:
-        global_no_new_control_sequence = False
-        # Generate eTeX primitives.
-        init_etex_prim()
-        # This next line is disabled because it messed up the terminal
-        # position for reading the input file. Disable until we get to parsing
-        # the file name and can hopefully do it way better.
-        # loc += 1
-        # Initialize variables for eTeX mode. This over-rides values set already
-        # in initialize().
-        eTeX_mode = 1
-        global max_reg_num; max_reg_num = constants.max_reg_num_etex
-        global max_reg_help_line; max_reg_help_line = constants.max_reg_help_line_etex
-    global_no_new_control_sequence = True
+        initialize_etex()
+    global global_no_new_control_sequence; global_no_new_control_sequence = True
 
     # If not in extended mode (do not know why this check), and any of:
     #  - not in initex mode
@@ -425,6 +428,7 @@ def main_body_py():
         open_fmt_file()
         load_fmt_file()
         fclose(fmt_file)
+        global loc
         while loc < cur_input.limit_field and buffer[loc] == ' ':
             loc += 1
     return main_body()
