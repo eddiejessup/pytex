@@ -1555,9 +1555,6 @@ void check_for_bad_constants() {
 
 int
 main_body (void) {
-  if ((loc < limit) && (cat_code (buffer[loc]) != escape)) {
-  start_input(); /* \.{\\input} assumed */
-  }
   /* begin expansion of Read values from config file if necessary */
   read_values_from_config_file();
   /* end expansion of Read values from config file if necessary */

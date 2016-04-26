@@ -37,6 +37,7 @@ cdef extern from "exten.h":
 
 cdef extern from "eqtb.h":
     long end_line_char
+    long cat_code(ASCII_code)
 
 cdef extern from "etex.h":
     halfword max_reg_num
@@ -95,6 +96,7 @@ cdef extern from "hash.h":
 cdef extern from "cmdchr.h":
     void cmdchr_initialize()
     in_state_record cur_input
+    int escape
 
 cdef extern from "tex_string.h":
     # Maximum number of strings.
@@ -121,6 +123,7 @@ cdef extern from "trie.h":
 
 cdef extern from "tex_io.h":
     int init_terminal()
+    void start_input()
     long format_default_length
     char *TEX_format_default
     # Lines of characters being read.
@@ -480,5 +483,9 @@ def main_body_py():
         selector = constants.no_print
     else:
         selector = constants.term_only
+
+    if loc < cur_input.limit_field and cat_code(buffer[loc]) != escape:
+        # \input is assumed.
+        start_input()
 
     return main_body()
