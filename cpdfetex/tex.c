@@ -11,14 +11,14 @@
  * % (Programs such as PATCHWEB, TIE, or WEBMERGE allow the application of
  * % several change files to tex.web; the master files tex.web and etex.ch
  * % should stay intact.)
- * 
+ *
  * % See etex_gen.tex for hints on how to install this program.
  * % And see etripman.tex for details about how to validate it.
- * 
+ *
  * % e-TeX and NTS are trademarks of the NTS group.
  * % TeX is a trademark of the American Mathematical Society.
  * % METAFONT is a trademark of Addison-Wesley Publishing Company.
- * 
+ *
  * % This program is directly derived from Donald E. Knuth's TeX;
  * % the change history which follows and the reward offered for finders of
  * % bugs refer specifically to TeX; they should not be taken as referring
@@ -26,7 +26,7 @@
  * % demonstrates the evolutionary path followed. This program is not TeX;
  * % that name is reserved strictly for the program which is the creation
  * % and sole responsibility of Professor Knuth.
- * 
+ *
  * % A preliminary version of TeX--XeT was released in April 1992.
  * % TeX--XeT version 1.0 was released in June 1992,
  * % version 1.1 prevented arith overflow in glue computation (Oct 1992).
@@ -40,25 +40,25 @@
  * % fixed a ligature-\beginR bug in January 1998;
  * % was released in March 1998.
  * % Version 2.1 fixed a marks bug (when min_halfword<>0) (January 1999).
- * 
+ *
  * % Although considerable effort has been expended to make the e-TeX program
  * % correct and reliable, no warranty is implied; the authors disclaim any
  * % obligation or liability for damages, including but not limited to
  * % special, indirect, or consequential damages arising out of or in
  * % connection with the use or performance of this software. This work has
  * % been a ``labor of love'' and the authors hope that users enjoy it.
- * 
+ *
  */
 
-/* 
+/*
  * This is \eTeX, a program derived from and extending the capabilities of
  * \TeX, a document compiler intended to produce typesetting of high
  * quality.
  * The \PASCAL\ program that follows is the definition of \TeX82, a standard
- * 
+ *
  * version of \TeX\ that is designed to be highly portable so that identical output
  * will be obtainable on a great variety of computers.
- * 
+ *
  * The main purpose of the following program is to explain the algorithms of \TeX\
  * as clearly as possible. As a result, the program will not necessarily be very
  * efficient when a particular \PASCAL\ compiler has translated it into a
@@ -71,7 +71,7 @@
  * Semi-automatic translation to other languages is also feasible, because the
  * program below does not make extensive use of features that are peculiar to
  * \PASCAL.
- * 
+ *
  * A large piece of software like \TeX\ has inherent complexity that cannot
  * be reduced below a certain level of difficulty, although each individual
  * part is fairly simple by itself. The \.{WEB} language is intended to make
@@ -91,7 +91,7 @@
  * this particular compiler, which we shall call \ph, should help the
  * reader see how to make an appropriate interface for other systems
  * if necessary. (\ph\ is Charles Hedrick's modification of a compiler
- * 
+ *
  * for the DECsystem-10 that was originally developed at the University of
  * Hamburg; cf.\ {\sl SOFTWARE---Practice \AM\ Experience \bf6} (1976),
  * 29--42. The \TeX\ program below is intended to be adaptable, without
@@ -104,7 +104,7 @@
  * scalar types; there are no `\&{var}' parameters, except in the case of files;
  * there are no tag fields on variant records; there are no assignments
  * |real:=integer|; no procedures are declared local to other procedures.)
- * 
+ *
  * The portions of this program that involve system-dependent code, where
  * changes might be necessary because of differences between \PASCAL\ compilers
  * and/or differences between
@@ -112,7 +112,7 @@
  * numbers are listed under `system dependencies' in the index. Furthermore,
  * the index entries for `dirty \PASCAL' list all places where the restrictions
  * of \PASCAL\ have not been followed perfectly, for one reason or another.
- * 
+ *
  * Incidentally, \PASCAL's standard |round| function can be problematical,
  * because it disagrees with the IEEE floating-point standard.
  * Many implementors have
@@ -124,7 +124,7 @@
 /* The present implementation has a long ancestry, beginning in the summer
  * of~1977, when Michael~F. Plass and Frank~M. Liang designed and coded
  * a prototype
- * 
+ *
  * based on some specifications that the author had made in May of that year.
  * This original proto\TeX\ included macro definitions and elementary
  * manipulations on boxes and glue, but it did not have line-breaking,
@@ -139,10 +139,10 @@
  * somewhat like the present ``web'' were developed by Luis Trabb~Pardo and
  * the author at the beginning of 1979, and a complete implementation was
  * created by Ignacio~A. Zabala in 1979 and 1980. The \TeX82 program, which
- * 
+ *
  * was written by the author during the latter part of 1981 and the early
  * part of 1982, also incorporates ideas from the 1979 implementation of
- * 
+ *
  * \TeX\ in {\mc MESA} that was written by Leonidas Guibas, Robert Sedgewick,
  * and Douglas Wyatt at the Xerox Palo Alto Research Center. Several hundred
  * refinements were introduced into \TeX82 based on the experiences gained with
@@ -153,18 +153,18 @@
  * A final revision in September 1989 extended the input character set to
  * eight-bit codes and introduced the ability to hyphenate words from
  * different languages, based on some ideas of Michael~J. Ferguson.
- * 
+ *
  * No doubt there still is plenty of room for improvement, but the author
  * is firmly committed to keeping \TeX82 ``frozen'' from now on; stability
  * and reliability are to be its main virtues.
- * 
+ *
  * On the other hand, the \.{WEB} description can be extended without changing
  * the core of \TeX82 itself, and the program has been designed so that such
  * extensions are not extremely difficult to make.
  * The |banner| string defined here should be changed whenever \TeX\
  * undergoes any modifications, so that it will be clear which version of
  * \TeX\ might be the guilty party when a problem arises.
- * 
+ *
  * This program contains code for various features extending \TeX,
  * therefore this program is called `\eTeX' and not
  * `\TeX'; the official name `\TeX' by itself is reserved
@@ -173,12 +173,12 @@
  * helping to determine whether a particular implementation deserves to be
  * known as `\TeX' [cf.~Stanford Computer Science report CS1027,
  * November 1984].
- * 
+ *
  * ML\TeX{} will add new primitives changing the behaviour of \TeX. The
  * |banner| string has to be changed. We do not change the |banner|
  * string, but will output an additional line to make clear that this is
  * a modified \TeX{} version.
- * 
+ *
  * A similar test suite called the ``\.{e-TRIP} test'' is available for
  * helping to determine whether a particular implementation deserves to be
  * known as `\eTeX'.
@@ -188,7 +188,7 @@
 
 /* The program begins with a normal \PASCAL\ program heading, whose
  * components will be filled in later, using the conventions of \.{WEB}.
- * 
+ *
  * For example, the portion of the program called `\X\glob:Global
  * variables\X' below will be replaced by a sequence of variable declarations
  * that starts in $\section\glob$ of this documentation. In this way, we are able
@@ -222,7 +222,7 @@
  * what they are doing. Such code will not normally be compiled; it is
  * delimited by the codewords `$|debug|\ldots|gubed|$', with apologies
  * to people who wish to preserve the purity of English.
- * 
+ *
  * Similarly, there is some conditional code delimited by
  * `$|stat|\ldots|tats|$' that is intended for use when statistics are to be
  * kept about \TeX's memory usage. The |stat| $\ldots$ |tats| code also
@@ -234,7 +234,7 @@
 
 /* This program has two important variations: (1) There is a long and slow
  * version called \.{INITEX}, which does the extra calculations needed to
- * 
+ *
  * initialize \TeX's internal tables; and (2)~there is a shorter and faster
  * production version, which cuts the initialization to a bare minimum.
  * Parts of the program that are needed in (1) but not in (2) are delimited by
@@ -257,43 +257,43 @@
 
 /* begin expansion of Global variables */
 
-boolean ini_version; /* are we \.{INITEX}? */ 
+boolean ini_version; /* are we \.{INITEX}? */
 integer main_memory; /* total memory words allocated in initex */
-integer extra_mem_bot; /* |mem_min:=mem_bot-extra_mem_bot| except 
-						  in \.{INITEX} */ 
-integer mem_min; /* smallest index in \TeX's internal |mem| array; must be 
-					|min_halfword| or more; must be equal to |mem_bot| in 
-					\.{INITEX}, otherwise |<=mem_bot| */
-integer mem_top; /* largest index in the |mem| array dumped by \.{INITEX}; 
-		    must be substantially larger than |mem_bot|, equal to 
-		    |mem_max| in \.{INITEX}, else not greater than |mem_max|*/
-integer extra_mem_top; /* |mem_max:=mem_top+extra_mem_top| except 
-						  in \.{INITEX} */ 
-integer mem_max; /* greatest index in \TeX's internal |mem| array; must be 
-					strictly less than |max_halfword|; must be equal to 
-					|mem_top| in \.{INITEX}, otherwise |>=mem_top| */
-integer font_mem_size; /* number of words of |font_info| for all fonts */ 
-integer font_max; /* maximum internal font number; ok to exceed 
-					 |max_quarterword| and must be at most |font_base|+
-					 |max_font_max| */
-integer font_k; /* loop variable for initialization */ 
-integer hyph_size; /* maximun number of hyphen exceptions */ 
-integer buf_size; /* maximum number of characters simultaneously present in 
-					 current lines of open files and in control sequences 
-					 between \.{\\csname} and \.{\\endcsname}; must not 
-					 exceed |max_halfword| */
-integer stack_size; /* maximum number of simultaneous input sources */ 
-integer max_in_open; /* maximum number of input files and error insertions 
-						that can be going on simultaneously */
-integer param_size; /* maximum number of simultaneous macro parameters */ 
-integer nest_size; /* maximum number of semantic levels simultaneously 
-					  active */ 
-integer save_size; /* space for saving values outside of current group; 
-					  must be at most |max_halfword| */
-integer dvi_buf_size; /* size of the output buffer; must be a multiple of 8*/ 
+integer extra_mem_bot; /* |mem_min:=mem_bot-extra_mem_bot| except
+              in \.{INITEX} */
+integer mem_min; /* smallest index in \TeX's internal |mem| array; must be
+          |min_halfword| or more; must be equal to |mem_bot| in
+          \.{INITEX}, otherwise |<=mem_bot| */
+integer mem_top; /* largest index in the |mem| array dumped by \.{INITEX};
+        must be substantially larger than |mem_bot|, equal to
+        |mem_max| in \.{INITEX}, else not greater than |mem_max|*/
+integer extra_mem_top; /* |mem_max:=mem_top+extra_mem_top| except
+              in \.{INITEX} */
+integer mem_max; /* greatest index in \TeX's internal |mem| array; must be
+          strictly less than |max_halfword|; must be equal to
+          |mem_top| in \.{INITEX}, otherwise |>=mem_top| */
+integer font_mem_size; /* number of words of |font_info| for all fonts */
+integer font_max; /* maximum internal font number; ok to exceed
+           |max_quarterword| and must be at most |font_base|+
+           |max_font_max| */
+integer font_k; /* loop variable for initialization */
+integer hyph_size; /* maximun number of hyphen exceptions */
+integer buf_size; /* maximum number of characters simultaneously present in
+           current lines of open files and in control sequences
+           between \.{\\csname} and \.{\\endcsname}; must not
+           exceed |max_halfword| */
+integer stack_size; /* maximum number of simultaneous input sources */
+integer max_in_open; /* maximum number of input files and error insertions
+            that can be going on simultaneously */
+integer param_size; /* maximum number of simultaneous macro parameters */
+integer nest_size; /* maximum number of semantic levels simultaneously
+            active */
+integer save_size; /* space for saving values outside of current group;
+            must be at most |max_halfword| */
+integer dvi_buf_size; /* size of the output buffer; must be a multiple of 8*/
 
 unsigned char k; /*TH: ^*(^&%%$$#. this is a scratch variable, but it is referenced
-				   from pdftex's writettf.c */
+           from pdftex's writettf.c */
 /* end expansion of Global variables */
 
 
@@ -309,14 +309,14 @@ unsigned char k; /*TH: ^*(^&%%$$#. this is a scratch variable, but it is referen
  * the character set contains at least the letters and symbols associated
  * with ASCII codes oct(40) through oct(176); all of these characters are now
  * available on most computer terminals.
- * 
+ *
  * Since we are dealing with more characters than were present in the first
  * \PASCAL\ compilers, we have to decide what to call the associated data
  * type. Some \PASCAL s use the original name |char| for the
  * characters in text files, even though there now are more than 64 such
  * characters, while other \PASCAL s consider |char| to be a 64-element
  * subrange of a larger data type that has some other name.
- * 
+ *
  * TH outdated:
  * In order to accommodate this difference, we shall use the name |text_char|
  * to stand for the data type of the characters that are converted to and
@@ -328,7 +328,7 @@ unsigned char k; /*TH: ^*(^&%%$$#. this is a scratch variable, but it is referen
 
 
 void
-initialize (void) {				
+initialize (void) {
   /* this procedure gets things started properly */
   /* begin expansion of Initialize whatever \TeX\ might access */
   /* module 8 */
@@ -376,7 +376,7 @@ initialize (void) {
       /*  begin expansion of Initialize table entries (done by \.{INITEX} only) */
       mem_initialize_init();
       /* begin expansion of Initialize the special list heads and constant nodes */
-	  align_initialize_init();
+    align_initialize_init();
       linebreak_initialize_init();
       buildpage_initialize_init();
       /* end expansion of Initialize the special list heads and constant nodes */
@@ -385,23 +385,23 @@ initialize (void) {
       hi_mem_min = hi_mem_stat_min; /* initialize the one-word memory */
       var_used = lo_mem_stat_max + 1 - mem_bot;
       dyn_used = hi_mem_stat_usage; /* initialize statistics */
-	  eqtb_initialize_init();
-	  hash_initialize_init();
-	  trie_initialize_init();
+    eqtb_initialize_init();
+    hash_initialize_init();
+    trie_initialize_init();
       /* module 1361 */
       primitive_text (frozen_protection,"inaccessible");
       /* module 1446 */
       if (ini_version)
-		format_ident = slow_make_tex_string(" (INITEX)");
-	  /* module 1565 */
-	  /* To write a token list, we must run it through \TeX's scanner, expanding
-	   * macros and \.{\\the} and \.{\\number}, etc. This might cause runaways,
-	   * if a delimited macro parameter isn't matched, and runaways would be
-	   * extremely confusing since we are calling on \TeX's scanner in the middle
-	   * of a \.{\\shipout} command. Therefore we will put a dummy control sequence as
-	   * a ``stopper,'' right after the token list. This control sequence is
-	   * artificially defined to be \.{\\outer}.
-	   */
+    format_ident = slow_make_tex_string(" (INITEX)");
+    /* module 1565 */
+    /* To write a token list, we must run it through \TeX's scanner, expanding
+     * macros and \.{\\the} and \.{\\number}, etc. This might cause runaways,
+     * if a delimited macro parameter isn't matched, and runaways would be
+     * extremely confusing since we are calling on \TeX's scanner in the middle
+     * of a \.{\\shipout} command. Therefore we will put a dummy control sequence as
+     * a ``stopper,'' right after the token list. This control sequence is
+     * artificially defined to be \.{\\outer}.
+     */
       primitive_text (end_write,"endwrite");
       eq_level (end_write) = level_one;
       eq_type (end_write) = outer_call;
@@ -413,7 +413,7 @@ initialize (void) {
       max_reg_num = 255;
       max_reg_help_line = "A register number must be between 0 and 255.";
       /* end expansion of Initialize variables for \eTeX\ compatibility mode */
-	  sa_initialize_init();
+    sa_initialize_init();
       /* end expansion of Initialize table entries (done by \.{INITEX} only) */
   }
   /* end expansion of Initialize whatever \TeX\ might access */
@@ -435,10 +435,10 @@ initialize (void) {
 
 /* module 1475 */
 
-/* 
+/*
  * This is it: the part of \TeX\ that executes all those procedures we have
  * written.
- * 
+ *
  * Well---almost. Let's leave space for a few more routines that we may
  * have forgotten.
  */
@@ -449,67 +449,67 @@ initialize (void) {
  * been scanned and |its_all_over|\kern-2pt.
  */
 void final_cleanup (void) {
-  small_number c; /* 0 for \.{\\end}, 1 for \.{\\dump} */ 
+  small_number c; /* 0 for \.{\\end}, 1 for \.{\\dump} */
   c = cur_chr;
   if (jobname == 0)
-	open_log_file();
+  open_log_file();
   while (input_ptr > 0)
-	if (STATE_FIELD == token_list) {
-	  end_token_list();
-	} else {
-	  end_file_reading();
-	}
+  if (STATE_FIELD == token_list) {
+    end_token_list();
+  } else {
+    end_file_reading();
+  }
   while (open_parens > 0) {
-	zprint_string(" )");
-	decr (open_parens);
+  zprint_string(" )");
+  decr (open_parens);
   };
   if (cur_level > level_one) {
-	print_nl_string ("(");
-	print_esc_string ("end occurred ");
-	zprint_string("inside a group at level ");
-	print_int (cur_level - level_one);
-	print_char (')');
-	if (eTeX_ex)
-	  show_save_groups();
+  print_nl_string ("(");
+  print_esc_string ("end occurred ");
+  zprint_string("inside a group at level ");
+  print_int (cur_level - level_one);
+  print_char (')');
+  if (eTeX_ex)
+    show_save_groups();
   };
   while (cond_ptr != null) {
-	print_nl_string ("(");
-	print_esc_string ("end occurred ");
-	zprint_string("when ");
-	print_cmd_chr (if_test, cur_if);
-	if (if_line != 0) {
-	  zprint_string(" on line ");
-	  print_int (if_line);
-	};
-	zprint_string(" was incomplete)");
-	if_line = if_line_field (cond_ptr);
-	cur_if = subtype (cond_ptr);
-	temp_ptr = cond_ptr;
-	cond_ptr = link (cond_ptr);
-	free_node (temp_ptr, if_node_size);
+  print_nl_string ("(");
+  print_esc_string ("end occurred ");
+  zprint_string("when ");
+  print_cmd_chr (if_test, cur_if);
+  if (if_line != 0) {
+    zprint_string(" on line ");
+    print_int (if_line);
+  };
+  zprint_string(" was incomplete)");
+  if_line = if_line_field (cond_ptr);
+  cur_if = subtype (cond_ptr);
+  temp_ptr = cond_ptr;
+  cond_ptr = link (cond_ptr);
+  free_node (temp_ptr, if_node_size);
   };
   if (history != spotless)
-	if (((history == warning_issued) || (interaction < error_stop_mode)))
-	  if (selector == term_and_log) {
-		selector = term_only;
-		print_nl_string ("(see the transcript file for additional information)");
-		selector = term_and_log;
-	  };
+  if (((history == warning_issued) || (interaction < error_stop_mode)))
+    if (selector == term_and_log) {
+    selector = term_only;
+    print_nl_string ("(see the transcript file for additional information)");
+    selector = term_and_log;
+    };
   if (c == 1) {
-	if (ini_version) {
-	  for (c = top_mark_code; c <= split_bot_mark_code; c++)
-		if (cur_mark[c] != null)
-		  delete_token_ref (cur_mark[c]);
-	  if (sa_mark != null)
-		if (do_marks (destroy_marks, 0, sa_mark))
-		  sa_mark = null;
-	  for (c = last_box_code; c <= vsplit_code; c++)
-		flush_node_list (disc_ptr[c]);
-	  store_fmt_file();
-	  return;
-	}
-	print_nl_string ("(\\dump is performed only by INITEX)");
-	return;
+  if (ini_version) {
+    for (c = top_mark_code; c <= split_bot_mark_code; c++)
+    if (cur_mark[c] != null)
+      delete_token_ref (cur_mark[c]);
+    if (sa_mark != null)
+    if (do_marks (destroy_marks, 0, sa_mark))
+      sa_mark = null;
+    for (c = last_box_code; c <= vsplit_code; c++)
+    flush_node_list (disc_ptr[c]);
+    store_fmt_file();
+    return;
+  }
+  print_nl_string ("(\\dump is performed only by INITEX)");
+  return;
   };
 };
 
@@ -523,7 +523,7 @@ void final_cleanup (void) {
  * always needed, because of the string inits for the primitive
  * names */
 
-void init_prim (int noninit) {	/* initialize all the primitives */
+void init_prim (int noninit) {  /* initialize all the primitives */
   set_no_new_control_sequence(false);
   first = 0;
   /* begin expansion of Put each... */
@@ -629,13 +629,13 @@ void init_prim (int noninit) {	/* initialize all the primitives */
   primitive_str("holdinginserts", assign_int,int_base + holding_inserts_code);
   primitive_str("errorcontextlines", assign_int,int_base + error_context_lines_code);
   if (mltex_p) {
-	mltex_enabled_p = true; /* enable character substitution */ 
+  mltex_enabled_p = true; /* enable character substitution */
 #ifdef ENABLE_CHARSUBDEFMIN
-	/* remove the if-clause to enable \.{\\charsubdefmin} */
-	  primitive_str("charsubdefmin", assign_int,int_base + char_sub_def_min_code); 
+  /* remove the if-clause to enable \.{\\charsubdefmin} */
+    primitive_str("charsubdefmin", assign_int,int_base + char_sub_def_min_code);
 #endif
-	primitive_str("charsubdefmax", assign_int,int_base + char_sub_def_max_code);
-	primitive_str("tracingcharsubdef", assign_int,int_base + tracing_char_sub_def_code);
+  primitive_str("charsubdefmax", assign_int,int_base + char_sub_def_max_code);
+  primitive_str("tracingcharsubdef", assign_int,int_base + tracing_char_sub_def_code);
   };
   primitive_str("pdfoutput", assign_int,int_base + pdf_output_code);
   primitive_str("pdfadjustspacing", assign_int,int_base + pdf_adjust_spacing_code);
@@ -687,8 +687,8 @@ void init_prim (int noninit) {	/* initialize all the primitives */
    * as follows:
    */
   if(!noninit) {
-	primitive(' ', ex_space, 0);
-	primitive('/', ital_corr, 0);
+  primitive(' ', ex_space, 0);
+  primitive('/', ital_corr, 0);
   }
   primitive_str("accent", accent, 0);
   primitive_str("advance", advance, 0);
@@ -702,8 +702,8 @@ void init_prim (int noninit) {	/* initialize all the primitives */
   primitive_str("endcsname", end_cs_name, 0);
   primitive_str("endgroup", end_group, 0);
   if(!noninit) {
-	primitive_text (frozen_end_group,"endgroup");
-	eqtb[frozen_end_group] = eqtb[cur_val];
+  primitive_text (frozen_end_group,"endgroup");
+  eqtb[frozen_end_group] = eqtb[cur_val];
   }
   primitive_str("expandafter", expand_after, 0);
   primitive_str("font", def_font, 0);
@@ -727,10 +727,10 @@ void init_prim (int noninit) {	/* initialize all the primitives */
   primitive_str("prevgraf", set_prev_graf, 0);
   primitive_str("radical", radical, 0);
   primitive_str("read", read_to_cs, 0);
-  primitive_str("relax", relax, 256); /* cf.\ |scan_file_name| */ 
+  primitive_str("relax", relax, 256); /* cf.\ |scan_file_name| */
   if(!noninit) {
-	primitive_text (frozen_relax,"relax");
-	eqtb[frozen_relax] = eqtb[cur_val];
+  primitive_text (frozen_relax,"relax");
+  eqtb[frozen_relax] = eqtb[cur_val];
   }
   primitive_str("setbox", set_box, 0);
   primitive_str("the", the, 0);
@@ -740,10 +740,10 @@ void init_prim (int noninit) {	/* initialize all the primitives */
   primitive_str("vcenter", vcenter, 0);
   primitive_str("vrule", vrule, 0);
   /* module 334 */
-  primitive_str("par", par_end, 256); /* cf. |scan_file_name| */ 
+  primitive_str("par", par_end, 256); /* cf. |scan_file_name| */
   if(!noninit) {
-	par_loc = cur_val;
-	par_token = cs_token_flag + par_loc;
+  par_loc = cur_val;
+  par_token = cs_token_flag + par_loc;
   }
   /* module 376 */
   /* The processing of \.{\\input} involves the |start_input| subroutine,
@@ -838,16 +838,16 @@ void init_prim (int noninit) {	/* initialize all the primitives */
   /* module 491 */
   primitive_str("fi", fi_or_else, fi_code);
   if(!noninit) {
-	primitive_text (frozen_fi,"fi");
-	eqtb[frozen_fi] = eqtb[cur_val];
+  primitive_text (frozen_fi,"fi");
+  eqtb[frozen_fi] = eqtb[cur_val];
   }
   primitive_str("or", fi_or_else, or_code);
   primitive_str("else", fi_or_else, else_code);
   /* module 553 */
   primitive_str("nullfont", set_font, null_font);
   if(!noninit) {
-	primitive_text (frozen_null_font,"nullfont");
-	eqtb[frozen_null_font] = eqtb[cur_val];
+  primitive_text (frozen_null_font,"nullfont");
+  eqtb[frozen_null_font] = eqtb[cur_val];
   }
   /* module 924 */
   /* We enter `\.{\\span}' into |eqtb| with |tab_mark| as its command code,
@@ -856,7 +856,7 @@ void init_prim (int noninit) {	/* initialize all the primitives */
    * recognizably different when we need to distinguish it from a normal delimiter.
    * It also turns out to be useful to give a special |cr_code| to `\.{\\cr}',
    * and an even larger |cr_cr_code| to `\.{\\crcr}'.
-   * 
+   *
    * The end of a template is represented by two ``frozen'' control sequences
    * called \.{\\endtemplate}. The first has the command code |end_template|, which
    * is |>outer_call|, so it will not easily disappear in the presence of errors.
@@ -866,18 +866,18 @@ void init_prim (int noninit) {	/* initialize all the primitives */
   primitive_str("span", tab_mark, span_code);
   primitive_str("cr", car_ret, cr_code);
   if(!noninit) {
-	primitive_text (frozen_cr,"cr");
-	eqtb[frozen_cr] = eqtb[cur_val];
+  primitive_text (frozen_cr,"cr");
+  eqtb[frozen_cr] = eqtb[cur_val];
   }
   primitive_str("crcr", car_ret, cr_cr_code);
   if(!noninit) {
-	primitive_text (frozen_end_template,"endtemplate");
-	primitive_text (frozen_endv,"endtemplate");
-	eq_type (frozen_endv) = endv;
-	equiv (frozen_endv) = null_list;
-	eq_level (frozen_endv) = level_one;
-	eqtb[frozen_end_template] = eqtb[frozen_endv];
-	eq_type (frozen_end_template) = end_template;
+  primitive_text (frozen_end_template,"endtemplate");
+  primitive_text (frozen_endv,"endtemplate");
+  eq_type (frozen_endv) = endv;
+  equiv (frozen_endv) = null_list;
+  eq_level (frozen_endv) = level_one;
+  eqtb[frozen_end_template] = eqtb[frozen_endv];
+  eq_type (frozen_end_template) = end_template;
   }
   /* module 1128 */
   primitive_str("pagegoal", set_page_dimen, 0);
@@ -923,10 +923,10 @@ void init_prim (int noninit) {	/* initialize all the primitives */
    * constructions like `\.{\\setbox3=}' can be followed by a variety of
    * different kinds of boxes, and we would like to encode such things in an
    * efficient way.
-   * 
+   *
    * In other words, there are two problems: To represent the context of a box,
    * and to represent its type.
-   * 
+   *
    * The first problem is solved by putting a ``context code'' on the |save_stack|,
    * just below the two entries that give the dimensions produced by |scan_spec|.
    * The context code is either a (signed) shift amount, or it is a large
@@ -937,7 +937,7 @@ void init_prim (int noninit) {	/* initialize all the primitives */
    * code |ship_out_flag| represents `\.{\\shipout}'; and codes |leader_flag|
    * through |leader_flag+2| represent `\.{\\leaders}', `\.{\\cleaders}',
    * and `\.{\\xleaders}'.
-   * 
+   *
    * The second problem is solved by giving the command code |make_box| to all
    * control sequences that produce a box, and by using the following |chr_code|
    * values to distinguish between them: |box_code|, |copy_code|, |last_box_code|,
@@ -979,7 +979,7 @@ void init_prim (int noninit) {	/* initialize all the primitives */
    * general case we must process three braces full of items.
    */
   if(!noninit) {
-	primitive('-', discretionary, 1);
+  primitive('-', discretionary, 1);
   }
   primitive_str("discretionary", discretionary, 0);
   /* module 1286 */
@@ -1033,16 +1033,16 @@ void init_prim (int noninit) {	/* initialize all the primitives */
   primitive_str("left", left_right, left_noad);
   primitive_str("right", left_right, right_noad);
   if(!noninit) {
-	primitive_text (frozen_right, "right");
-	eqtb[frozen_right] = eqtb[cur_val];
+  primitive_text (frozen_right, "right");
+  eqtb[frozen_right] = eqtb[cur_val];
   }
   /* module 1353 */
-  /* 
+  /*
    * The long |main_control| procedure has now been fully specified, except for
    * certain activities that are independent of the current mode. These activities
    * do not change the current vlist or hlist or mlist; if they change anything,
    * it is the value of a parameter or the meaning of a control sequence.
-   * 
+   *
    * Assignments to values in |eqtb| can be global or local. Furthermore, a
    * control sequence can be defined to be `\.{\\long}', `\.{\\protected}',
    * or `\.{\\outer}', and it might or might not be expanded. The prefixes
@@ -1080,7 +1080,7 @@ void init_prim (int noninit) {	/* initialize all the primitives */
   primitive_str("muskipdef", shorthand_def,mu_skip_def_code);
   primitive_str("toksdef", shorthand_def, toks_def_code);
   if (mltex_p) {
-	primitive_str("charsubdef", shorthand_def,char_sub_def_code);
+  primitive_str("charsubdef", shorthand_def,char_sub_def_code);
   };
   /* module 1375 */
   /* The various character code tables are changed by the |def_code| commands,
@@ -1135,13 +1135,13 @@ void init_prim (int noninit) {	/* initialize all the primitives */
   primitive_str("openout", extension, open_node);
   primitive_str("write", extension, write_node);
   if(!noninit) {
-	write_loc = cur_val;
+  write_loc = cur_val;
   }
   primitive_str("closeout", extension, close_node);
   primitive_str("special", extension, special_node);
   if(!noninit) {
-	primitive_text (frozen_special,"special");
-	eqtb[frozen_special] = eqtb[cur_val];
+  primitive_text (frozen_special,"special");
+  eqtb[frozen_special] = eqtb[cur_val];
   }
   primitive_str("immediate", extension, immediate_code);
   primitive_str("setlanguage", extension,set_language_code);
@@ -1178,7 +1178,7 @@ void init_prim (int noninit) {	/* initialize all the primitives */
   set_no_new_control_sequence(true);
 };
 
-void 
+void
 init_etex_prim(void) {
   int noninit = 0;
   /* module 1592 */
@@ -1335,7 +1335,7 @@ init_etex_prim(void) {
    * for count and dimen values, |zero_glue| for glue (skip and muskip)
    * values, void for boxes, and |null| for token lists (and current marks
    * discussed below).
-   * 
+   *
    * Similarly there are 32768 mark classes; the command \.{\\marks}|n|
    * creates a mark node for a given mark class |0<=n<=32767| (where
    * \.{\\marks0} is synonymous to \.{\\mark}). The page builder (actually
@@ -1377,20 +1377,20 @@ init_etex_prim(void) {
 /* module 1476 */
 
 /* We have noted that there are two versions of \TeX82. One, called \.{INITEX},
- * 
+ *
  * has to be run first; it initializes everything from scratch, without
  * reading a format file, and it has the capability of dumping a format file.
  * The other one is called `\.{VIRTEX}'; it is a ``virgin'' program that needs
- * 
+ *
  * to input a format file in order to get started. \.{VIRTEX} typically has
  * more memory capacity than \.{INITEX}, because it does not need the space
  * consumed by the auxiliary hyphenation tables and the numerous calls on
  * |primitive|, etc.
- * 
+ *
 
 /* module 1477 */
 /* Now this is really it: \TeX\ starts and ends here.
- * 
+ *
  */
 
 #define const_chk(arg,infarg,suparg) {  if (  arg  <  infarg  )   { arg   =  infarg; }\
@@ -1512,7 +1512,7 @@ void check_for_bad_constants() {
     bad = 6;
   if (mem_top < 256 + 11)
     bad = 7; /* we will want |null_list>255| */
-  /* module 111 */  
+  /* module 111 */
   /* Here are the inequalities that the quarterword and halfword values
    * must satisfy (or rather, the inequalities that they mustn't satisfy):
    */
@@ -1554,7 +1554,7 @@ void check_for_bad_constants() {
 }
 
 int
-main_body (void) {	 /* |start_here| */
+main_body (void) {   /* |start_here| */
   /* module 528 */
   /* Initially |jobname=0|; it becomes nonzero as soon as the true name is known.
    * We have |jobname=0| if and only if the `\.{log}' file has not been opened,
@@ -1571,7 +1571,7 @@ main_body (void) {	 /* |start_here| */
   /* When we begin the following code, \TeX's tables may still contain garbage;
    * the strings might not even be present. Thus we must proceed cautiously to get
    * bootstrapped in.
-   * 
+   *
    * But when we finish this part of the program, \TeX\ is ready to call on the
    * |main_control| routine to do its work.
    */
@@ -1586,7 +1586,7 @@ main_body (void) {	 /* |start_here| */
     /* end expansion of Initialize the input routines */
     /* begin expansion of Enable \eTeX, if requested */
     /* module 1591 */
-	/* 
+  /*
      * The program has two modes of operation: (1)~In \TeX\ compatibility mode
      * it fully deserves the name \TeX\ and there are neither extended features
      * nor additional primitive commands. There are, however, a few
@@ -1595,15 +1595,15 @@ main_body (void) {	 /* |start_here| */
      * unit conversion during |ship_out|. (2)~In extended mode there are
      * additional primitive commands and the extended features of \eTeX\ are
      * available.
-     * 
+     *
      * The distinction between these two modes of operation initially takes
      * place when a `virgin' \.{eINITEX} starts without reading a format file.
      * Later on the values of all \eTeX\ state variables are inherited when
      * \.{eVIRTEX} (or \.{eINITEX}) reads a format file.
-     * 
+     *
      * The code below is designed to work for cases where `$|init|\ldots|tini|$'
      * is a run-time switch.
-     */    
+     */
     if ((buffer[loc] == '*') && (format_ident == slow_make_tex_string(" (INITEX)"))) {
       set_no_new_control_sequence (false);
       /* begin expansion of Generate all \eTeX\ primitives */
@@ -1611,28 +1611,28 @@ main_body (void) {	 /* |start_here| */
       /* end expansion of Generate all \eTeX\ primitives */
       incr (loc);
       eTeX_mode = 1; /* enter extended mode */
-      /* begin expansion of Initialize variables for \eTeX\ extended mode */  
+      /* begin expansion of Initialize variables for \eTeX\ extended mode */
       /* module 1758 */
       max_reg_num = 32767;
       max_reg_help_line = "A register number must be between 0 and 32767.";
       /* end expansion of Initialize variables for \eTeX\ extended mode */
-	}
-    if (!is_no_new_control_sequence()){	/* just entered extended mode ? */
+  }
+    if (!is_no_new_control_sequence()){ /* just entered extended mode ? */
       set_no_new_control_sequence (true);
     } else {
       /* end expansion of Enable \eTeX, if requested */
       if ((format_ident == 0) || (buffer[loc] == '&') || dump_line) {
-		if (format_ident != 0)
-		  initialize(); /* erase preloaded format */ 
-		if (!(open_fmt_file()))
-		  return exit_program();
-		if (!(load_fmt_file())) {
-		  w_close (fmt_file);
-		  return exit_program();
-		};
-		w_close (fmt_file);
-		while ((loc < limit) && (buffer[loc] == ' '))
-		  incr (loc);
+    if (format_ident != 0)
+      initialize(); /* erase preloaded format */
+    if (!(open_fmt_file()))
+      return exit_program();
+    if (!(load_fmt_file())) {
+      w_close (fmt_file);
+      return exit_program();
+    };
+    w_close (fmt_file);
+    while ((loc < limit) && (buffer[loc] == ' '))
+      incr (loc);
       };
     }
     if (eTeX_ex)
@@ -1651,9 +1651,9 @@ main_body (void) {	 /* |start_here| */
       /* Allocate and initialize font arrays */
       font_xmalloc(font_max);
       pdffont_xmalloc(font_max);
-	  vf_xmalloc(font_max);
+    vf_xmalloc(font_max);
       pdffont_initialize_init(font_max);
-	  font_initialize_init();
+    font_initialize_init();
     };
     font_used = xmalloc_array (boolean, font_max);
     for (font_k = font_base; font_k <= font_max; font_k++)
@@ -1663,16 +1663,16 @@ main_body (void) {	 /* |start_here| */
     initialize_selector;
     /* end expansion of Initialize the print |selector|... */
     if ((loc < limit) && (cat_code (buffer[loc]) != escape)) {
-	  start_input(); /* \.{\\input} assumed */
-	} 
+    start_input(); /* \.{\\input} assumed */
+  }
     /* begin expansion of Read values from config file if necessary */
     read_values_from_config_file();
     /* end expansion of Read values from config file if necessary */
   };
   /* end expansion of Get the first line of input and prepare to start */
-  history = spotless; /* ready to go! */ 
-  main_control(); /* come to life */ 
-  final_cleanup(); /* prepare for death */ 
+  history = spotless; /* ready to go! */
+  main_control(); /* come to life */
+  final_cleanup(); /* prepare for death */
   close_files_and_terminate();
   return exit_program();
 };
@@ -1689,7 +1689,7 @@ int exit_program() {
 
 /* module 1829 */
 
-/* 
+/*
  * This section should be replaced, if necessary, by any special
  * modifications of the program
  * that are necessary to make \TeX\ work at a particular installation.
