@@ -93,7 +93,12 @@ cdef extern from "tex_error.h":
     unsigned char history
 
 cdef extern from "print.h":
+    void print_initialize()
     long max_print_line
+    unsigned char selector
+    int tally
+    unsigned int term_offset
+    unsigned int file_offset
 
 cdef extern from "pdfxref.h":
     long obj_tab_size
@@ -297,6 +302,14 @@ def set_date_and_time_py():
     global month; month = now.month
     global year; year = now.year
 
+
+def print_initialize_py():
+    global selector; selector = constants.term_only
+    global tally; tally = 0
+    global term_offset; term_offset = 0
+    global file_offset; file_offset = 0
+
+
 def main_body_py():
     set_up_bound_variables_py()
     allocate_memory_for_arrays()
@@ -313,4 +326,7 @@ def main_body_py():
         global init_str_ptr; init_str_ptr = str_ptr
         global init_pool_ptr; init_pool_ptr = pool_ptr
         set_date_and_time_py()
+    # Initialize the output routines.
+    print_initialize_py()
+    print('{} {}'.format(constants.banner, '(ini)' if ini_version else ''))
     return main_body()

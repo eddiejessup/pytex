@@ -1555,22 +1555,6 @@ void check_for_bad_constants() {
 
 int
 main_body (void) {	 /* |start_here| */
- START_OF_TEX:
-  /* begin expansion of Initialize the output routines */
-  print_initialize ();
-  /* module 61 */ 
-  /* Here is the very first thing that \TeX\ prints: a headline that identifies
-   * the version number and format package. The |term_offset| variable is temporarily
-   * incorrect, but the discrepancy is not serious since we assume that the banner
-   * and format identifier together will occupy at most |max_print_line|
-   * character positions.
-   */
-  fprintf ( term_out , "%s%c%s%c%s",banner);
-  wterm_string (version_string);
-  if (format_ident > 0)
-    slow_print (format_ident);
-  print_ln();
-  update_terminal;
   /* module 528 */
   /* Initially |jobname=0|; it becomes nonzero as soon as the true name is known.
    * We have |jobname=0| if and only if the `\.{log}' file has not been opened,

@@ -1,3 +1,5 @@
+banner = "PyTeX"
+
 # Bounds
 mem_bot = 0
 ssup_error_line = 255
@@ -102,3 +104,12 @@ spotless = 0
 warning_issued = 1
 error_message_issued = 2
 fatal_error_stop = 3
+
+# From print.h
+no_print = 16
+term_only = 17
+log_only = 18
+term_and_log = 19
+pseudo = 20
+new_string = 21
+max_selector = 21
