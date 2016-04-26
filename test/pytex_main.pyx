@@ -329,13 +329,6 @@ def set_date_and_time_py():
     global year; year = now.year
 
 
-def print_initialize_py():
-    global selector; selector = constants.term_only
-    global tally; tally = 0
-    global term_offset; term_offset = 0
-    global file_offset; file_offset = 0
-
-
 def main_body_py():
     set_up_bound_variables_py()
     allocate_memory_for_arrays()
@@ -353,17 +346,20 @@ def main_body_py():
         global init_pool_ptr; init_pool_ptr = pool_ptr
         set_date_and_time_py()
 
-    # Initialize the output routines.
-    print_initialize_py()
     print('{} {}'.format(constants.banner, '(ini)' if ini_version else ''))
-    # Initially jobname = 0; it becomes nonzero as soon as the true name is
-    # known. We have jobname=0 if and only if the `\.{log}' file has not been
+
+    # Initialize the output routines.
+    global selector; selector = constants.term_only
+    global tally; tally = 0
+    global term_offset; term_offset = 0
+    global file_offset; file_offset = 0
+    # Jobname becomes nonzero as soon as the true name is known.
+    # We have jobname = 0 if and only if the log file has not been
     # opened, except for a short time just after jobname has become nonzero.
     global jobname; jobname = 0
     global name_in_progress; name_in_progress = False
     global log_opened; log_opened = False
     global output_file_name; output_file_name = 0
-    # Finished initializing the output routines.
 
     # Initialize the input routines.
     # Get the first line of input and prepare to start.
@@ -374,5 +370,5 @@ def main_body_py():
     # `init_terminal` has set loc and last.
     global cur_input; cur_input.limit_field = last
     global first; first = last + 1
-    # Finished initializing the input routines.
+
     return main_body()
