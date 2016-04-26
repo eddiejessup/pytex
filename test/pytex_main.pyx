@@ -453,9 +453,8 @@ def start_input_py():
     global name_in_progress; name_in_progress = True
     begin_name()
     global stop_at_space; stop_at_space = False
-    k = 1
-    while k <= name_length and more_name(name_of_file[k]):
-        k += 1
+    for i in range(name_length):
+        more_name(name_of_file[i + 1])
     global stop_at_space; stop_at_space = True
     end_name()
     global name_in_progress; name_in_progress = False
