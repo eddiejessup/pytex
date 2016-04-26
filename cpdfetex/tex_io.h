@@ -153,6 +153,7 @@ EXTERN void read_next_line (small_number m);
 
 EXTERN boolean input_next_line (void);
 EXTERN void start_input (void);
+EXTERN void start_input_partial (void);
 
 EXTERN int read_terminal ( void );
 

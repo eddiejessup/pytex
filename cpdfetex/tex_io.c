@@ -1029,6 +1029,78 @@ start_input (void) { /* \TeX\ will \.{\\input} something */
   pack_cur_name;
   loop {
     begin_file_reading(); /* set up |cur_file| and new level of input */ 
+  tex_input_type = 1; /* Tell |open_input| we are \.{\\input}. */
+  /* Kpathsea tries all the various ways to get the file. */
+  if (open_in_name_ok (stringcast (name_of_file + 1)) && a_open_in (cur_file, kpse_tex_format)) {
+      /* At this point |name_of_file| contains the actual name found. 
+     We extract the |cur_area|, |cur_name|, and |cur_ext| from it. */
+    k = 1;
+    name_in_progress = true;
+    begin_name();
+    stop_at_space = false;
+    while ((k <= (int)name_length) && (more_name (name_of_file[k])))
+    incr (k);
+    stop_at_space = true;
+    end_name();
+    name_in_progress = false;
+    goto DONE;
+  };
+    end_file_reading();
+  /* remove the level that didn't work */
+    prompt_file_name ("input file name","");
+  };
+ DONE:
+  NAME_FIELD = a_make_name_string (cur_file);
+  source_filename_stack[in_open] = NAME_FIELD;
+  full_source_filename_stack[in_open] = make_full_name_string();
+  if (NAME_FIELD == str_ptr - 1)  {/* we can try to conserve string pool space now */
+  temp_str = search_string (NAME_FIELD);
+  if (temp_str > 0) {
+    NAME_FIELD = temp_str;
+    flush_string;
+  };
+  };
+  if (jobname == 0) {
+  jobname = getjobname();
+  open_log_file();
+  }; /* |open_log_file| doesn't |show_context|, so |limit| and |loc| needn't be set to meaningful values yet */
+  if (term_offset + length (full_source_filename_stack[in_open]) > (unsigned)max_print_line - 2) {
+    print_ln();
+  } else if ((term_offset > 0) || (file_offset > 0)) {
+    print_char (' ');
+  }
+  print_char ('(');
+  incr (open_parens);
+  slow_print (full_source_filename_stack[in_open]);
+  update_terminal;
+  STATE_FIELD = new_line;
+  /* begin expansion of Read the first line of the new file */
+  /* module 538 */
+  /* Here we have to remember to tell the |input_ln| routine not to
+   * start with a |get|. If the file is empty, it is considered to
+   * contain a single blank line.
+   */
+  line = 1;
+  /* next line was guarded by if() */
+  input_ln (cur_file, false);
+  firm_up_the_line();
+  if (end_line_char_inactive) {
+  decr (limit);
+  } else {
+  buffer[limit] = end_line_char;
+  }
+  first = limit + 1;
+  loc = START_FIELD;
+  /* end expansion of Read the first line of the new file */
+}
+
+void start_input_partial (void) {
+  str_number temp_str;
+  int k;
+  scan_file_name(); /* set |cur_name| to desired file name */ 
+  pack_cur_name;
+  loop {
+    begin_file_reading(); /* set up |cur_file| and new level of input */ 
 	tex_input_type = 1; /* Tell |open_input| we are \.{\\input}. */
 	/* Kpathsea tries all the various ways to get the file. */
 	if (open_in_name_ok (stringcast (name_of_file + 1)) && a_open_in (cur_file, kpse_tex_format)) {

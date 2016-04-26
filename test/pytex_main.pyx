@@ -123,7 +123,7 @@ cdef extern from "trie.h":
 
 cdef extern from "tex_io.h":
     int init_terminal()
-    void start_input()
+    void start_input_partial()
     long format_default_length
     char *TEX_format_default
     # Lines of characters being read.
@@ -486,6 +486,6 @@ def main_body_py():
 
     if loc < cur_input.limit_field and cat_code(buffer[loc]) != escape:
         # \input is assumed.
-        start_input()
+        start_input_partial()
 
     return main_body()
