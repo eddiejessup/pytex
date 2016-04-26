@@ -1554,38 +1554,10 @@ void check_for_bad_constants() {
 }
 
 int
-main_body (void) {   /* |start_here| */
-  /* module 528 */
-  /* Initially |jobname=0|; it becomes nonzero as soon as the true name is known.
-   * We have |jobname=0| if and only if the `\.{log}' file has not been opened,
-   * except of course for a short time just after |jobname| has become nonzero.
-   */
-  jobname = 0;
-  name_in_progress = false;
-  log_opened = false;
-  /* module 533 */
-  output_file_name = 0;
-  /* end expansion of Initialize the output routines */
-  /* begin expansion of Get the first line of input and prepare to start */
-  /* module 1482 */
-  /* When we begin the following code, \TeX's tables may still contain garbage;
-   * the strings might not even be present. Thus we must proceed cautiously to get
-   * bootstrapped in.
-   *
-   * But when we finish this part of the program, \TeX\ is ready to call on the
-   * |main_control| routine to do its work.
-   */
-  /* begin expansion of Initialize the input routines */
-  cmdchr_initialize();
-  /* next 4 lines where part of the above proc initially */
-  if (!init_terminal())
-    return exit_program();
-  limit = last;
-  first = last + 1;    /* |init_terminal| has set |loc| and |last| */
-  /* end expansion of Initialize the input routines */
+main_body (void) {
   /* begin expansion of Enable \eTeX, if requested */
   /* module 1591 */
-/*
+  /*
    * The program has two modes of operation: (1)~In \TeX\ compatibility mode
    * it fully deserves the name \TeX\ and there are neither extended features
    * nor additional primitive commands. There are, however, a few

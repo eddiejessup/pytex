@@ -9,6 +9,8 @@ import constants
 
 
 ctypedef unsigned char packed_ASCII_code
+ctypedef unsigned char quarterword
+ctypedef int halfword
 
 cdef extern from "main.h":
     int main_body()
@@ -27,6 +29,15 @@ cdef extern from "exten.h":
 
 cdef extern from "dump.h":
     char *dump_name
+
+cdef extern from "types.h":
+    struct in_state_record:
+        quarterword state_field,
+        quarterword index_field,
+        halfword start_field,
+        halfword loc_field,
+        halfword limit_field,
+        halfword name_field,
 
 cdef extern from "globals.h":
     # Defined in tex.c
@@ -60,6 +71,10 @@ cdef extern from "globals.h":
 cdef extern from "hash.h":
     const int hash_prime
 
+cdef extern from "cmdchr.h":
+    void cmdchr_initialize()
+    in_state_record cur_input
+
 cdef extern from "tex_string.h":
     # Maximum number of strings.
     long max_strings
@@ -82,8 +97,19 @@ cdef extern from "trie.h":
     long trie_size
 
 cdef extern from "tex_io.h":
+    int init_terminal()
     long format_default_length
     char *TEX_format_default
+    unsigned int first
+    unsigned int last
+    # If a file name is being scanned.
+    int name_in_progress
+    # Principal file name.
+    long jobname
+    # If the transcript file has been opened.
+    int log_opened
+    # Full name of the output file.
+    long output_file_name
 
 cdef extern from "tex_error.h":
     # Width of context lines in terminal error messages.
@@ -326,7 +352,27 @@ def main_body_py():
         global init_str_ptr; init_str_ptr = str_ptr
         global init_pool_ptr; init_pool_ptr = pool_ptr
         set_date_and_time_py()
+
     # Initialize the output routines.
     print_initialize_py()
     print('{} {}'.format(constants.banner, '(ini)' if ini_version else ''))
+    # Initially jobname = 0; it becomes nonzero as soon as the true name is
+    # known. We have jobname=0 if and only if the `\.{log}' file has not been
+    # opened, except for a short time just after jobname has become nonzero.
+    global jobname; jobname = 0
+    global name_in_progress; name_in_progress = False
+    global log_opened; log_opened = False
+    global output_file_name; output_file_name = 0
+    # Finished initializing the output routines.
+
+    # Initialize the input routines.
+    # Get the first line of input and prepare to start.
+    # When we begin the following code, TeX's tables may still contain garbage;
+    # the strings might not even be present.
+    cmdchr_initialize()
+    init_terminal()
+    # `init_terminal` has set loc and last.
+    global cur_input; cur_input.limit_field = last
+    global first; first = last + 1
+    # Finished initializing the input routines.
     return main_body()
