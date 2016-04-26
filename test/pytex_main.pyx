@@ -19,6 +19,7 @@ ctypedef int halfword
 
 cdef extern from "main.h":
     int main_body()
+    void topenin()
     void allocate_memory_for_arrays()
     void initialize()
     void init_prim(int noninit)
@@ -30,8 +31,6 @@ cdef extern from "main.h":
     long mem_min
     long mem_max
 
-cdef extern from "main.h":
-    void topenin()
 
 cdef extern from "exten.h":
     int shell_enabled_p
