@@ -1094,26 +1094,6 @@ start_input (void) { /* \TeX\ will \.{\\input} something */
   /* end expansion of Read the first line of the new file */
 }
 
-void start_input_partial (void) {
-  /* begin expansion of Read the first line of the new file */
-  /* module 538 */
-  /* Here we have to remember to tell the |input_ln| routine not to
-   * start with a |get|. If the file is empty, it is considered to
-   * contain a single blank line.
-   */
-  line = 1;
-  /* next line was guarded by if() */
-  input_ln (cur_file, false);
-  firm_up_the_line();
-  if (end_line_char_inactive) {
-	decr (limit);
-  } else {
-	buffer[limit] = end_line_char;
-  }
-  first = limit + 1;
-  loc = START_FIELD;
-  /* end expansion of Read the first line of the new file */
-}
 
 boolean 
 input_next_line (void) {

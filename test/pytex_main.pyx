@@ -106,6 +106,8 @@ cdef extern from "cmdchr.h":
     unsigned int in_open
     # Number of open text files.
     unsigned int open_parens
+    # Current line number in the current source file.
+    integer line
     int escape
     int new_line
 
@@ -118,7 +120,6 @@ cdef extern from "tex_string.h":
     # The minimum number of characters that should be available.
     long string_vacancies
     long pool_size
-    long pool_free
     long pool_free
     packed_ASCII_code *str_pool
     long *str_start
@@ -135,7 +136,6 @@ cdef extern from "trie.h":
 
 cdef extern from "tex_io.h":
     int init_terminal()
-    void start_input_partial()
     void scan_file_name()
     void pack_file_name(str_number name, str_number area, str_number ext)
     void begin_file_reading()
@@ -146,6 +146,7 @@ cdef extern from "tex_io.h":
     str_number make_full_name_string()
     str_number getjobname()
     void open_log_file()
+    boolean input_line(FILE *f)
     str_number *source_filename_stack
     str_number *full_source_filename_stack
     ASCII_code *name_of_file
@@ -498,7 +499,17 @@ def start_input_py():
     global open_parens; open_parens += 1
     cur_input.state_field = new_line
 
-    start_input_partial()
+    # Read the first line of the new file.
+    # If the file is empty, it is considered to contain a single blank line.
+    global line; line = 1
+    # Next line was guarded by if(). [I don't know what that means.]
+    input_line(input_file[cur_input.index_field])
+    # In the C source we now do `firm_up_the_line`, but for normal usage
+    # this does nothing except the following one line:
+    cur_input.limit_field = last
+    global buffer; buffer[cur_input.limit_field] = end_line_char
+    global first; first = cur_input.limit_field + 1
+    global loc; loc = cur_input.start_field
 
 
 def main_body_py():
