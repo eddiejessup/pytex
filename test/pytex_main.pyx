@@ -142,6 +142,7 @@ cdef extern from "tex_error.h":
     long error_line
     long half_error_line
     unsigned char interaction_option
+    unsigned char interaction
     unsigned char history
 
 cdef extern from "print.h":
@@ -473,5 +474,11 @@ def main_body_py():
     font_used = <boolean*>malloc((font_max + 1) * sizeof(boolean))
     for i in range(constants.font_base, font_max):
         font_used[i] = False
+
+    global selector
+    if interaction == constants.interaction_option_map['batchmode']:
+        selector = constants.no_print
+    else:
+        selector = constants.term_only
 
     return main_body()

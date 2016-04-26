@@ -1555,10 +1555,6 @@ void check_for_bad_constants() {
 
 int
 main_body (void) {
-  /* Compute the magic offset */ /* not used */
-  /* begin expansion of Initialize the print |selector|... */
-  initialize_selector;
-  /* end expansion of Initialize the print |selector|... */
   if ((loc < limit) && (cat_code (buffer[loc]) != escape)) {
   start_input(); /* \.{\\input} assumed */
   }
