@@ -31,6 +31,9 @@ cdef extern from "main.h":
     long mem_min
     long mem_max
 
+cdef extern from "mainio.h":
+    int tex_input_type
+    boolean open_input(FILE** file_ptr, int format, const char *mode)
 
 cdef extern from "exten.h":
     int shell_enabled_p
@@ -95,6 +98,7 @@ cdef extern from "hash.h":
 
 cdef extern from "cmdchr.h":
     void cmdchr_initialize()
+    FILE **input_file
     in_state_record cur_input
     int escape
 
@@ -126,6 +130,12 @@ cdef extern from "tex_io.h":
     void start_input_partial()
     void scan_file_name()
     void pack_file_name(str_number name, str_number area, str_number ext)
+    void begin_file_reading()
+    void begin_name()
+    void end_name()
+    boolean more_name(ASCII_code c)
+    ASCII_code *name_of_file
+    unsigned int name_length
     str_number cur_name
     str_number cur_area
     str_number cur_ext
@@ -138,6 +148,8 @@ cdef extern from "tex_io.h":
     unsigned int loc
     # If a file name is being scanned.
     int name_in_progress
+    # Whether more_name should return False for space.
+    int stop_at_space
     # Principal file name.
     long jobname
     # If the transcript file has been opened.
@@ -195,6 +207,10 @@ cdef extern from "kpathsea/getopt.h":
         pass
     int getopt_long_only(int argc, char *const *argv, const char *shortopts,
                          const option *longopts, int *longind)
+
+cdef extern from "kpathsea/tex-file.h":
+    enum kpse_file_format_type:
+        kpse_tex_format
 
 cdef extern:
     option[] long_options
@@ -425,6 +441,24 @@ def start_input_py():
     # Set cur_name to desired file name.
     scan_file_name()
     pack_file_name(cur_name, cur_area, cur_ext)
+    # Set up cur_file and new level of input.
+    begin_file_reading()
+    # Tell open_input we are \input.
+    global tex_input_type; tex_input_type = 1
+    # Kpathsea tries all the various ways to get the file.
+    open_input(&(input_file[cur_input.index_field]),
+               kpse_tex_format, constants.FOPEN_RBIN_MODE)
+    # At this point name_of_file contains the actual name.
+    # Extract cur_area, cur_name, and cur_ext from it.
+    global name_in_progress; name_in_progress = True
+    begin_name()
+    global stop_at_space; stop_at_space = False
+    k = 1
+    while k <= name_length and more_name(name_of_file[k]):
+        k += 1
+    global stop_at_space; stop_at_space = True
+    end_name()
+    global name_in_progress; name_in_progress = False
     start_input_partial()
 
 

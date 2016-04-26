@@ -127,3 +127,8 @@ term_and_log = 19
 pseudo = 20
 new_string = 21
 max_selector = 21
+
+# From mainio.h
+FOPEN_RBIN_MODE = 'r'
+FOPEN_R_MODE = 'r'
+FOPEN_W_MODE = 'w'

@@ -1095,28 +1095,6 @@ start_input (void) { /* \TeX\ will \.{\\input} something */
 }
 
 void start_input_partial (void) {
-  loop {
-    begin_file_reading(); /* set up |cur_file| and new level of input */ 
-	tex_input_type = 1; /* Tell |open_input| we are \.{\\input}. */
-	/* Kpathsea tries all the various ways to get the file. */
-	if (open_in_name_ok (stringcast (name_of_file + 1)) && a_open_in (cur_file, kpse_tex_format)) {
-      /* At this point |name_of_file| contains the actual name found. 
-		 We extract the |cur_area|, |cur_name|, and |cur_ext| from it. */
-	  int k = 1;
-	  name_in_progress = true;
-	  begin_name();
-	  stop_at_space = false;
-	  while ((k <= (int)name_length) && (more_name (name_of_file[k])))
-		incr (k);
-	  stop_at_space = true;
-	  end_name();
-	  name_in_progress = false;
-	  break;
-	};
-    end_file_reading();
-	/* remove the level that didn't work */
-    prompt_file_name ("input file name","");
-  };
   NAME_FIELD = a_make_name_string (cur_file);
   source_filename_stack[in_open] = NAME_FIELD;
   full_source_filename_stack[in_open] = make_full_name_string();
