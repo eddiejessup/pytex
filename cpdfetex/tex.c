@@ -1616,23 +1616,23 @@ main_body (void) {   /* |start_here| */
       max_reg_num = 32767;
       max_reg_help_line = "A register number must be between 0 and 32767.";
       /* end expansion of Initialize variables for \eTeX\ extended mode */
-  }
-    if (!is_no_new_control_sequence()){ /* just entered extended mode ? */
+    }
+    if (!is_no_new_control_sequence()) { /* just entered extended mode ? */
       set_no_new_control_sequence (true);
     } else {
       /* end expansion of Enable \eTeX, if requested */
       if ((format_ident == 0) || (buffer[loc] == '&') || dump_line) {
-    if (format_ident != 0)
-      initialize(); /* erase preloaded format */
-    if (!(open_fmt_file()))
-      return exit_program();
-    if (!(load_fmt_file())) {
-      w_close (fmt_file);
-      return exit_program();
-    };
-    w_close (fmt_file);
-    while ((loc < limit) && (buffer[loc] == ' '))
-      incr (loc);
+        if (format_ident != 0)
+          initialize(); /* erase preloaded format */
+        if (!(open_fmt_file()))
+          return exit_program();
+        if (!(load_fmt_file())) {
+          w_close (fmt_file);
+          return exit_program();
+        };
+        w_close (fmt_file);
+        while ((loc < limit) && (buffer[loc] == ' '))
+          incr (loc);
       };
     }
     if (eTeX_ex)
@@ -1651,9 +1651,9 @@ main_body (void) {   /* |start_here| */
       /* Allocate and initialize font arrays */
       font_xmalloc(font_max);
       pdffont_xmalloc(font_max);
-    vf_xmalloc(font_max);
+      vf_xmalloc(font_max);
       pdffont_initialize_init(font_max);
-    font_initialize_init();
+      font_initialize_init();
     };
     font_used = xmalloc_array (boolean, font_max);
     for (font_k = font_base; font_k <= font_max; font_k++)
@@ -1664,7 +1664,7 @@ main_body (void) {   /* |start_here| */
     /* end expansion of Initialize the print |selector|... */
     if ((loc < limit) && (cat_code (buffer[loc]) != escape)) {
     start_input(); /* \.{\\input} assumed */
-  }
+    }
     /* begin expansion of Read values from config file if necessary */
     read_values_from_config_file();
     /* end expansion of Read values from config file if necessary */
