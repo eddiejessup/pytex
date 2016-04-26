@@ -1575,100 +1575,98 @@ main_body (void) {   /* |start_here| */
    * But when we finish this part of the program, \TeX\ is ready to call on the
    * |main_control| routine to do its work.
    */
-  {
-    /* begin expansion of Initialize the input routines */
-    cmdchr_initialize();
-    /* next 4 lines where part of the above proc initially */
-    if (!init_terminal())
-      return exit_program();
-    limit = last;
-    first = last + 1;    /* |init_terminal| has set |loc| and |last| */
-    /* end expansion of Initialize the input routines */
-    /* begin expansion of Enable \eTeX, if requested */
-    /* module 1591 */
-  /*
-     * The program has two modes of operation: (1)~In \TeX\ compatibility mode
-     * it fully deserves the name \TeX\ and there are neither extended features
-     * nor additional primitive commands. There are, however, a few
-     * modifications that would be legitimate in any implementation of \TeX\
-     * such as, e.g., preventing inadequate results of the glue to \.{DVI}
-     * unit conversion during |ship_out|. (2)~In extended mode there are
-     * additional primitive commands and the extended features of \eTeX\ are
-     * available.
-     *
-     * The distinction between these two modes of operation initially takes
-     * place when a `virgin' \.{eINITEX} starts without reading a format file.
-     * Later on the values of all \eTeX\ state variables are inherited when
-     * \.{eVIRTEX} (or \.{eINITEX}) reads a format file.
-     *
-     * The code below is designed to work for cases where `$|init|\ldots|tini|$'
-     * is a run-time switch.
-     */
-    if ((buffer[loc] == '*') && (format_ident == slow_make_tex_string(" (INITEX)"))) {
-      set_no_new_control_sequence (false);
-      /* begin expansion of Generate all \eTeX\ primitives */
-      init_etex_prim();
-      /* end expansion of Generate all \eTeX\ primitives */
-      incr (loc);
-      eTeX_mode = 1; /* enter extended mode */
-      /* begin expansion of Initialize variables for \eTeX\ extended mode */
-      /* module 1758 */
-      max_reg_num = 32767;
-      max_reg_help_line = "A register number must be between 0 and 32767.";
-      /* end expansion of Initialize variables for \eTeX\ extended mode */
-    }
-    if (!is_no_new_control_sequence()) { /* just entered extended mode ? */
-      set_no_new_control_sequence (true);
-    } else {
-      /* end expansion of Enable \eTeX, if requested */
-      if ((format_ident == 0) || (buffer[loc] == '&') || dump_line) {
-        if (format_ident != 0)
-          initialize(); /* erase preloaded format */
-        if (!(open_fmt_file()))
-          return exit_program();
-        if (!(load_fmt_file())) {
-          w_close (fmt_file);
-          return exit_program();
-        };
+  /* begin expansion of Initialize the input routines */
+  cmdchr_initialize();
+  /* next 4 lines where part of the above proc initially */
+  if (!init_terminal())
+    return exit_program();
+  limit = last;
+  first = last + 1;    /* |init_terminal| has set |loc| and |last| */
+  /* end expansion of Initialize the input routines */
+  /* begin expansion of Enable \eTeX, if requested */
+  /* module 1591 */
+/*
+   * The program has two modes of operation: (1)~In \TeX\ compatibility mode
+   * it fully deserves the name \TeX\ and there are neither extended features
+   * nor additional primitive commands. There are, however, a few
+   * modifications that would be legitimate in any implementation of \TeX\
+   * such as, e.g., preventing inadequate results of the glue to \.{DVI}
+   * unit conversion during |ship_out|. (2)~In extended mode there are
+   * additional primitive commands and the extended features of \eTeX\ are
+   * available.
+   *
+   * The distinction between these two modes of operation initially takes
+   * place when a `virgin' \.{eINITEX} starts without reading a format file.
+   * Later on the values of all \eTeX\ state variables are inherited when
+   * \.{eVIRTEX} (or \.{eINITEX}) reads a format file.
+   *
+   * The code below is designed to work for cases where `$|init|\ldots|tini|$'
+   * is a run-time switch.
+   */
+  if ((buffer[loc] == '*') && (format_ident == slow_make_tex_string(" (INITEX)"))) {
+    set_no_new_control_sequence (false);
+    /* begin expansion of Generate all \eTeX\ primitives */
+    init_etex_prim();
+    /* end expansion of Generate all \eTeX\ primitives */
+    incr (loc);
+    eTeX_mode = 1; /* enter extended mode */
+    /* begin expansion of Initialize variables for \eTeX\ extended mode */
+    /* module 1758 */
+    max_reg_num = 32767;
+    max_reg_help_line = "A register number must be between 0 and 32767.";
+    /* end expansion of Initialize variables for \eTeX\ extended mode */
+  }
+  if (!is_no_new_control_sequence()) { /* just entered extended mode ? */
+    set_no_new_control_sequence (true);
+  } else {
+    /* end expansion of Enable \eTeX, if requested */
+    if ((format_ident == 0) || (buffer[loc] == '&') || dump_line) {
+      if (format_ident != 0)
+        initialize(); /* erase preloaded format */
+      if (!(open_fmt_file()))
+        return exit_program();
+      if (!(load_fmt_file())) {
         w_close (fmt_file);
-        while ((loc < limit) && (buffer[loc] == ' '))
-          incr (loc);
+        return exit_program();
       };
-    }
-    if (eTeX_ex)
-      wterm_string("entering extended mode\n");
-    if (end_line_char_inactive) {
-      decr (limit);
-    } else {
-      buffer[limit] = end_line_char;
-    }
-    if (mltex_enabled_p) {
-      wterm_string ("MLTeX v2.2 enabled\n");
+      w_close (fmt_file);
+      while ((loc < limit) && (buffer[loc] == ' '))
+        incr (loc);
     };
-    fix_date_and_time;
-    if (trie_not_ready) { /* initex without format loaded */
-      trie_xmalloc(trie_size);
-      /* Allocate and initialize font arrays */
-      font_xmalloc(font_max);
-      pdffont_xmalloc(font_max);
-      vf_xmalloc(font_max);
-      pdffont_initialize_init(font_max);
-      font_initialize_init();
-    };
-    font_used = xmalloc_array (boolean, font_max);
-    for (font_k = font_base; font_k <= font_max; font_k++)
-      font_used[font_k] = false;
-    /* Compute the magic offset */ /* not used */
-    /* begin expansion of Initialize the print |selector|... */
-    initialize_selector;
-    /* end expansion of Initialize the print |selector|... */
-    if ((loc < limit) && (cat_code (buffer[loc]) != escape)) {
-    start_input(); /* \.{\\input} assumed */
-    }
-    /* begin expansion of Read values from config file if necessary */
-    read_values_from_config_file();
-    /* end expansion of Read values from config file if necessary */
+  }
+  if (eTeX_ex)
+    wterm_string("entering extended mode\n");
+  if (end_line_char_inactive) {
+    decr (limit);
+  } else {
+    buffer[limit] = end_line_char;
+  }
+  if (mltex_enabled_p) {
+    wterm_string ("MLTeX v2.2 enabled\n");
   };
+  fix_date_and_time;
+  if (trie_not_ready) { /* initex without format loaded */
+    trie_xmalloc(trie_size);
+    /* Allocate and initialize font arrays */
+    font_xmalloc(font_max);
+    pdffont_xmalloc(font_max);
+    vf_xmalloc(font_max);
+    pdffont_initialize_init(font_max);
+    font_initialize_init();
+  };
+  font_used = xmalloc_array (boolean, font_max);
+  for (font_k = font_base; font_k <= font_max; font_k++)
+    font_used[font_k] = false;
+  /* Compute the magic offset */ /* not used */
+  /* begin expansion of Initialize the print |selector|... */
+  initialize_selector;
+  /* end expansion of Initialize the print |selector|... */
+  if ((loc < limit) && (cat_code (buffer[loc]) != escape)) {
+  start_input(); /* \.{\\input} assumed */
+  }
+  /* begin expansion of Read values from config file if necessary */
+  read_values_from_config_file();
+  /* end expansion of Read values from config file if necessary */
   /* end expansion of Get the first line of input and prepare to start */
   history = spotless; /* ready to go! */
   main_control(); /* come to life */
