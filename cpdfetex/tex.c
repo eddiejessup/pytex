@@ -1555,18 +1555,6 @@ void check_for_bad_constants() {
 
 int
 main_body (void) {
-  if (trie_not_ready) { /* initex without format loaded */
-    trie_xmalloc(trie_size);
-    /* Allocate and initialize font arrays */
-    font_xmalloc(font_max);
-    pdffont_xmalloc(font_max);
-    vf_xmalloc(font_max);
-    pdffont_initialize_init(font_max);
-    font_initialize_init();
-  };
-  font_used = xmalloc_array (boolean, font_max);
-  for (font_k = font_base; font_k <= font_max; font_k++)
-    font_used[font_k] = false;
   /* Compute the magic offset */ /* not used */
   /* begin expansion of Initialize the print |selector|... */
   initialize_selector;

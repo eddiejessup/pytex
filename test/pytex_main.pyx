@@ -9,6 +9,7 @@ import arrow
 import constants
 
 
+ctypedef long int integer
 ctypedef int boolean
 ctypedef unsigned char packed_ASCII_code
 ctypedef unsigned char ASCII_code
@@ -115,6 +116,8 @@ cdef extern from "tex_string.h":
 
 cdef extern from "trie.h":
     long trie_size
+    boolean trie_not_ready
+    void trie_xmalloc(integer size)
 
 cdef extern from "tex_io.h":
     int init_terminal()
@@ -151,6 +154,18 @@ cdef extern from "print.h":
 
 cdef extern from "mltex.h":
     boolean mltex_enabled_p
+
+cdef extern from "font.h":
+    void font_xmalloc(integer font_max)
+    void font_initialize_init()
+    boolean *font_used
+
+cdef extern from "pdffont.h":
+    void pdffont_xmalloc(integer font_max)
+    void pdffont_initialize_init(integer font_max)
+
+cdef extern from "vf.h":
+    void vf_xmalloc(integer font_max)
 
 cdef extern from "pdfxref.h":
     long obj_tab_size
@@ -444,4 +459,19 @@ def main_body_py():
     global buffer; buffer[cur_input.limit_field] = end_line_char
     if mltex_enabled_p:
         print("MLTeX v2.2 enabled")
+
+    # If initex without format loaded.
+    if trie_not_ready:
+        trie_xmalloc(trie_size)
+        # Allocate and initialize font arrays.
+        font_xmalloc(font_max)
+        pdffont_xmalloc(font_max)
+        vf_xmalloc(font_max)
+        pdffont_initialize_init(font_max)
+        font_initialize_init()
+    global font_used
+    font_used = <boolean*>malloc((font_max + 1) * sizeof(boolean))
+    for i in range(constants.font_base, font_max):
+        font_used[i] = False
+
     return main_body()
