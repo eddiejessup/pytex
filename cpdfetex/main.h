@@ -18,6 +18,7 @@ void parse_options(int, string *);
 void initialize(void);
 void init_prim(int noninit);
 void init_etex_prim(void);
+void final_cleanup(void);
 
 extern int argc;
 extern char **argv;

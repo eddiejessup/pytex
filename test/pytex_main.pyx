@@ -20,12 +20,12 @@ ctypedef unsigned char quarterword
 ctypedef int halfword
 
 cdef extern from "main.h":
-    int main_body()
     void topenin()
     void allocate_memory_for_arrays()
     void initialize()
     void init_prim(int noninit)
     void init_etex_prim()
+    void final_cleanup()
     int argc
     char **argv
     char *user_progname
@@ -36,6 +36,9 @@ cdef extern from "main.h":
 cdef extern from "mainio.h":
     int tex_input_type
     boolean open_input(FILE** file_ptr, int format, const char *mode)
+
+cdef extern from "control.h":
+    void main_control()
 
 cdef extern from "exten.h":
     int shell_enabled_p
@@ -147,6 +150,7 @@ cdef extern from "tex_io.h":
     str_number getjobname()
     void open_log_file()
     boolean input_line(FILE *f)
+    void close_files_and_terminate()
     str_number *source_filename_stack
     str_number *full_source_filename_stack
     ASCII_code *name_of_file
@@ -207,6 +211,7 @@ cdef extern from "pdfxref.h":
     long obj_tab_size
 
 cdef extern from "pdfbasic.h":
+    void read_values_from_config_file()
     long pdf_mem_size
 
 cdef extern from "pdfproc.h":
@@ -584,4 +589,11 @@ def main_body_py():
         # \input is assumed.
         start_input_py()
 
-    return main_body()
+    # Read values from config file.
+    read_values_from_config_file()
+    history = constants.spotless
+    # Come to life.
+    main_control()
+    # Prepare for death.
+    final_cleanup()
+    close_files_and_terminate()

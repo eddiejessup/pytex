@@ -1555,15 +1555,6 @@ void check_for_bad_constants() {
 
 int
 main_body (void) {
-  /* begin expansion of Read values from config file if necessary */
-  read_values_from_config_file();
-  /* end expansion of Read values from config file if necessary */
-  /* end expansion of Get the first line of input and prepare to start */
-  history = spotless; /* ready to go! */
-  main_control(); /* come to life */
-  final_cleanup(); /* prepare for death */
-  close_files_and_terminate();
-  return exit_program();
 };
 
 
