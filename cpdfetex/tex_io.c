@@ -1111,13 +1111,12 @@ void start_input_partial (void) {
 	  stop_at_space = true;
 	  end_name();
 	  name_in_progress = false;
-	  goto DONE;
+	  break;
 	};
     end_file_reading();
 	/* remove the level that didn't work */
     prompt_file_name ("input file name","");
   };
- DONE:
   NAME_FIELD = a_make_name_string (cur_file);
   source_filename_stack[in_open] = NAME_FIELD;
   full_source_filename_stack[in_open] = make_full_name_string();
