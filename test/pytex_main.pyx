@@ -3,18 +3,24 @@ from cpython.string cimport PyString_AsString
 
 import sys
 
+import arrow
+
 import constants
+
+
+ctypedef unsigned char packed_ASCII_code
 
 cdef extern from "main.h":
     int main_body()
     void allocate_memory_for_arrays()
+    void initialize()
+    void init_prim(int noninit)
     int argc
     char **argv
     char *user_progname
     long mem_top
     long mem_min
     long mem_max
-
 
 cdef extern from "exten.h":
     int shell_enabled_p
@@ -63,6 +69,14 @@ cdef extern from "tex_string.h":
     long string_vacancies
     long pool_size
     long pool_free
+    long pool_free
+    packed_ASCII_code *str_pool
+    long *str_start
+    long pool_ptr
+    long str_ptr
+    long init_pool_ptr
+    long init_str_ptr
+    long make_string()
 
 cdef extern from "trie.h":
     long trie_size
@@ -262,10 +276,41 @@ def check_for_bad_constants_py():
         raise ValueError("Internal constants have been clobbered! Bad = {}".format(bad))
 
 
+def get_strings_started_py():
+    """Initialize the string pool."""
+    global pool_ptr; pool_ptr = 0
+    global str_ptr; str_ptr = 0
+    global str_start; str_start[0] = 0
+    # The first 256 strings will each be one character.
+    for k in range(256):
+        str_pool[pool_ptr] = k
+        pool_ptr += 1
+        make_string()
+    # Make the null string.
+    make_string()
+
+
+def set_date_and_time_py():
+    now = arrow.now()
+    global tex_time; tex_time = now.hour * 60 + now.minute
+    global day; day = now.day
+    global month; month = now.month
+    global year; year = now.year
+
 def main_body_py():
     set_up_bound_variables_py()
     allocate_memory_for_arrays()
     check_for_bad_constants_py()
     # In case we quit during initialization
     global history; history = constants.fatal_error_stop
+    # get_strings_started is needed always and before initialize
+    get_strings_started_py()
+    # Set global variables to their starting values.
+    initialize()
+    # Call 'primitive' for each primitive.
+    init_prim(not ini_version)
+    if ini_version:
+        global init_str_ptr; init_str_ptr = str_ptr
+        global init_pool_ptr; init_pool_ptr = pool_ptr
+        set_date_and_time_py()
     return main_body()

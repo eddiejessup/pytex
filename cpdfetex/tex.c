@@ -1555,18 +1555,6 @@ void check_for_bad_constants() {
 
 int
 main_body (void) {	 /* |start_here| */
-  /* get_strings_started is needed always and before initialize  */
-  if (!(get_strings_started()))
-    return exit_program();
-  initialize(); /* set global variables to their starting values */
-  if (ini_version) {
-    init_prim(0); /* call |primitive| for each primitive */
-    init_str_ptr = str_ptr;
-    init_pool_ptr = pool_ptr;
-    fix_date_and_time;
-  } else {
-	init_prim(1);
-  }
  START_OF_TEX:
   /* begin expansion of Initialize the output routines */
   print_initialize ();

@@ -15,6 +15,8 @@ void allocate_memory_for_arrays(void);
 void check_for_bad_constants(void);
 int main_body (void);
 void parse_options(int, string *);
+void initialize(void);
+void init_prim(int noninit);
 
 extern int argc;
 extern char **argv;
