@@ -1,5 +1,8 @@
 banner = "PyTeX"
 
+max_reg_help_line_etex = "A register number must be between 0 and 32767."
+max_reg_num_etex = 32767
+
 # Command-line argument map
 interaction_option_map = {
     'batchmode': 0,

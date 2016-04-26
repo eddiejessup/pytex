@@ -1555,39 +1555,6 @@ void check_for_bad_constants() {
 
 int
 main_body (void) {
-  /* begin expansion of Enable \eTeX, if requested */
-  /* module 1591 */
-  /*
-   * The program has two modes of operation: (1)~In \TeX\ compatibility mode
-   * it fully deserves the name \TeX\ and there are neither extended features
-   * nor additional primitive commands. There are, however, a few
-   * modifications that would be legitimate in any implementation of \TeX\
-   * such as, e.g., preventing inadequate results of the glue to \.{DVI}
-   * unit conversion during |ship_out|. (2)~In extended mode there are
-   * additional primitive commands and the extended features of \eTeX\ are
-   * available.
-   *
-   * The distinction between these two modes of operation initially takes
-   * place when a `virgin' \.{eINITEX} starts without reading a format file.
-   * Later on the values of all \eTeX\ state variables are inherited when
-   * \.{eVIRTEX} (or \.{eINITEX}) reads a format file.
-   *
-   * The code below is designed to work for cases where `$|init|\ldots|tini|$'
-   * is a run-time switch.
-   */
-  if ((buffer[loc] == '*') && (format_ident == slow_make_tex_string(" (INITEX)"))) {
-    set_no_new_control_sequence (false);
-    /* begin expansion of Generate all \eTeX\ primitives */
-    init_etex_prim();
-    /* end expansion of Generate all \eTeX\ primitives */
-    incr (loc);
-    eTeX_mode = 1; /* enter extended mode */
-    /* begin expansion of Initialize variables for \eTeX\ extended mode */
-    /* module 1758 */
-    max_reg_num = 32767;
-    max_reg_help_line = "A register number must be between 0 and 32767.";
-    /* end expansion of Initialize variables for \eTeX\ extended mode */
-  }
   if (!is_no_new_control_sequence()) { /* just entered extended mode ? */
     set_no_new_control_sequence (true);
   } else {

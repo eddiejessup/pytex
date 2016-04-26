@@ -8,6 +8,7 @@ import arrow
 import constants
 
 
+ctypedef int boolean
 ctypedef unsigned char packed_ASCII_code
 ctypedef unsigned char ASCII_code
 ctypedef unsigned char quarterword
@@ -18,6 +19,7 @@ cdef extern from "main.h":
     void allocate_memory_for_arrays()
     void initialize()
     void init_prim(int noninit)
+    void init_etex_prim()
     int argc
     char **argv
     char *user_progname
@@ -30,6 +32,11 @@ cdef extern from "main.h":
 
 cdef extern from "exten.h":
     int shell_enabled_p
+
+cdef extern from "etex.h":
+    halfword max_reg_num
+    char *max_reg_help_line
+    unsigned char eTeX_mode
 
 cdef extern from "dump.h":
     char *dump_name
@@ -73,6 +80,7 @@ cdef extern from "globals.h":
     long dvi_buf_size
 
 cdef extern from "hash.h":
+    boolean global_no_new_control_sequence
     const int hash_prime
 
 cdef extern from "cmdchr.h":
@@ -376,4 +384,26 @@ def main_body_py():
     global cur_input; cur_input.limit_field = last
     global first; first = last + 1
 
+    # Enable eTeX if requested
+    # In extended mode there are additional primitive commands
+    # The distinction between these two modes of operation initially takes
+    # place when an eINITEX starts without reading a format file.
+    # Later, the values of all eTeX state variables are inherited when
+    # eVIRTEX or eINITEX reads a format file.
+    global loc
+    # TODO: Set if this is wanted as command-line switch.
+    etex_version = True
+    if etex_version and ini_version:
+        global_no_new_control_sequence = False
+        # Generate eTeX primitives.
+        init_etex_prim()
+        # This next line is disabled because it messed up the terminal
+        # position for reading the input file. Disable until we get to parsing
+        # the file name and can hopefully do it way better.
+        # loc += 1
+        # Initialize variables for eTeX mode. This over-rides values set already
+        # in initialize().
+        global eTeX_mode; eTeX_mode = 1
+        global max_reg_num; max_reg_num = constants.max_reg_num_etex
+        global max_reg_help_line; max_reg_help_line = constants.max_reg_help_line_etex
     return main_body()
