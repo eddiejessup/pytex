@@ -100,9 +100,12 @@ cdef extern from "cmdchr.h":
     void cmdchr_initialize()
     FILE **input_file
     in_state_record cur_input
+    # Number of lines in the buffer, minus one.
+    unsigned int in_open
     int escape
 
 cdef extern from "tex_string.h":
+    str_number search_string(str_number)
     # Maximum number of strings.
     long max_strings
     # Number of strings available after format loaded.
@@ -134,6 +137,12 @@ cdef extern from "tex_io.h":
     void begin_name()
     void end_name()
     boolean more_name(ASCII_code c)
+    str_number make_name_string()
+    str_number make_full_name_string()
+    str_number getjobname()
+    void open_log_file()
+    str_number *source_filename_stack
+    str_number *full_source_filename_stack
     ASCII_code *name_of_file
     unsigned int name_length
     str_number cur_name
@@ -446,7 +455,7 @@ def start_input_py():
     # Tell open_input we are \input.
     global tex_input_type; tex_input_type = 1
     # Kpathsea tries all the various ways to get the file.
-    open_input(&(input_file[cur_input.index_field]),
+    open_input(&input_file[cur_input.index_field],
                kpse_tex_format, constants.FOPEN_RBIN_MODE)
     # At this point name_of_file contains the actual name.
     # Extract cur_area, cur_name, and cur_ext from it.
@@ -458,6 +467,26 @@ def start_input_py():
     global stop_at_space; stop_at_space = True
     end_name()
     global name_in_progress; name_in_progress = False
+
+    cur_input.name_field = make_name_string()
+    global source_filename_stack; source_filename_stack[in_open] = cur_input.name_field
+    global full_source_filename_stack; full_source_filename_stack[in_open] = make_full_name_string()
+    # We can try to conserve string pool space now.
+    global str_ptr
+    global pool_ptr
+    if cur_input.name_field == str_ptr - 1:
+        temp_str = search_string(cur_input.name_field)
+        if temp_str > 0:
+            cur_input.name_field = temp_str
+            str_ptr -= 1
+            pool_ptr = str_start[str_ptr]
+    global jobname
+    if jobname == 0:
+        jobname = getjobname()
+        # open_log_file doesn't `show_context`,
+        # so limit and loc needn't be set to meaningful values yet.
+        open_log_file()
+
     start_input_partial()
 
 

@@ -1095,20 +1095,6 @@ start_input (void) { /* \TeX\ will \.{\\input} something */
 }
 
 void start_input_partial (void) {
-  NAME_FIELD = a_make_name_string (cur_file);
-  source_filename_stack[in_open] = NAME_FIELD;
-  full_source_filename_stack[in_open] = make_full_name_string();
-  if (NAME_FIELD == str_ptr - 1)	{/* we can try to conserve string pool space now */
-	str_number temp_str = search_string (NAME_FIELD);
-	if (temp_str > 0) {
-	  NAME_FIELD = temp_str;
-	  flush_string;
-	};
-  };
-  if (jobname == 0) {
-	jobname = getjobname();
-	open_log_file();
-  }; /* |open_log_file| doesn't |show_context|, so |limit| and |loc| needn't be set to meaningful values yet */
   if (term_offset + length (full_source_filename_stack[in_open]) > (unsigned)max_print_line - 2) {
     print_ln();
   } else if ((term_offset > 0) || (file_offset > 0)) {
