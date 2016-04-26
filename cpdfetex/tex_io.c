@@ -1095,10 +1095,6 @@ start_input (void) { /* \TeX\ will \.{\\input} something */
 }
 
 void start_input_partial (void) {
-  str_number temp_str;
-  int k;
-  scan_file_name(); /* set |cur_name| to desired file name */ 
-  pack_cur_name;
   loop {
     begin_file_reading(); /* set up |cur_file| and new level of input */ 
 	tex_input_type = 1; /* Tell |open_input| we are \.{\\input}. */
@@ -1106,7 +1102,7 @@ void start_input_partial (void) {
 	if (open_in_name_ok (stringcast (name_of_file + 1)) && a_open_in (cur_file, kpse_tex_format)) {
       /* At this point |name_of_file| contains the actual name found. 
 		 We extract the |cur_area|, |cur_name|, and |cur_ext| from it. */
-	  k = 1;
+	  int k = 1;
 	  name_in_progress = true;
 	  begin_name();
 	  stop_at_space = false;
@@ -1126,7 +1122,7 @@ void start_input_partial (void) {
   source_filename_stack[in_open] = NAME_FIELD;
   full_source_filename_stack[in_open] = make_full_name_string();
   if (NAME_FIELD == str_ptr - 1)	{/* we can try to conserve string pool space now */
-	temp_str = search_string (NAME_FIELD);
+	str_number temp_str = search_string (NAME_FIELD);
 	if (temp_str > 0) {
 	  NAME_FIELD = temp_str;
 	  flush_string;

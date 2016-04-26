@@ -11,6 +11,7 @@ import constants
 
 ctypedef long int integer
 ctypedef int boolean
+ctypedef integer str_number
 ctypedef unsigned char packed_ASCII_code
 ctypedef unsigned char ASCII_code
 ctypedef unsigned char quarterword
@@ -124,6 +125,11 @@ cdef extern from "trie.h":
 cdef extern from "tex_io.h":
     int init_terminal()
     void start_input_partial()
+    void scan_file_name()
+    void pack_file_name(str_number name, str_number area, str_number ext)
+    str_number cur_name
+    str_number cur_area
+    str_number cur_ext
     long format_default_length
     char *TEX_format_default
     # Lines of characters being read.
@@ -416,6 +422,13 @@ def initialize_etex():
     global max_reg_help_line; max_reg_help_line = constants.max_reg_help_line_etex
 
 
+def start_input_py():
+    # Set cur_name to desired file name.
+    scan_file_name()
+    pack_file_name(cur_name, cur_area, cur_ext)
+    start_input_partial()
+
+
 def main_body_py():
     set_up_bound_variables_py()
     allocate_memory_for_arrays()
@@ -486,6 +499,6 @@ def main_body_py():
 
     if loc < cur_input.limit_field and cat_code(buffer[loc]) != escape:
         # \input is assumed.
-        start_input_partial()
+        start_input_py()
 
     return main_body()
