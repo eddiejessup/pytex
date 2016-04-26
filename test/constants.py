@@ -1,5 +1,14 @@
 banner = "PyTeX"
 
+# Command-line argument map
+interaction_option_map = {
+    'batchmode': 0,
+    'nonstopmode': 1,
+    'scrollmode': 2,
+    'errorstopmode': 3,
+    'default': 4,
+}
+
 # Bounds
 mem_bot = 0
 ssup_error_line = 255
@@ -85,6 +94,8 @@ error_line = 79
 half_error_line = 50
 max_print_line = 79
 
+# FILENAME_MAX is a standard-library macro, representing the
+# maximum length of a file-name string.
 file_name_size = 256
 
 font_base = 0

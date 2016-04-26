@@ -157,17 +157,6 @@ cdef extern:
     option[] long_options
 
 
-interaction_option_map = {
-    'batchmode': 0,
-    'nonstopmode': 1,
-    'scrollmode': 2,
-    'errorstopmode': 3,
-    'default': 4,
-}
-
-# FILENAME_MAX is a standard-library macro, representing the
-# maximum length of a file-name string.
-
 cdef char **to_cstring_array(list_str):
     cdef char **ret = <char **>malloc(len(list_str) * sizeof(char *))
     for i in range(len(list_str)):
@@ -216,7 +205,7 @@ def main_init_py(av_list, parsed_args):
         dump_name = kpse_program_name
 
     global interaction_option
-    interaction_option = interaction_option_map[parsed_args.interaction]
+    interaction_option = constants.interaction_option_map[parsed_args.interaction]
 
     TEX_format_default_py = b" {}.efm".format(dump_name)
     global TEX_format_default
