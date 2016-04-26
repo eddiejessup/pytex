@@ -328,13 +328,9 @@ def set_date_and_time_py():
 def init_terminal_py():
     topenin()
     global loc
-    global first
-    if last > first:
-        loc = first
-        while loc < last and buffer[loc] == ' ':
-            loc += 1
-        if loc < last:
-            return
+    loc = first
+    while loc < last and buffer[loc] == ' ':
+        loc += 1
 
 
 def main_body_py():
