@@ -1555,17 +1555,6 @@ void check_for_bad_constants() {
 
 int
 main_body (void) {
-  if (eTeX_ex)
-    wterm_string("entering extended mode\n");
-  if (end_line_char_inactive) {
-    decr (limit);
-  } else {
-    buffer[limit] = end_line_char;
-  }
-  if (mltex_enabled_p) {
-    wterm_string ("MLTeX v2.2 enabled\n");
-  };
-  fix_date_and_time;
   if (trie_not_ready) { /* initex without format loaded */
     trie_xmalloc(trie_size);
     /* Allocate and initialize font arrays */

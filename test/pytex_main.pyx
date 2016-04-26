@@ -34,6 +34,9 @@ cdef extern from "main.h":
 cdef extern from "exten.h":
     int shell_enabled_p
 
+cdef extern from "eqtb.h":
+    long end_line_char
+
 cdef extern from "etex.h":
     halfword max_reg_num
     char *max_reg_help_line
@@ -145,6 +148,9 @@ cdef extern from "print.h":
     int tally
     unsigned int term_offset
     unsigned int file_offset
+
+cdef extern from "mltex.h":
+    boolean mltex_enabled_p
 
 cdef extern from "pdfxref.h":
     long obj_tab_size
@@ -390,6 +396,7 @@ def initialize_etex():
     global max_reg_num; max_reg_num = constants.max_reg_num_etex
     global max_reg_help_line; max_reg_help_line = constants.max_reg_help_line_etex
 
+
 def main_body_py():
     set_up_bound_variables_py()
     allocate_memory_for_arrays()
@@ -405,7 +412,7 @@ def main_body_py():
     if ini_version:
         global init_str_ptr; init_str_ptr = str_ptr
         global init_pool_ptr; init_pool_ptr = pool_ptr
-        set_date_and_time_py()
+    set_date_and_time_py()
 
     print('{} {}'.format(constants.banner, '(ini)' if ini_version else ''))
 
@@ -431,4 +438,10 @@ def main_body_py():
         global loc
         while loc < cur_input.limit_field and buffer[loc] == ' ':
             loc += 1
+
+    if eTeX_mode:
+        print("entering extended mode");
+    global buffer; buffer[cur_input.limit_field] = end_line_char
+    if mltex_enabled_p:
+        print("MLTeX v2.2 enabled")
     return main_body()
