@@ -9,6 +9,7 @@ import constants
 
 
 ctypedef unsigned char packed_ASCII_code
+ctypedef unsigned char ASCII_code
 ctypedef unsigned char quarterword
 ctypedef int halfword
 
@@ -23,6 +24,9 @@ cdef extern from "main.h":
     long mem_top
     long mem_min
     long mem_max
+
+cdef extern from "main.h":
+    void topenin()
 
 cdef extern from "exten.h":
     int shell_enabled_p
@@ -100,8 +104,11 @@ cdef extern from "tex_io.h":
     int init_terminal()
     long format_default_length
     char *TEX_format_default
+    # Lines of characters being read.
+    ASCII_code *buffer
     unsigned int first
     unsigned int last
+    unsigned int loc
     # If a file name is being scanned.
     int name_in_progress
     # Principal file name.
@@ -329,6 +336,18 @@ def set_date_and_time_py():
     global year; year = now.year
 
 
+def init_terminal_py():
+    topenin()
+    global loc
+    global first
+    if last > first:
+        loc = first
+        while loc < last and buffer[loc] == ' ':
+            loc += 1
+        if loc < last:
+            return
+
+
 def main_body_py():
     set_up_bound_variables_py()
     allocate_memory_for_arrays()
@@ -365,9 +384,10 @@ def main_body_py():
     # Get the first line of input and prepare to start.
     # When we begin the following code, TeX's tables may still contain garbage;
     # the strings might not even be present.
+    # This is initializing some globals.
     cmdchr_initialize()
-    init_terminal()
-    # `init_terminal` has set loc and last.
+    init_terminal_py()
+
     global cur_input; cur_input.limit_field = last
     global first; first = last + 1
 
