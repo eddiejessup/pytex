@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from libc.stdlib cimport malloc, free
 from libc.stdio cimport fclose, FILE
 from cpython.string cimport PyString_AsString
@@ -102,7 +104,10 @@ cdef extern from "cmdchr.h":
     in_state_record cur_input
     # Number of lines in the buffer, minus one.
     unsigned int in_open
+    # Number of open text files.
+    unsigned int open_parens
     int escape
+    int new_line
 
 cdef extern from "tex_string.h":
     str_number search_string(str_number)
@@ -446,6 +451,16 @@ def initialize_etex():
     global max_reg_help_line; max_reg_help_line = constants.max_reg_help_line_etex
 
 
+def char_index_to_string(char_index):
+    return chr(str_pool[char_index])
+
+def string_index_to_string(string_index):
+    char_indexes = range(str_start[string_index], str_start[string_index + 1])
+    char_strings = (char_index_to_string(char_index)
+                    for char_index in char_indexes)
+    return ''.join(char_strings)
+
+
 def start_input_py():
     # Set cur_name to desired file name.
     scan_file_name()
@@ -477,6 +492,11 @@ def start_input_py():
         # open_log_file doesn't `show_context`,
         # so limit and loc needn't be set to meaningful values yet.
         open_log_file()
+
+    filename = string_index_to_string(full_source_filename_stack[in_open])
+    print('({}'.format(filename), end='')
+    global open_parens; open_parens += 1
+    cur_input.state_field = new_line
 
     start_input_partial()
 

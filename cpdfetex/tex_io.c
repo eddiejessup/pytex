@@ -1095,16 +1095,6 @@ start_input (void) { /* \TeX\ will \.{\\input} something */
 }
 
 void start_input_partial (void) {
-  if (term_offset + length (full_source_filename_stack[in_open]) > (unsigned)max_print_line - 2) {
-    print_ln();
-  } else if ((term_offset > 0) || (file_offset > 0)) {
-    print_char (' ');
-  }
-  print_char ('(');
-  incr (open_parens);
-  slow_print (full_source_filename_stack[in_open]);
-  update_terminal;
-  STATE_FIELD = new_line;
   /* begin expansion of Read the first line of the new file */
   /* module 538 */
   /* Here we have to remember to tell the |input_ln| routine not to
