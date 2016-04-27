@@ -10,7 +10,7 @@ tags
 *.pyc
 
 # Build directory
-built/
+built
 
 # TeX output and auxiliary files
 *.dvi
@@ -67,4 +67,4 @@ texutil/texutil
 cpdfetex/cpdfetex
 
 # Cython auxiliary files
-pytex_main.c
+pytex_main.cpp
