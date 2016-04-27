@@ -30,7 +30,7 @@ extern const_string job_name;
  * |name_of_file|.
  */
 
-text_char  *name_of_file;
+string name_of_file;
 unsigned int name_length; /* this many characters are actually relevant in 
 							 |name_of_file| (the rest are blank) */
 /* module 29 */
@@ -497,12 +497,12 @@ end_name (void) {
 void
 pack_file_name (str_number n, str_number a, str_number e) {
   integer k; /* number of positions filled in |name_of_file| */ 
-  ASCII_code c; /* character being packed */ 
+  char c; /* character being packed */ 
   pool_pointer j; /* index into |str_pool| */ 
   k = 0;
   if (name_of_file)
     libc_free (name_of_file);
-  name_of_file = xmalloc_array (ASCII_code, length (a) + length (n) + length (e) + 1);
+  name_of_file = xmalloc_array (char, length (a) + length (n) + length (e) + 1);
   for (j = str_start[a]; j <= str_start[a + 1] - 1; j++)
     append_to_name (str_pool[j]);
   for (j = str_start[n]; j <= str_start[n + 1] - 1; j++)
@@ -533,14 +533,14 @@ pack_file_name (str_number n, str_number a, str_number e) {
 void
 pack_buffered_name (small_number n, int a, int b) {
   int k; /* number of positions filled in |name_of_file| */ 
-  ASCII_code c; /* character being packed */ 
+  char c; /* character being packed */ 
   int j; /* index into |buffer| or |TEX_format_default| */ 
   if (n + b - a + 1 + format_ext_length > file_name_size)
     b = a + file_name_size - n - 1 - format_ext_length;
   k = 0;
   if (name_of_file)
     libc_free (name_of_file);
-  name_of_file = xmalloc_array (ASCII_code, n + (b - a + 1) + format_ext_length + 1);
+  name_of_file = xmalloc_array (char, n + (b - a + 1) + format_ext_length + 1);
   for (j = 1; j <= n; j++)
     append_to_name (Xord((integer)TEX_format_default[j]));
   for (j = a; j <= b; j++)

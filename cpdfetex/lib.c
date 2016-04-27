@@ -93,7 +93,7 @@ open_input (FILE ** f_ptr,  int filefmt,  const_string fopen_mode) {
          is overkill as well.  A more general solution would be nice. */
       boolean must_exist = (filefmt != kpse_tex_format || tex_input_type)
               && (filefmt != kpse_vf_format);
-      text_char *fname = kpse_find_file (name_of_file + 1,
+      string fname = kpse_find_file (name_of_file + 1,
                                      (kpse_file_format_type)filefmt,
                                      must_exist);
 

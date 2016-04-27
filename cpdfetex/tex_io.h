@@ -66,7 +66,7 @@ EXTERN FILE *log_file; /* transcript of \TeX\ session */
 /* module 71 */
 #define prompt_input( arg ) { wake_up_terminal ; zprint_string ( arg ); term_input() ;}
 
-EXTERN text_char *name_of_file;
+EXTERN string name_of_file;
 EXTERN unsigned int name_length;
 
 EXTERN ASCII_code *buffer;
