@@ -29,9 +29,6 @@ objects = $(sources:.c=.o)
 TEX_ARGS = $(objects) pdftex/libpdf.a  $(kpathsea) $(LIBXPDF) $(LIBPNG) $(LIBZLIB) $(LOADLIBES)
 TEX_DEPS = $(headers) $(objects) tex_deps
 
-cpdfetex: $(TEX_DEPS)
-	$(CXX_LINK) $(TEX_ARGS)
-
 libcpdfetex.so: $(TEX_DEPS)
 	$(CXX_LINK) -shared $(TEX_ARGS)
 
