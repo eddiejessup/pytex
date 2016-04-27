@@ -4,7 +4,7 @@ VERSION=0.51
 .PHONY: all clean
 
 all:
-	cd texk/kpathsea && ./configure && $(MAKE)
+	cd texk/kpathsea && $(MAKE)
 	cd cpdfetex && $(MAKE) libcpdfetex.so
 	cd texutil  && $(MAKE) texutil && cp texutil  ../built
 	cd texutil  && $(MAKE) texexec && cp texexec  ../built
