@@ -147,7 +147,7 @@ extern int first_count; /* another variable for pseudoprinting */
 #define advance 90
 #define multiply 91
 #define divide 92
-#define prefix 93
+#define PREFIX_CODE 93
 #define let 94
 #define shorthand_def 95
 #define read_to_cs 96

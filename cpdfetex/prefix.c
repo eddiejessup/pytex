@@ -217,7 +217,7 @@ do_register_command (small_number a) {
 void 
 alter_aux (void) {
   halfword c; /* |hmode| or |vmode| */ 
-  if (cur_chr != abs (mode)) {
+  if (cur_chr != abs (MODE_FIELD)) {
 	report_illegal_case();
   } else {
 	c = cur_chr;
@@ -416,7 +416,7 @@ prefixed_command (void) {
   int n; /* ditto */ 
   boolean e; /* should a definition be expanded? or was \.{\\let} not done? */
   a = 0;
-  while (cur_cmd == prefix) {
+  while (cur_cmd == PREFIX_CODE) {
 	if (!odd (a / cur_chr))
 	  a = a + cur_chr;
 	/* Get the next non-blank non-relax non-call token */

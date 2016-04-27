@@ -24,7 +24,7 @@ void
 append_penalty (void) {
   scan_int();
   tail_append (new_penalty (cur_val));
-  if (mode == vmode)
+  if (MODE_FIELD == vmode)
 	build_page();
 };
 

@@ -235,16 +235,16 @@ conditional (void) {
 	/* end expansion of Test if an integer is odd */
 	break;
   case if_vmode_code:
-	b = (abs (mode) == vmode);
+	b = (abs (MODE_FIELD) == vmode);
 	break;
   case if_hmode_code:
-	b = (abs (mode) == hmode);
+	b = (abs (MODE_FIELD) == hmode);
 	break;
   case if_mmode_code:
-	b = (abs (mode) == mmode);
+	b = (abs (MODE_FIELD) == mmode);
 	break;
   case if_inner_code:
-	b = (mode < 0);
+	b = (MODE_FIELD < 0);
 	break;
   case if_void_code:
   case if_hbox_code:

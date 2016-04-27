@@ -37,7 +37,7 @@ void just_copy (pointer, pointer, pointer);
 /* module 1687 */
 /* Retrieve the prototype box */
 #define get_prototype_box \
-  if (mode == mmode)      \
+  if (MODE_FIELD == mmode)      \
 	j = LR_box
 
 
@@ -59,7 +59,7 @@ insert_dollar_sign (void) {
  * The routines that \TeX\ uses to create mlists are similar to those we have
  * just seen for the generation of hlists and vlists. But it is necessary to
  * make ``noads'' as well as nodes, so the reader should review the
- * discussion of math mode data structures before trying to make sense out of
+ * discussion of math MODE_FIELD data structures before trying to make sense out of
  * the following program.
  * 
  * Here is a little routine that needs to be done whenever a subformula
@@ -68,13 +68,13 @@ insert_dollar_sign (void) {
 void 
 push_math (group_code c) {
   push_nest();
-  mode = -mmode;
+  MODE_FIELD = -mmode;
   incompleat_noad = null;
   new_save_level (c);
 };
 
 /* module 1284 */
-/* Go into ordinary math mode */
+/* Go into ordinary math MODE_FIELD */
 #define start_normal_math {                          \
   push_math (math_shift_group);                      \
   eq_word_define (int_base + cur_fam_code, -1);      \
@@ -99,10 +99,10 @@ init_math (void) {
   scaled v; /* |w| plus possible glue amount */ 
   scaled d; /* increment to |v| */ 
   get_token(); /* |get_x_token| would fail on \.{\\ifmmode}\thinspace! */
-  if ((cur_cmd == math_shift) && (mode > 0)) {
-	/* begin expansion of Go into display math mode */
+  if ((cur_cmd == math_shift) && (MODE_FIELD > 0)) {
+	/* begin expansion of Go into display math MODE_FIELD */
 	/* module 1290 */
-	/* When we enter display math mode, we need to call |line_break| to
+	/* When we enter display math MODE_FIELD, we need to call |line_break| to
 	 * process the partial paragraph that has just been interrupted by the
 	 * display. Then we can set the proper values of |display_width| and
 	 * |display_indent| and |pre_display_size|.
@@ -316,7 +316,7 @@ init_math (void) {
 	  /* end expansion of Finish the natural width computation */
 	  /* end expansion of Calculate the natural width, |w|, by which th ...*/
 	};
-	/* now we are in vertical mode, working on the list that will contain the display */
+	/* now we are in vertical MODE_FIELD, working on the list that will contain the display */
 	/* begin expansion of Calculate the length, |l|, and the shift amount, |s|, of the display lines */
 	/* module 1294 */
 	/* A displayed equation is considered to be three lines long, so we
@@ -346,7 +346,7 @@ init_math (void) {
 	  l = mem[p].sc;
 	  /* end expansion of Calculate the length, |l|, and the shift amount, |s|, ...*/
 	  push_math (math_shift_group);
-	  mode = mmode;
+	  MODE_FIELD = mmode;
 	  eq_word_define (int_base + cur_fam_code, -1);
 	  eq_word_define (dimen_base + pre_display_size_code, w);
 	  LR_box = j;
@@ -358,18 +358,18 @@ init_math (void) {
 		begin_token_list (every_display, every_display_text);
 	  if (nest_ptr == 1)
 		build_page();
-	  /* end expansion of Go into display math mode */
+	  /* end expansion of Go into display math MODE_FIELD */
 	}
   } else  {
 	back_input();
-	/* Go into ordinary math mode */
+	/* Go into ordinary math MODE_FIELD */
     start_normal_math;
   };
 };
 
 
 /* module 1287 */
-/* When \TeX\ is in display math mode, |cur_group=math_shift_group|,
+/* When \TeX\ is in display math MODE_FIELD, |cur_group=math_shift_group|,
  * so it is not necessary for the |start_eq_no| procedure to test for
  * this condition.
  */
@@ -378,7 +378,7 @@ void
 start_eq_no (void) {
   saved (0) = cur_chr;
   incr (save_ptr);
-  /* Go into ordinary math mode */
+  /* Go into ordinary math MODE_FIELD */
   start_normal_math;
 }
 
@@ -869,10 +869,10 @@ after_math (void) {
   /* Check that the necessary fonts for math symbols are present; 
 	 if not, flush the current math lists and set |danger:=true| */
   check_math_fonts;
-  m = mode;
+  m = MODE_FIELD;
   l = false;
   p = fin_mlist (null); /* this pops the nest */ 
-  if (mode == -m) { /* end of equation number */
+  if (MODE_FIELD == -m) { /* end of equation number */
 	/* Check that another \.\$ follows */
     check_for_dollar;
 	cur_mlist = p;
@@ -891,7 +891,7 @@ after_math (void) {
 	/* Check that the necessary fonts for math symbols are present; 
 	   if not, flush the current math lists and set |danger:=true| */
 	check_math_fonts;
-	m = mode;
+	m = MODE_FIELD;
 	p = fin_mlist (null);
   } else {
 	a = null;
@@ -908,7 +908,7 @@ after_math (void) {
 	tail_append (new_math (math_surround, before));
 	cur_mlist = p;
 	cur_style = text_style;
-	mlist_penalties = (mode > 0);
+	mlist_penalties = (MODE_FIELD > 0);
 	mlist_to_hlist();
 	link (tail) = link (temp_head);
 	while (link (tail) != null)
@@ -926,7 +926,7 @@ after_math (void) {
 	  /* module 1344 */
 	  /* At this time |p| points to the mlist for the formula; |a| is either
 	   * |null| or it points to a box containing the equation number; and we are in
-	   * vertical mode (or internal vertical mode).
+	   * vertical MODE_FIELD (or internal vertical MODE_FIELD).
 	   */
 	  cur_mlist = p;
 	  cur_style = display_style;

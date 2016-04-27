@@ -560,7 +560,7 @@ fire_up (pointer c) {
 	  output_active = true;
 	  incr (dead_cycles);
 	  push_nest();
-	  mode = -vmode;
+	  MODE_FIELD = -vmode;
 	  prev_depth = ignore_depth;
 	  mode_line = -line;
 	  begin_token_list (output_routine, output_text);

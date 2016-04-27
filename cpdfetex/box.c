@@ -94,7 +94,7 @@ void box_end (int my_box_context) {
 	 */
 	if (cur_box != null) {
 	  shift_amount (cur_box) = my_box_context;
-	  if (abs (mode) == vmode) {
+	  if (abs (MODE_FIELD) == vmode) {
 		if (pre_adjust_tail != null) {
 		  if (pre_adjust_head != pre_adjust_tail)
 			append_list (pre_adjust_head,pre_adjust_tail);
@@ -106,10 +106,10 @@ void box_end (int my_box_context) {
 			append_list (adjust_head,adjust_tail);
 		  adjust_tail = null;
 		};
-		if (mode > 0)
+		if (MODE_FIELD > 0)
 		  build_page();
 	  } else {
-		if (abs (mode) == hmode) {
+		if (abs (MODE_FIELD) == hmode) {
 		  space_factor = 1000;
 		} else {
 		  p = new_noad();
@@ -143,9 +143,9 @@ void box_end (int my_box_context) {
 	  /* module 1223 */
 	  /* Get the next non-blank non-relax non-call token */
 	  get_nblank_nrelax_ncall;
-	  if (((cur_cmd == hskip) && (abs (mode) != vmode))
-		  || ((cur_cmd == vskip) && (abs (mode) == vmode))
-		  || ((cur_cmd == mskip) && (abs (mode) == mmode))) {
+	  if (((cur_cmd == hskip) && (abs (MODE_FIELD) != vmode))
+		  || ((cur_cmd == vskip) && (abs (MODE_FIELD) == vmode))
+		  || ((cur_cmd == mskip) && (abs (MODE_FIELD) == mmode))) {
 		append_glue();
 		subtype (tail) = my_box_context - (leader_flag - a_leaders);
 		leader_ptr (tail) = cur_box;
@@ -198,11 +198,11 @@ begin_box (int box_context) {
 	 * A final \.{\\endM} node is temporarily removed.
 	 */
 	cur_box = null;
-	if (abs (mode) == mmode) {
+	if (abs (MODE_FIELD) == mmode) {
 	  you_cant();
 	  help1 ("Sorry; this \\lastbox will be void.");
 	  error();
-	} else if ((mode == vmode) && (head == tail)) {
+	} else if ((MODE_FIELD == vmode) && (head == tail)) {
 	  you_cant();
 	  help2 ("Sorry...I usually can't take things from the current page.",
 			 "This \\lastbox will therefore be void.");
@@ -266,7 +266,7 @@ begin_box (int box_context) {
 	k = cur_chr - vtop_code;
 	saved (0) = box_context;
 	if (k == hmode) {
-	  if ((box_context < box_flag) && (abs (mode) == vmode)) {
+	  if ((box_context < box_flag) && (abs (MODE_FIELD) == vmode)) {
 		scan_spec (adjusted_hbox_group, true);
 	  } else {
 		scan_spec (hbox_group, true);
@@ -281,7 +281,7 @@ begin_box (int box_context) {
 	  normal_paragraph();
 	};
 	push_nest();
-	mode = -k;
+	MODE_FIELD = -k;
 	if (k == vmode) {
 	  prev_depth = ignore_depth;
 	  if (every_vbox != null)
@@ -326,7 +326,7 @@ package (small_number c) {
   d = box_max_depth;
   unsave();
   save_ptr = save_ptr - 3;
-  if (mode == -hmode) {
+  if (MODE_FIELD == -hmode) {
 	cur_box = hpack (link (head), saved (2), saved (1));
   } else {
 	cur_box = vpackage (link (head), saved (2), saved (1), d);
@@ -371,9 +371,9 @@ unpackage (void) {
   fetch_box (p);
   if (p == null)
 	return;
-  if ((abs (mode) == mmode)
-	  || ((abs (mode) == vmode) && (type (p) != vlist_node))
-	  || ((abs (mode) == hmode) && (type (p) != hlist_node))) {
+  if ((abs (MODE_FIELD) == mmode)
+	  || ((abs (MODE_FIELD) == vmode) && (type (p) != vlist_node))
+	  || ((abs (MODE_FIELD) == hmode) && (type (p) != hlist_node))) {
 	print_err ("Incompatible list can't be unboxed");
 	help3 ("Sorry, Pandora. (You sneaky devil.)",
 		   "I refuse to unbox an \\hbox in vertical mode or vice versa.",

@@ -285,7 +285,7 @@ void init_align (void) {
   /* When \.{\\halign} is used as a displayed formula, there should be
    * no other pieces of mlists present.
    */
-  if ((mode == mmode) && ((tail != head) || (incompleat_noad != null))) {
+  if ((MODE_FIELD == mmode) && ((tail != head) || (incompleat_noad != null))) {
     print_err ("Improper ");
     print_esc_string ("halign");
     zprint_string(" inside $$'s");
@@ -304,12 +304,12 @@ void init_align (void) {
    * enclosing vertical mode for the |prev_depth| value that produces the
    * correct baseline calculations.
    */
-  if (mode == mmode) {
-    mode = -vmode;
+  if (MODE_FIELD == mmode) {
+    MODE_FIELD = -vmode;
     prev_depth = nest[nest_ptr - 2].aux_field.sc;
   }
-  else if (mode > 0) {
-    negate (mode);
+  else if (MODE_FIELD > 0) {
+    negate (MODE_FIELD);
   }
   /* end expansion of Change current mode to |-vmode| for \.{\\halign}, |-hmode| for \.{\\valign} */
   scan_spec (align_group, false);
@@ -457,7 +457,7 @@ get_preamble_token (void) {
 void 
 init_span (pointer p) {
   push_nest();
-  if (mode == -hmode) {
+  if (MODE_FIELD == -hmode) {
     space_factor = 1000;
   } else {
     prev_depth = ignore_depth;
@@ -469,8 +469,8 @@ init_span (pointer p) {
 void 
 init_row (void) {
   push_nest();
-  mode = (-hmode - vmode) - mode;
-  if (mode == -hmode) {
+  MODE_FIELD = (-hmode - vmode) - MODE_FIELD;
+  if (MODE_FIELD == -hmode) {
     space_factor = 0;
   } else {
     prev_depth = 0;
@@ -608,7 +608,7 @@ fin_col (void) {
     new_save_level (align_group);
     /* begin expansion of Package an unset box for the current column and record its width */
     /* module 940 */
-    if (mode == -hmode) {
+    if (MODE_FIELD == -hmode) {
       adjust_tail = cur_tail;
       pre_adjust_tail = cur_pre_tail;
       u = hpack (link (head), 0, additional);
@@ -692,7 +692,7 @@ fin_col (void) {
 void 
 fin_row (void) {
   pointer p; /* the new unset box */ 
-  if (mode == -hmode) {
+  if (MODE_FIELD == -hmode) {
     p = hpack (link (head), 0, additional);
     pop_nest();
     if (cur_pre_head != cur_pre_tail)
@@ -843,7 +843,7 @@ fin_align (void) {
    */
   save_ptr = save_ptr - 2;
   pack_begin_line = -mode_line;
-  if (mode == -vmode) {
+  if (MODE_FIELD == -vmode) {
     rule_save = overfull_rule;
     overfull_rule = 0; /* prevent rule from being packaged */ 
     p = hpack (preamble, saved (1), saved (0));
@@ -877,7 +877,7 @@ fin_align (void) {
 		/* The unset box |q| represents a row that contains one or more unset boxes,
 		 * depending on how soon \.{\\cr} occurred in that row.
 		 */
-		if (mode == -vmode) {
+		if (MODE_FIELD == -vmode) {
 		  type (q) = hlist_node;
 		  width (q) = width (p);
 		  if (nest[nest_ptr - 1].mode_field == mmode)
@@ -927,7 +927,7 @@ fin_align (void) {
 			link (u) = new_null_box();
 			u = link (u);
 			t = t + width (s);
-			if (mode == -vmode){
+			if (MODE_FIELD == -vmode){
 			  width (u) = width (s);
 			} else {
 			  type (u) = vlist_node;
@@ -935,7 +935,7 @@ fin_align (void) {
 			}
 			/* end expansion of Append tabskip glue and an empty box to list |u|, and update |s|..*/
 		  };
-		  if (mode == -vmode) {
+		  if (MODE_FIELD == -vmode) {
 			/* begin expansion of Make the unset node |r| into an |hlist_node| of width |w|,
 			   setting the glue as if the width were |t| */
 			/* module 954 */
@@ -1050,7 +1050,7 @@ fin_align (void) {
   p = link (head);
   q = tail;
   pop_nest();
-  if (mode == mmode) {
+  if (MODE_FIELD == mmode) {
     /* begin expansion of Finish an alignment in a display */
     /* module 1351 */
     /* When \.{\\halign} appears in a display, the alignment routines operate
@@ -1088,7 +1088,7 @@ fin_align (void) {
     link (tail) = p;
     if (p != null)
       tail = q;
-    if (mode == vmode)
+    if (MODE_FIELD == vmode)
       build_page();
   };
   /* end expansion of Insert the \(c)current list into its environment */
@@ -1116,7 +1116,7 @@ align_peek (void) {
   if (cur_cmd == no_align) {
     scan_left_brace();
     new_save_level (no_align_group);
-    if (mode == -vmode)
+    if (MODE_FIELD == -vmode)
       normal_paragraph();
   } else if (cur_cmd == right_brace) {
     fin_align();

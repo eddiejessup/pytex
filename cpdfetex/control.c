@@ -44,11 +44,11 @@ boolean ins_disc; /* should we insert a discretionary node? */
  * called |BIG_SWITCH|, at which point the next token of input is fetched
  * using |get_x_token|. Then the program branches at high speed into one of
  * about 100 possible directions, based on the value of the current
- * mode and the newly fetched command code; the sum |abs(mode)+cur_cmd|
+ * MODE_FIELD and the newly fetched command code; the sum |abs(MODE_FIELD)+cur_cmd|
  * indicates what to do next. For example, the case `|vmode+letter|' arises
- * when a letter occurs in vertical mode (or internal vertical mode); this
+ * when a letter occurs in vertical MODE_FIELD (or internal vertical MODE_FIELD); this
  * case leads to instructions that initialize a new paragraph and enter
- * horizontal mode.
+ * horizontal MODE_FIELD.
  * 
  * The big |case| statement that contains this multiway switch has been labeled
  * |reswitch|, so that the program can |goto reswitch| when the next token
@@ -83,7 +83,7 @@ boolean ins_disc; /* should we insert a discretionary node? */
  * do want the inner loop to be fast.
  * 
  * A discretionary break is not inserted for an explicit hyphen when we are in
- * restricted horizontal mode. In particular, this avoids putting discretionary
+ * restricted horizontal MODE_FIELD. In particular, this avoids putting discretionary
  * nodes inside of other discretionaries.
  */
 /* Make a ligature node, if |ligature_present|; insert a null discretionary, if appropriate */
@@ -102,7 +102,7 @@ boolean ins_disc; /* should we insert a discretionary node? */
           if (  link ( cur_q ) >  null  )  { ins_disc   =  true ; }}         \
         if (  ligature_present  )   pack_lig ( arg );                        \
         if (  ins_disc  )  { ins_disc   =  false ;                           \
-          if (  mode  > 0  )   tail_append ( new_disc ());};}
+          if (  MODE_FIELD  > 0  )   tail_append ( new_disc ());};}
 
 
 /* module 1177 */
@@ -155,7 +155,7 @@ main_control (void) {	 /* governs \TeX's activities */
   if (tracing_commands > 0)
 	show_cur_cmd_chr();
   /* end expansion of Give diagnostic information, if requested */
-  switch (abs (mode) + cur_cmd) {
+  switch (abs (MODE_FIELD) + cur_cmd) {
   case hmode + letter:
   case hmode + other_char:
   case hmode + char_given:
@@ -209,11 +209,11 @@ main_control (void) {	 /* governs \TeX's activities */
 	/* module 1193 */
 	/* When erroneous situations arise, \TeX\ usually issues an error message
 	 * specific to the particular error. For example, `\.{\\noalign}' should
-	 * not appear in any mode, since it is recognized by the |align_peek| routine
+	 * not appear in any MODE_FIELD, since it is recognized by the |align_peek| routine
 	 * in all of its legitimate appearances; a special error message is given
 	 * when `\.{\\noalign}' occurs elsewhere. But sometimes the most appropriate
 	 * error message is simply that the user is not allowed to do what he or she
-	 * has attempted. For example, `\.{\\moveleft}' is allowed only in vertical mode,
+	 * has attempted. For example, `\.{\\moveleft}' is allowed only in vertical MODE_FIELD,
 	 * and `\.{\\lower}' only in non-vertical modes. Such cases are enumerated
 	 * here and in the other sections referred to under `See also \dots.'
 	 */
@@ -234,7 +234,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	/* begin expansion of Math-only cases in non-math modes, or vice versa */
 	/* module 1191 */
 	/* Here is a list of cases where the user has probably gotten into or out of math
-	 * mode by mistake. \TeX\ will insert a dollar sign and rescan the current token.
+	 * MODE_FIELD by mistake. \TeX\ will insert a dollar sign and rescan the current token.
 	 */
   case NON_MATH (sup_mark):
   case NON_MATH (sub_mark):
@@ -274,21 +274,21 @@ main_control (void) {	 /* governs \TeX's activities */
 	 */	
 	/* module 1201 */
 	/* As an introduction to these routines, let's consider one of the simplest
-	 * cases: What happens when `\.{\\hrule}' occurs in vertical mode, or
-	 * `\.{\\vrule}' in horizontal mode or math mode? The code in |main_control|
+	 * cases: What happens when `\.{\\hrule}' occurs in vertical MODE_FIELD, or
+	 * `\.{\\vrule}' in horizontal MODE_FIELD or math MODE_FIELD? The code in |main_control|
 	 * is short, since the |scan_rule_spec| routine already does most of what is
 	 * required; thus, there is no need for a special action procedure.
 	 * 
 	 * Note that baselineskip calculations are disabled after a rule in vertical
-	 * mode, by setting |prev_depth:=ignore_depth|.
+	 * MODE_FIELD, by setting |prev_depth:=ignore_depth|.
 	 */
   case vmode + hrule:
   case hmode + vrule:
   case mmode + vrule:
 	tail_append (scan_rule_spec());
-	if (abs (mode) == vmode) {
+	if (abs (MODE_FIELD) == vmode) {
 	  prev_depth = ignore_depth;
-	} else if (abs (mode) == hmode) {
+	} else if (abs (MODE_FIELD) == hmode) {
 	  space_factor = 1000;
 	};
 	break;
@@ -311,15 +311,15 @@ main_control (void) {	 /* governs \TeX's activities */
 	/* module 1207 */
 	/* Many of the actions related to box-making are triggered by the appearance
 	 * of braces in the input. For example, when the user says `\.{\\hbox}
-	 * \.{to} \.{100pt\{$\langle\,\hbox{hlist}\,\rangle$\}}' in vertical mode,
+	 * \.{to} \.{100pt\{$\langle\,\hbox{hlist}\,\rangle$\}}' in vertical MODE_FIELD,
 	 * the information about the box size (100pt, |exactly|) is put onto |save_stack|
 	 * with a level boundary word just above it, and |cur_group:=adjusted_hbox_group|;
-	 * \TeX\ enters restricted horizontal mode to process the hlist. The right
+	 * \TeX\ enters restricted horizontal MODE_FIELD to process the hlist. The right
 	 * brace eventually causes |save_stack| to be restored to its former state,
 	 * at which time the information about the box size (100pt, |exactly|) is
 	 * available once again; a box is packaged and we leave restricted horizontal
-	 * mode, appending the new box to the current list of the enclosing mode
-	 * (in this case to the current list of vertical mode), followed by any
+	 * MODE_FIELD, appending the new box to the current list of the enclosing MODE_FIELD
+	 * (in this case to the current list of vertical MODE_FIELD), followed by any
 	 * vertical adjustments that were removed from the box by |hpack|.
 	 * 
 	 * The next few sections of the program are therefore concerned with the
@@ -328,7 +328,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	/* module 1208 */
 	/* If a left brace occurs in the middle of a page or paragraph, it simply
 	 * introduces a new level of grouping, and the matching right brace will not have
-	 * such a drastic effect. Such grouping affects neither the mode nor the
+	 * such a drastic effect. Such grouping affects neither the MODE_FIELD nor the
 	 * current list.
 	 */
   case NON_MATH (left_brace):
@@ -404,19 +404,19 @@ main_control (void) {	 /* governs \TeX's activities */
 	break;
 	/* module 1239 */
 	/* A paragraph ends when a |par_end| command is sensed, or when we are in
-	 * horizontal mode when reaching the right brace of vertical-mode routines
+	 * horizontal MODE_FIELD when reaching the right brace of vertical-MODE_FIELD routines
 	 * like \.{\\vbox}, \.{\\insert}, or \.{\\output}.
 	 */
   case vmode + par_end:
 	normal_paragraph();
-	if (mode > 0)
+	if (MODE_FIELD > 0)
 	  build_page();
 	break;
   case hmode + par_end:
 	if (align_state < 0)
 	  off_save();	  /* this tries to recover from an alignment that didn't end properly */
-	end_graf(); /* this takes us to the enclosing mode, if |mode>0| */
-	if (mode == vmode)
+	end_graf(); /* this takes us to the enclosing MODE_FIELD, if |MODE_FIELD>0| */
+	if (MODE_FIELD == vmode)
 	  build_page();
 	break;
   case hmode + stop:
@@ -446,10 +446,10 @@ main_control (void) {	 /* governs \TeX's activities */
 	/* module 1249 */
 	/* The |remove_item| command removes a penalty, kern, or glue node if it
 	 * appears at the tail of the current list, using a brute-force linear scan.
-	 * Like \.{\\lastbox}, this command is not allowed in vertical mode (except
-	 * internal vertical mode), since the current list in vertical mode is sent
+	 * Like \.{\\lastbox}, this command is not allowed in vertical MODE_FIELD (except
+	 * internal vertical MODE_FIELD), since the current list in vertical MODE_FIELD is sent
 	 * to the page builder. But if we happen to be able to implement it in
-	 * vertical mode, we do.
+	 * vertical MODE_FIELD, we do.
 	 */
   case ANY_MODE (remove_item):
 	delete_last();
@@ -463,7 +463,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	break;
 	/* module 1257 */	
 	/* Italic corrections are converted to kern nodes when the |ital_corr| command
-	 * follows a character. In math mode the same effect is achieved by appending
+	 * follows a character. In math MODE_FIELD the same effect is achieved by appending
 	 * a kern of zero here, since italic corrections are supplied later.
 	 */
   case hmode + ital_corr:
@@ -478,7 +478,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	append_discretionary();
 	break;
 	/* module 1267 */
-	/* We need only one more thing to complete the horizontal mode routines, namely
+	/* We need only one more thing to complete the horizontal MODE_FIELD routines, namely
 	 * the \.{\\accent} primitive.
 	 */
   case hmode + accent:
@@ -543,16 +543,16 @@ main_control (void) {	 /* governs \TeX's activities */
 	cs_error();
 	break;
 	/* module 1282 */
-	/* We get into math mode from horizontal mode when a `\.\$' (i.e., a
+	/* We get into math MODE_FIELD from horizontal MODE_FIELD when a `\.\$' (i.e., a
 	 * |math_shift| character) is scanned. We must check to see whether this
-	 * `\.\$' is immediately followed by another, in case display math mode is
+	 * `\.\$' is immediately followed by another, in case display math MODE_FIELD is
 	 * called for.
 	 */
 	case hmode + math_shift:
 	  init_math();
 	  break;
 	  /* module 1285 */
-	  /* We get into ordinary math mode from display math mode when `\.{\\eqno}' or
+	  /* We get into ordinary math MODE_FIELD from display math MODE_FIELD when `\.{\\eqno}' or
 	   * `\.{\\leqno}' appears. In such cases |cur_chr| will be 0 or~1, respectively;
 	   * the value of |cur_chr| is placed onto |save_stack| for safe keeping.
 	   */
@@ -566,7 +566,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	}
 	break;
 	/* module 1295 */
-	/* Subformulas of math formulas cause a new level of math mode to be entered,
+	/* Subformulas of math formulas cause a new level of math MODE_FIELD to be entered,
 	 * on the semantic nest as well as the save stack. These subformulas arise in
 	 * several ways: (1)~A left brace by itself indicates the beginning of a
 	 * subformula that will be put into a box, thereby freezing its glue and
@@ -636,7 +636,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	scan_spec (vcenter_group, false);
 	normal_paragraph();
 	push_nest();
-	mode = -vmode;
+	MODE_FIELD = -vmode;
 	prev_depth = ignore_depth;
 	if (every_vbox != null)
 	  begin_token_list (every_vbox, every_vbox_text);
@@ -671,7 +671,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	math_left_right();
 	break;
 	/* module 1338 */
-	/* Here is the only way out of math mode. */
+	/* Here is the only way out of math MODE_FIELD. */
   case mmode + math_shift:
 	if (cur_group == math_shift_group) {
 	  after_math();
@@ -680,7 +680,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	}
 	break;
 	/* end expansion of Cases of |main_control| that build boxes and lists */
-	/* begin expansion of Cases of |main_control| that don't depend on |mode| */
+	/* begin expansion of Cases of |main_control| that don't depend on |MODE_FIELD| */
 	/* module 1355 */
 	/* Every prefix, and every command code that might or might not be prefixed,
 	 * calls the action procedure |prefixed_command|. This routine accumulates
@@ -709,7 +709,7 @@ main_control (void) {	 /* governs \TeX's activities */
   case ANY_MODE (advance):
   case ANY_MODE (multiply):
   case ANY_MODE (divide):
-  case ANY_MODE (prefix):
+  case ANY_MODE (PREFIX_CODE):
   case ANY_MODE (let):
   case ANY_MODE (shorthand_def):
   case ANY_MODE (read_to_cs):
@@ -735,7 +735,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	break;
 	/* module 1421 */
 	/* The user can issue messages to the terminal, regardless of the
-	 * current mode.
+	 * current MODE_FIELD.
 	 */
   case ANY_MODE (MESSAGE_CODE):
 	issue_message();
@@ -754,10 +754,10 @@ main_control (void) {	 /* governs \TeX's activities */
   case ANY_MODE (xray):
 	show_whatever();
 	break;
-	/* end expansion of Cases of |main_control| that don't depend on |mode| */
+	/* end expansion of Cases of |main_control| that don't depend on |MODE_FIELD| */
 	/* begin expansion of Cases of |main_control| that are for extensions to \TeX */
 	/* module 1492 */
-	/* When an |extension| command occurs in |main_control|, in any mode,
+	/* When an |extension| command occurs in |main_control|, in any MODE_FIELD,
 	 * the |do_extension| routine is called.
 	 */
   case ANY_MODE (extension):
@@ -782,7 +782,7 @@ main_control (void) {	 /* governs \TeX's activities */
   main_f = cur_font;
   bchar = font_bchar[main_f];
   false_bchar = font_false_bchar[main_f];
-  if (mode > 0)
+  if (MODE_FIELD > 0)
 	if (language != clang)
 	  fix_language();
   fast_get_avail (lig_stack);
@@ -1068,13 +1068,13 @@ control_initialize (void ) {
 /* module  1196 */
 
 /* Some operations are allowed only in privileged modes, i.e., in cases
- * that |mode>0|. The |privileged| function is used to detect violations
+ * that |MODE_FIELD>0|. The |privileged| function is used to detect violations
  * of this rule; it issues an error message and returns |false| if the
- * current |mode| is negative.
+ * current |MODE_FIELD| is negative.
  */
 static boolean 
 privileged (void) {
-  if (mode > 0) {
+  if (MODE_FIELD > 0) {
 	return true;
   } else {
 	report_illegal_case();
@@ -1188,7 +1188,7 @@ handle_right_brace (void) {
 	/* begin expansion of Resume the page builder... */
 	/* module 1171 */
 	/* When the user's output routine finishes, it has constructed a vlist
-	 * in internal vertical mode, and \TeX\ will do the following:
+	 * in internal vertical MODE_FIELD, and \TeX\ will do the following:
 	 */
 	if ((loc != null)|| ((token_type != output_text)&& (token_type != backed_up))) {
 	  /* begin expansion of Recover from an unbalanced output routine */
@@ -1330,7 +1330,7 @@ static void
 delete_last (void) {
   pointer p, q; /* run through the current list */ 
   quarterword m; /* the length of a replacement list */ 
-  if ((mode == vmode) && (tail == head)) {
+  if ((MODE_FIELD == vmode) && (tail == head)) {
 	/* begin expansion of Apologize for inability to do the operation now, 
 	   unless \.{\\unskip} follows non-glue */
 	/* module 1251 */

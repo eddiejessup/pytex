@@ -238,7 +238,7 @@ scan_something_internal (small_number level, boolean negative) {
     case set_aux:
 	  /* begin expansion of Fetch the |space_factor| or the |prev_depth| */
 	  /* module 418 */
-      if (abs (mode) != m) {
+      if (abs (MODE_FIELD) != m) {
 		print_err ("Improper ");
 		print_cmd_chr (set_aux, m);
 		help4("You can refer to \\spacefactor only in horizontal mode;",
@@ -263,7 +263,7 @@ scan_something_internal (small_number level, boolean negative) {
     case set_prev_graf:
 	  /* begin expansion of Fetch the |prev_graf| */
 	  /* module 422 */
-      if (mode == 0) {
+      if (MODE_FIELD == 0) {
 		scanned_result (0, int_val);	/* |prev_graf=0| within \.{\\write} */
 	  } else {
 		nest[nest_ptr] = cur_list;
@@ -652,12 +652,12 @@ scan_something_internal (small_number level, boolean negative) {
 		  }
 		  if (cur_chr == last_node_type_code) {
 			cur_val = int_val;
-			if ((tail == head) || (mode == 0))
+			if ((tail == head) || (MODE_FIELD == 0))
 			  cur_val = -1;
 		  } else {
 			cur_val_level = cur_chr;
 		  }
-		  if (!is_char_node (tail) && (mode != 0)) {
+		  if (!is_char_node (tail) && (MODE_FIELD != 0)) {
 			if ((type (tail) == math_node)&&(subtype (tail) == end_M_code))
 			  remove_end_M();
 			switch (cur_chr) {
@@ -687,7 +687,7 @@ scan_something_internal (small_number level, boolean negative) {
 			};			/* there are no other cases */ 
 			if (LR_temp != null)
 			  insert_end_M();
-		  } else if ((mode == vmode) && (tail == head)) {
+		  } else if ((MODE_FIELD == vmode) && (tail == head)) {
 			switch (cur_chr) {
 			case int_val:
 			  cur_val = last_penalty;

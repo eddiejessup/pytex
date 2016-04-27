@@ -55,7 +55,7 @@ append_discretionary (void) {
 	new_save_level (disc_group);
 	scan_left_brace();
 	push_nest();
-	mode = -hmode;
+	MODE_FIELD = -hmode;
 	space_factor = 1000;
   };
 };
@@ -107,7 +107,7 @@ build_discretionary (void) {
 	/* begin expansion of Attach list |p| to the current list, and record its length; 
 	   then finish up and |return| */
 	/* module 1265 */
-	if ((n > 0) && (abs (mode) == mmode)) {
+	if ((n > 0) && (abs (MODE_FIELD) == mmode)) {
 	  print_err ("Illegal math ");
 	  print_esc_string ("discretionary");
 	  help2 ("Sorry: The third part of a discretionary break must be",
@@ -136,7 +136,7 @@ build_discretionary (void) {
   new_save_level (disc_group);
   scan_left_brace();
   push_nest();
-  mode = -hmode;
+  MODE_FIELD = -hmode;
   space_factor = 1000;
 };
 

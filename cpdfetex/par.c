@@ -40,10 +40,10 @@ norm_min (int h) {
 void 
 new_graf (boolean indented) {
   prev_graf = 0;
-  if ((mode == vmode) || (head != tail))
+  if ((MODE_FIELD == vmode) || (head != tail))
 	tail_append (new_param_glue (par_skip_code));
   push_nest();
-  mode = hmode;
+  MODE_FIELD = hmode;
   space_factor = 1000;
   set_cur_lang;
   clang = cur_lang;
@@ -67,7 +67,7 @@ indent_in_hmode (void) {
   if (cur_chr > 0)	{ /* \.{\\indent} */
 	p = new_null_box();
 	width (p) = par_indent;
-	if (abs (mode) == hmode) {
+	if (abs (MODE_FIELD) == hmode) {
 	  space_factor = 1000;
 	} else {
 	  q = new_noad();
@@ -82,7 +82,7 @@ indent_in_hmode (void) {
 /* module 1240 */
 void 
 head_for_vmode (void) {
-  if (mode < 0)
+  if (MODE_FIELD < 0)
 	if (cur_cmd != hrule) {
 	  off_save();
 	} else {
@@ -104,7 +104,7 @@ head_for_vmode (void) {
 /* module 1241 */
 void 
 end_graf (void) {
-  if (mode == hmode) {
+  if (MODE_FIELD == hmode) {
 	if (head == tail) {
 	  pop_nest();	/* null paragraphs are ignored */
 	} else {
@@ -127,7 +127,7 @@ resume_after_display (void) {
   unsave();
   prev_graf = prev_graf + 3;
   push_nest();
-  mode = hmode;
+  MODE_FIELD = hmode;
   space_factor = 1000;
   set_cur_lang;
   clang = cur_lang;

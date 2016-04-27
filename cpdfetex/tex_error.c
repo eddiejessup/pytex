@@ -587,7 +587,7 @@ you_cant (void) {
   print_err ("You can't use `");
   print_cmd_chr (cur_cmd, cur_chr);
   zprint_string("' in ");
-  print_mode (mode);
+  print_mode (MODE_FIELD);
 };
 
 /* module 1195 */

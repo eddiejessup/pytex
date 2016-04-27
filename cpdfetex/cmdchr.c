@@ -951,7 +951,7 @@ print_cmd_chr (quarterword cmd, halfword chr_code) {
 	  print_esc_string ("right");
 	}
 	break;
-  case prefix:
+  case PREFIX_CODE:
 	if (chr_code == 1) {
 	  print_esc_string ("long");
 	} else if (chr_code == 2) {
@@ -1280,10 +1280,10 @@ show_cur_cmd_chr (void) {
   pointer p;
   begin_diagnostic();
   print_nl_string ("{");
-  if (mode != shown_mode) {
-    print_mode (mode);
+  if (MODE_FIELD != shown_mode) {
+    print_mode (MODE_FIELD);
     zprint_string(": ");
-    shown_mode = mode;
+    shown_mode = MODE_FIELD;
   };
   print_cmd_chr (cur_cmd, cur_chr);
   if (tracing_ifs > 0)

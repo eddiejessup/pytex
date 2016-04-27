@@ -31,7 +31,7 @@ begin_insert_or_adjust (void) {
   scan_left_brace();
   normal_paragraph();
   push_nest();
-  mode = -vmode;
+  MODE_FIELD = -vmode;
   prev_depth = ignore_depth;
 };
 

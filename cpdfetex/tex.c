@@ -1039,9 +1039,9 @@ void init_prim (int noninit) {  /* initialize all the primitives */
    * by adding the corresponding codes. (\PASCAL's |set| operations could also
    * have been used.)
    */
-  primitive_str("long", prefix, 1);
-  primitive_str("outer", prefix, 2);
-  primitive_str("global", prefix, 4);
+  primitive_str("long", PREFIX_CODE, 1);
+  primitive_str("outer", PREFIX_CODE, 2);
+  primitive_str("global", PREFIX_CODE, 4);
   primitive_str("def", def, 0);
   primitive_str("gdef", def, 1);
   primitive_str("edef", def, 2);
@@ -1288,7 +1288,7 @@ init_etex_prim(void) {
    * expansions when lists of expanded tokens are built, e.g., for \.{\\edef}
    * or during \.{\\write}.
    */
-  primitive_str("protected", prefix, 8);
+  primitive_str("protected", PREFIX_CODE, 8);
   /* module 1723 */
   /* Here are the additional \eTeX\ primitives for expressions.
    */

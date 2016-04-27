@@ -7,7 +7,7 @@
 #define ignore_depth  (-65536000)
 
 /* module 213 */
-#define mode             cur_list.mode_field
+#define MODE_FIELD             cur_list.mode_field
 #define head             cur_list.head_field
 #define tail             cur_list.tail_field
 #define eTeX_aux         cur_list.eTeX_aux_field

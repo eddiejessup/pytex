@@ -156,7 +156,7 @@ do_extension (void) {
   case set_language_code:
 	/* begin expansion of Implement \.{\\setlanguage} */
 	/* module 1573 */
-	if (abs (mode) != hmode) {
+	if (abs (MODE_FIELD) != hmode) {
 	  report_illegal_case();
 	} else {
 	  new_whatsit (language_node, small_node_size);
@@ -321,7 +321,7 @@ do_extension (void) {
 	/* begin expansion of Implement \.{\\pdfstartlink} */
 	/* module 1519 */
 	check_pdfoutput("\\pdfstartlink");
-	if (abs (mode) == vmode)
+	if (abs (MODE_FIELD) == vmode)
 	  pdf_error_string("ext1","\\pdfstartlink cannot be used in vertical mode");
 	new_annot_whatsit (pdf_start_link_node,pdf_annot_node_size);
 	pdf_link_action (tail) = scan_action();
@@ -331,7 +331,7 @@ do_extension (void) {
 	/* begin expansion of Implement \.{\\pdfendlink} */
 	/* module 1520 */
 	check_pdfoutput("\\pdfendlink");
-	if (abs (mode) == vmode)
+	if (abs (MODE_FIELD) == vmode)
 	  pdf_error_string("ext1","\\pdfendlink cannot be used in vertical mode");
 	new_whatsit (pdf_end_link_node, small_node_size);
 	/* end expansion of Implement \.{\\pdfendlink} */
@@ -721,8 +721,8 @@ write_out (pointer p) {
   info (q) = left_brace_token + '{';
   ins_list (q);
   /* now we're ready to scan `\.\{$\langle\,$token list$\,\rangle$\.{\} \\endwrite}' */
-  old_mode = mode;
-  mode = 0;
+  old_mode = MODE_FIELD;
+  MODE_FIELD = 0;
   /* disable \.{\\prevdepth}, \.{\\spacefactor}, \.{\\lastskip}, \.{\\prevgraf} */
   cur_cs = write_loc;
   q = scan_toks (false, true); /* expand macros, etc. */ 
@@ -739,7 +739,7 @@ write_out (pointer p) {
 	  } while (cur_tok != end_write_token);
   };
   /* end expansion of Recover from an unbalanced write command */
-  mode = old_mode;
+  MODE_FIELD = old_mode;
   end_token_list();		/* conserve stack space */
   /* end expansion of Expand macros in the token list and make |link(def_ref)| point to the result */
   old_setting = selector;

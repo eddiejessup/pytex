@@ -256,7 +256,7 @@ void
 nest_initialize (void) {
   nest_ptr = 0;
   max_nest_stack = 0;
-  mode = vmode;
+  MODE_FIELD = vmode;
   head = contrib_head;
   tail = contrib_head;
   eTeX_aux = null;
