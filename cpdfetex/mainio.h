@@ -25,7 +25,7 @@
 
 /* main.c */
 extern void         call_edit (packed_ASCII_code *,pool_pointer,integer,integer);
-extern void         topenin (void);
+extern void         topenin (int argc, char **argv);
 extern boolean      open_in_name_ok (const_string fname);
 extern boolean      open_out_name_ok (const_string fname);
 extern char *output_comment;

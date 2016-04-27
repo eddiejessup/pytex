@@ -13,8 +13,6 @@ void init_prim(int noninit);
 void init_etex_prim(void);
 void final_cleanup(void);
 
-extern int argc;
-extern char **argv;
 extern char *user_progname;
 extern long mem_top;
 extern long mem_min;

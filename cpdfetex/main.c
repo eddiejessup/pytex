@@ -94,10 +94,6 @@ const_string PDFETEXHELP[] = {
 
 /* The main program, etc.  */
 
-/* What we were invoked as and with.  */
-char **argv;
-int argc;
-
 /* If the user overrides argv[0] with -progname.  */
 string user_progname;
 
@@ -123,7 +119,7 @@ const_string job_name;
    been called already (and hence, argc==0), we return with
    `last=first'.  */
 
-void topenin (void) {
+void topenin (int argc, char **argv) {
   int i;
   buffer[first] = 0; /* In case there are no arguments.  */
   if (optind < argc) { /* We have command line arguments.  */
@@ -136,7 +132,6 @@ void topenin (void) {
       }
       buffer[k++] = ' ';
     }
-    argc = 0;	/* Don't do this again.  */
     buffer[k] = 0;
   }
   /* Find the end of the buffer.  */

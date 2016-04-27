@@ -28,8 +28,7 @@ def main():
     args = parser.parse_args()
 
     # Pass in raw argument array too for compatibility purposes
-    pytex_main.main_init_py(sys.argv, args)
-    pytex_main.main_body_py()
+    pytex_main.main(sys.argv, args)
 
 if __name__ == '__main__':
     main()

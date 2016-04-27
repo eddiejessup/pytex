@@ -11,14 +11,12 @@ ctypedef unsigned char quarterword
 ctypedef int halfword
 
 cdef extern from "main.h":
-    void topenin()
+    void topenin(int argc, char **argv)
     void allocate_memory_for_arrays()
     void initialize()
     void init_prim(int noninit)
     void init_etex_prim()
     void final_cleanup()
-    int argc
-    char **argv
     char *user_progname
     long mem_top
     long mem_min

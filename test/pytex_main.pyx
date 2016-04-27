@@ -19,12 +19,7 @@ cdef char **to_cstring_array(list_str):
     return ret
 
 
-def main_init_py(av_list, parsed_args):
-    global argc
-    argc = len(av_list)
-    global argv
-    argv = to_cstring_array(av_list)
-
+cdef main_init_py(int argc, char **argv, parsed_args):
     # Unfortunately, this parsing seems to have some side-effect that is
     # important, so we can't just remove it.
     # Maybe it gobbles up the options so that all that is left is the file
@@ -194,22 +189,22 @@ def initialize_output():
     global output_file_name; output_file_name = 0
 
 
-def init_terminal_py():
-    topenin()
+cdef init_terminal_py(int argc, char **argv):
+    topenin(argc, argv)
     global loc
     loc = first
     while loc < last and buffer[loc] == ' ':
         loc += 1
 
 
-def initialize_input():
+cdef initialize_input(int argc, char **argv):
     # Initialize the input routines.
     # Get the first line of input and prepare to start.
     # When we begin the following code, TeX's tables may still contain garbage;
     # the strings might not even be present.
     # This is initializing some globals.
     cmdchr_initialize()
-    init_terminal_py()
+    init_terminal_py(argc, argv)
     global cur_input; cur_input.limit_field = last
     global first; first = last + 1
 
@@ -293,7 +288,14 @@ def start_input_py():
     global loc; loc = cur_input.start_field
 
 
-def main_body_py():
+def main(av_list, args):
+    argc = len(av_list)
+    argv = to_cstring_array(av_list)
+    main_init_py(argc, argv, args)
+    main_body_py(argc, argv)
+
+
+cdef main_body_py(int argc, char **argv):
     set_up_bound_variables_py()
     allocate_memory_for_arrays()
     check_for_bad_constants_py()
@@ -313,7 +315,7 @@ def main_body_py():
     print('{} {}'.format(constants.banner, '(ini)' if ini_version else ''))
 
     initialize_output()
-    initialize_input()
+    initialize_input(argc, argv)
     # TODO: Set if this is wanted as command-line switch.
     etex_version = True
     if etex_version and ini_version:
