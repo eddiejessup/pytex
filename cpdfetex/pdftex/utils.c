@@ -27,6 +27,7 @@ $Id: utils.c,v 1.2 2004/05/11 14:30:32 taco Exp $
 #include <kpathsea/c-proto.h>
 #include "pdftexextra.h" /* define BANNER */
 #include <time.h>
+#include <unistd.h>
 
 static const char perforce_id[] = 
     "$Id: utils.c,v 1.2 2004/05/11 14:30:32 taco Exp $";
