@@ -116,82 +116,6 @@ const_string job_name;
 
 #define DUMP_OPTION "efm"
 
-void
-main_init (int ac, string * av)
-{
-  /* The `ini_version' variable is declared/used in the change files.  */
-  /* TODO: make sure we can still make the fmt file: extra main.c */
-  boolean virversion = false;
-  char *compatname;
-  /* Save to pass along to topenin.  */
-  argc = ac;
-  argv = av;
-
-  /* Must be initialized before options are parsed.  */
-  interaction_option = 4;
-
-  /* If the user says --help or --version, we need to notice early.  And
-     since we want the --ini option, have to do it before getting into
-     the web (which would read the base file, etc.).  */
-  parse_options (ac, av);
-  
-  /* Do this early so we can inspect program_invocation_name and
-     kpse_program_name below, and because we have to do this before
-     any path searching.  */
-  if (FILESTRCASEEQ (argv[0], "cpdfetex")) {
-	compatname = "cpdfetex";
-  } else {
-	compatname = argv[0];
-  }
-  kpse_set_program_name (compatname, user_progname); /* TODO: remove */
-  
-    if (FILESTRCASEEQ (kpse_program_name, INI_PROGRAM)) {
-      ini_version = true;
-    } else if (FILESTRCASEEQ (kpse_program_name, VIR_PROGRAM)) {
-      virversion = true;
-    } else if (FILESTRCASEEQ (kpse_program_name, "mltex")) {
-      mltex_p = true;
-    } else if (FILESTRCASEEQ (kpse_program_name, "initex")) {
-      ini_version = true;
-    } else if (FILESTRCASEEQ (kpse_program_name, "virtex")) {
-      virversion = true;
-    }
-
-    if (!dump_name) {
-      /* If called as *vir{mf,tex,mpost} use `plain'.  Otherwise, use the
-         name we were invoked under.  */
-      dump_name = (virversion ? "plain" : kpse_program_name);
-    }
-
-  /* If we've set up the fmt/base default in any of the various ways
-     above, also set its length.  */
-  if (dump_name) {
-    /* adjust array for Pascal and provide extension */
-    TEX_format_default = concat3 (" ", dump_name, DUMP_EXT);
-    format_default_length = strlen (TEX_format_default + 1);
-  } else {
-    /* For dump_name to be NULL is a bug.  */
-    abort();
-  }
-  /* Additional initializations.  No particular reason for doing them
-     here instead of first thing in the change file; less symbols to
-     propagate through Webc, that's all.  */
-  /* kpse_set_program_enabled (kpse_tfm_format, MAKE_TEX_TFM_BY_DEFAULT,kpse_src_compile); */
-  /* kpse_set_program_enabled (kpse_tex_format, MAKE_TEX_TEX_BY_DEFAULT,kpse_src_compile); */
-  /* kpse_set_program_enabled (kpse_fmt_format, MAKE_TEX_FMT_BY_DEFAULT,kpse_src_compile); */
-
-  shell_enabled_p = 1 ;
-}
-
-/* The entry point: set up for reading the command line, which will
-   happen in `topenin', then call the main body.  */
-
-int main (int ac,  string *av) {
-  main_init(ac, av);
-  return main_body ();
-} 
-
-
 
 /* This is supposed to ``open the terminal for input'', but what we
    really do is copy command line arguments into TeX's or Metafont's
@@ -426,55 +350,6 @@ catch_interrupt (int arg)
 }
 #endif /* not WIN32 */
 
-/* Besides getting the date and time here, we also set up the interrupt
-   handler, for no particularly good reason.  It's just that since the
-   `fix_date_and_time' routine is called early on (section 1337 in TeX,
-   ``Get the first line of input and prepare to start''), this is as
-   good a place as any.  */
-
-void
-get_date_and_time (integer * zminutes,  integer * zday,
-                      integer * zmonth,  integer * zyear)
-{
-  time_t clock = time ((time_t *) 0);
-  struct tm *tmptr = localtime (&clock);
-
-  *zminutes = tmptr->tm_hour * 60 + tmptr->tm_min;
-  *zday = tmptr->tm_mday;
-  *zmonth = tmptr->tm_mon + 1;
-  *zyear = tmptr->tm_year + 1900;
-
-  {
-#ifdef SA_INTERRUPT
-    /* Under SunOS 4.1.x, the default action after return from the
-       signal handler is to restart the I/O if nothing has been
-       transferred.  The effect on TeX is that interrupts are ignored if
-       we are waiting for input.  The following tells the system to
-       return EINTR from read() in this case.  From ken@cs.toronto.edu.  */
-
-    struct sigaction a, oa;
-
-    a.sa_handler = catch_interrupt;
-    sigemptyset (&a.sa_mask);
-    sigaddset (&a.sa_mask, SIGINT);
-    a.sa_flags = SA_INTERRUPT;
-    sigaction (SIGINT, &a, &oa);
-    if (oa.sa_handler != SIG_DFL)
-      sigaction (SIGINT, &oa, (struct sigaction *) 0);
-#else /* no SA_INTERRUPT */
-#ifdef WIN32_REAL
-    SetConsoleCtrlHandler(catch_interrupt, TRUE);
-#else /* not WIN32 */
-    RETSIGTYPE (*old_handler) P1H(int);
-    
-    old_handler = signal (SIGINT, catch_interrupt);
-    if (old_handler != SIG_DFL)
-      signal (SIGINT, old_handler);
-#endif /* not WIN32 */
-#endif /* no SA_INTERRUPT */
-  }
-}
-
 /*
   Generating a better seed numbers
   */

@@ -89,37 +89,6 @@ str_eq_str (str_number s, str_number t) { /* test equality of strings */
  * on the information that \.{WEB} has output while processing \TeX.
  */
 
-/* module 50 */
-
-/* When the \.{WEB} system program called \.{TANGLE} processes the \.{TEX.WEB}
- * description that you are now reading, it outputs the \PASCAL\ program
- * \.{TEX.PAS} and also a string pool file called \.{TEX.POOL}. The \.{INITEX}
- * program reads the latter file, where each string appears as a two-digit decimal
- * length followed by the string itself, and the information is recorded in
- * \TeX's string memory.
- */
-
-
-boolean 
-get_strings_started (void) { 
-  /* initializes the string pool, but returns |false| if something goes wrong */
-  int k;		/* small indices or counters */
-  str_number g;			/* garbage */
-  pool_ptr = 0;
-  str_ptr = 0;
-  str_start[0] = 0;
-  /* begin expansion of Make the first 256 strings */
-  /* module 48 */
-  /* The first 256 strings will consist of a single character only. */
-  for (k = 0; k <= 255; k++) {
-      append_char (k);
-      g = make_string ();
-    };
-  /* end expansion of Make the first 256 strings */
-  g = make_string(); /* this makes the null string */
-  return true;
-};
-
 /* module 70 */
 
 /* The |zprint| subroutine will not print a string that is still being

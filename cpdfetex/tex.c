@@ -420,19 +420,6 @@ initialize (void) {
 };
 
 
-/* module 241 */
-
-/* The following procedure, which is called just before \TeX\ initializes its
- * input and output, establishes the initial values of the date and time.
- * It calls a macro-defined |date_and_time| routine. |date_and_time|
- * in turn is a C macro, which calls |get_date_and_time|, passing
- * it the addresses of the day, month, etc., so they can be set by the
- * routine. |get_date_and_time| also sets up interrupt catching if that
- * is conditionally compiled in the C code.
- */
-#define fix_date_and_time  \
-  get_date_and_time (address_of(tex_time), address_of(day), address_of(month), address_of(year))
-
 /* module 1475 */
 
 /*
@@ -1393,74 +1380,6 @@ init_etex_prim(void) {
  *
  */
 
-#define const_chk(arg,infarg,suparg) {  if (  arg  <  infarg  )   { arg   =  infarg; }\
-               else {   if (  arg  >  suparg )  {  arg   =  suparg; } } }
-
-void set_up_bound_variables() {
-  main_memory = 250000; /* |memory_word|s for |mem| in \.{INITEX} */
-  extra_mem_top = 0; /* increase high mem in \.{VIRTEX} */
-  extra_mem_bot = 0; /* increase low mem in \.{VIRTEX} */
-  pool_size = 50000;
-  string_vacancies = 750;
-  pool_free = 500; /* min pool avail after fmt */
-  max_strings = 300;
-  strings_free = 100;
-  font_mem_size = 100000;
-  font_max = 500;
-  trie_size = 20000;   /* if |ssup_trie_size| increases, recompile */
-  hyph_size = 659;
-  buf_size = 3000;
-  nest_size = 50;
-  max_in_open = 15;
-  param_size = 60;
-  save_size = 4000;
-  stack_size = 300;
-  dvi_buf_size = 16384;
-  error_line = 79;
-  half_error_line = 50;
-  max_print_line = 79;
-  obj_tab_size = 65536;
-  pdf_mem_size = 65536;
-  dest_names_size = 20000;
-}
-
-void limit_constant_values() {
-  const_chk (main_memory,inf_main_memory,sup_main_memory);
-  if (ini_version) {
-    extra_mem_top = 0;
-    extra_mem_bot = 0;
-  }
-  if (extra_mem_bot > sup_main_memory)
-    extra_mem_bot = sup_main_memory;
-  if (extra_mem_top > sup_main_memory)
-    extra_mem_top = sup_main_memory;
-  mem_top = mem_bot + main_memory;
-  mem_min = mem_bot;
-  mem_max = mem_top;
-  /* Check other constants against their sup and inf. */
-  const_chk (trie_size,inf_trie_size,sup_trie_size);
-  const_chk (hyph_size,inf_hyph_size,sup_hyph_size);
-  const_chk (buf_size,inf_buf_size,sup_buf_size);
-  const_chk (nest_size,inf_nest_size,sup_nest_size);
-  const_chk (max_in_open,inf_max_in_open,sup_max_in_open);
-  const_chk (param_size,inf_param_size,sup_param_size);
-  const_chk (save_size,inf_save_size,sup_save_size);
-  const_chk (stack_size,inf_stack_size,sup_stack_size);
-  const_chk (dvi_buf_size,inf_dvi_buf_size,sup_dvi_buf_size);
-  const_chk (pool_size,inf_pool_size,sup_pool_size);
-  const_chk (string_vacancies,inf_string_vacancies,sup_string_vacancies);
-  const_chk (pool_free,inf_pool_free,sup_pool_free);
-  const_chk (max_strings,inf_max_strings,sup_max_strings);
-  const_chk (strings_free,inf_strings_free,sup_strings_free);
-  const_chk (font_mem_size,inf_font_mem_size,sup_font_mem_size);
-  const_chk (font_max,inf_font_max,sup_font_max);
-  const_chk (obj_tab_size,inf_obj_tab_size,sup_obj_tab_size);
-  const_chk (pdf_mem_size,inf_pdf_mem_size,sup_pdf_mem_size);
-  const_chk (dest_names_size,inf_dest_names_size,sup_dest_names_size);
-  if (error_line > ssup_error_line)
-    error_line = ssup_error_line;
-}
-
 void allocate_memory_for_arrays() {
   buffer = xmalloc_array (ASCII_code, buf_size);
   nest = xmalloc_array (list_state_record, nest_size);
@@ -1493,79 +1412,6 @@ void allocate_memory_for_arrays() {
   str_pool = xmalloc_array (packed_ASCII_code, pool_size);
 }
 
-void check_for_bad_constants() {
-  /* Later on we will say `\ignorespaces|if mem_max>=max_halfword then bad:=14|',
-   * or something similar. (We can't do that until |max_halfword| has been defined.)
-   */
-  bad = 0;
-  if ((half_error_line < 30) || (half_error_line > error_line - 15))
-    bad = 1;
-  if (max_print_line < 60)
-    bad = 2;
-  if (dvi_buf_size % 8 != 0)
-    bad = 3;
-  if (mem_bot + 1100 > mem_top)
-    bad = 4;
-  if (hash_prime > HASH_SIZE)
-    bad = 5;
-  if (max_in_open >= 128)
-    bad = 6;
-  if (mem_top < 256 + 11)
-    bad = 7; /* we will want |null_list>255| */
-  /* module 111 */
-  /* Here are the inequalities that the quarterword and halfword values
-   * must satisfy (or rather, the inequalities that they mustn't satisfy):
-   */
-  if ((mem_min != mem_bot) || (mem_max != mem_top))
-    bad = 10;
-  if ((mem_min > mem_bot) || (mem_max < mem_top))
-    bad = 10;
-  if ((min_quarterword > 0) || (max_quarterword < 127))
-    bad = 11;
-  if ((min_halfword > 0) || (max_halfword < 32767))
-    bad = 12;
-  if ((min_quarterword < min_halfword) || (max_quarterword > max_halfword))
-    bad = 13;
-  if ((mem_min < min_halfword)|| (mem_max >= max_halfword)|| (mem_bot - mem_min > max_halfword + 1))
-    bad = 14;
-  if ((max_font_max < min_halfword) || (max_font_max > max_halfword))
-    bad = 15;
-  if (font_max > font_base + max_font_max)
-    bad = 16;
-  if ((save_size > max_halfword) || (max_strings > max_halfword))
-    bad = 17;
-  if (buf_size > max_halfword)
-    bad = 18;
-  if (max_quarterword - min_quarterword < 255)
-    bad = 19;
-  /* module 290 */
-  if (cs_token_flag + eqtb_size > max_halfword)
-    bad = 21;
-  /* module 522 */
-  if (format_default_length > file_name_size)
-    bad = 31;
-  /* module 1394 */
-  /* Here's something that isn't quite so obvious. It guarantees that
-   * |info(par_shape_ptr)| can hold any positive~|n| for which |get_node(2*n+1)|
-   * doesn't overflow the memory capacity.
-   */
-  if (2 * max_halfword < mem_top - mem_min)
-    bad = 41;
-}
-
-int
-main_body (void) {
-};
-
-
-int exit_program() {
-  fflush(term_out);
-  if ((history != spotless) && (history != warning_issued)) {
-    return 1;
-  } else {
-    return 0;
-  }
-}
 
 /* module 1829 */
 

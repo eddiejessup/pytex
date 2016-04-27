@@ -104,7 +104,6 @@ EXTERN boolean str_eq_buf (str_number, int);
 EXTERN boolean str_eq_str (str_number, str_number);
 EXTERN str_number search_string (str_number);
 EXTERN str_number slow_make_string (void);
-EXTERN boolean get_strings_started(void);
 EXTERN str_number   slow_make_tex_string (char *);
 EXTERN string       gettexstring (str_number);
 EXTERN void         checkpoolpointer (pool_pointer, size_t);

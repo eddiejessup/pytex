@@ -138,7 +138,6 @@ cdef extern from "trie.h":
     void trie_xmalloc(integer size)
 
 cdef extern from "tex_io.h":
-    int init_terminal()
     void scan_file_name()
     void pack_file_name(str_number name, str_number area, str_number ext)
     void begin_file_reading()

@@ -81,8 +81,6 @@ EXTERN void realloc_buffer (void);
 
 EXTERN boolean      input_line (FILE *f);
 
-EXTERN boolean init_terminal (void);
-
 EXTERN void term_input (void);
 
 EXTERN str_number   getjobname(void);

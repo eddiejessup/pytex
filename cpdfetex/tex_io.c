@@ -175,39 +175,6 @@ input_line (FILE * f) {
 }
 
 
-/* module 37 */
-
-/* The following program does the required initialization.
- * Iff anything has been specified on the command line, then |t_open_in|
- * will return with |last > first|.
- */
-boolean
-init_terminal (void) {	/* gets the terminal input started */
-  topenin();
-  if (last > first) {
-	loc = first;
-	while (loc < (int)last && buffer[loc] == ' ')
-	  incr (loc);
-	if (loc < (int)last)
-	  return true;
-  };
-  loop {
-    wake_up_terminal;
-    fprintf (term_out, "%s", "**");
-    update_terminal;
-    if (!input_ln (term_in, true))	{ /* this shouldn't happen */
-	  fprintf (term_out,"\n%s", "! End of file on the terminal... why?");
-	  return false;
-	};
-    loc = first;
-    while ((loc < (int)last) && (buffer[loc] == ' '))
-      incr (loc);
-    if (loc < (int)last)
-      return true;		/* return unless the line was all blank */
-    fprintf (term_out, "%s\n","Please type the name of your input file.");
-  };
-};
-
 /* module 71 */
 
 /* Here is a procedure that asks the user to type a line of input,
