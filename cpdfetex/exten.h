@@ -47,7 +47,7 @@
 #define special_node 3
 #define language_node 4
 #define what_lang( arg )  link ( arg  + 1 )
-#define what_lhm( arg )  type ( arg  + 1 )
+#define what_lhm( arg )  TYPE_FIELD ( arg  + 1 )
 #define what_rhm( arg )  subtype ( arg  + 1 )
 #define write_tokens( arg )  link ( arg  + 1 )
 #define write_stream( arg )  info ( arg  + 1 )

@@ -25,7 +25,7 @@
 #define glue_ref         (max_command  + 17)
 #define shape_ref        (max_command  + 18)
 #define box_ref          (max_command  + 19)
-#define data             (max_command  + 20)
+#define DATA_CODE        (max_command  + 20)
 
 /* module 221 */
 
@@ -281,7 +281,7 @@
 #define del_code_base  (count_base  + 256)
 #define dimen_base  (del_code_base  + 256)
 #define del_code( arg )  eqtb [ del_code_base  +  arg ]. cint
-#define count( arg )  eqtb [ count_base  +  arg ]. cint
+#define COUNT( arg )  eqtb [ count_base  +  arg ]. cint
 #define int_par( arg )  eqtb [ int_base  +  arg ]. cint
 #define pretolerance  int_par ( pretolerance_code )
 #define tolerance  int_par ( tolerance_code )

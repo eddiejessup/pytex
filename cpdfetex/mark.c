@@ -41,7 +41,7 @@ make_mark (void) {
   p = scan_toks (false, true);
   p = get_node (small_node_size);
   mark_class (p) = c;
-  type (p) = mark_node;
+  TYPE_FIELD (p) = mark_node;
   subtype (p) = 0; /* the |subtype| is not used */ 
   mark_ptr (p) = def_ref;
   link (tail) = p;

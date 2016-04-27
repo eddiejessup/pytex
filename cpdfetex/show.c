@@ -7,7 +7,7 @@
 void 
 show_whatever (void) {
   pointer p; /* tail of a token list to show */ 
-  small_number t; /* type of conditional being shown */ 
+  small_number t; /* TYPE_FIELD of conditional being shown */ 
   unsigned char m; /* upper bound on |fi_or_else| codes */ 
   int l; /* line where that conditional began */ 
   int n; /* level of \.{\\if...\\fi} nesting */ 
@@ -82,7 +82,7 @@ show_whatever (void) {
 		decr (n);
 		t = subtype (p);
 		l = if_line_field (p);
-		m = type (p);
+		m = TYPE_FIELD (p);
 		p = link (p);
 	  } while (p != null);
 	};
@@ -123,7 +123,7 @@ show_whatever (void) {
 	help5 ("This isn't an error message; I'm just \\showing something.",
 		   "Type `I\\show...' to show more (e.g., \\show\\cs,",
 		   "\\showthe\\count10, \\showbox255, \\showlists).",
-		   "And type `I\\tracingonline=1\\show...' to show boxes and",
+		   "And TYPE_FIELD `I\\tracingonline=1\\show...' to show boxes and",
 		   "lists on your terminal as well as in the transcript file.");
   };
   error();

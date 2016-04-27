@@ -6,8 +6,8 @@
 /* module 220 */
 
 /* 
- * Now that we have studied the data structures for \TeX's semantic routines,
- * we ought to consider the data structures used by its syntactic routines. In
+ * Now that we have studied the DATA_CODE structures for \TeX's semantic routines,
+ * we ought to consider the DATA_CODE structures used by its syntactic routines. In
  * other words, our next concern will be
  * the tables that \TeX\ looks at when it is scanning
  * what the user has written.
@@ -737,12 +737,12 @@ eqtb_initialize_init (void) {
   for (k = box_base + 1; k <= box_base + 255; k++)
 	eqtb[k] = eqtb[box_base];
   cur_font = null_font;
-  eq_type (cur_font_loc) = data;
+  eq_type (cur_font_loc) = DATA_CODE;
   eq_level (cur_font_loc) = level_one;
   for (k = math_font_base; k <= math_font_base + 47; k++)
 	eqtb[k] = eqtb[cur_font_loc];
   equiv (cat_code_base) = 0;
-  eq_type (cat_code_base) = data;
+  eq_type (cat_code_base) = DATA_CODE;
   eq_level (cat_code_base) = level_one;
   for (k = cat_code_base + 1; k <= int_base - 1; k++)
 	eqtb[k] = eqtb[cat_code_base];

@@ -41,10 +41,10 @@
 #define glue_ref_count( arg )  link ( arg )
 #define stretch( arg )  mem [ arg  + 2 ]. sc
 #define shrink( arg )  mem [ arg  + 3 ]. sc
-#define stretch_order  type
+#define stretch_order  TYPE_FIELD
 #define shrink_order  subtype
 #define fil 1
-#define fill 2
+#define FILL_CODE 2
 #define filll 3
 
 EXTERN pointer new_spec (pointer p);

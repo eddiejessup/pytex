@@ -82,7 +82,7 @@ print_mode (int m) { /* prints the mode represented by |m| */
 
 /* When \TeX's work on one level is interrupted, the state is saved by
  * calling |push_nest|. This routine changes |head| and |tail| so that
- * a new (empty) list is begun; it does not change |mode| or |aux|.
+ * a new (EMPTY_CODE) list is begun; it does not change |mode| or |aux|.
  */
 
 void
@@ -166,7 +166,7 @@ show_activities (void) {
 		if (output_active)
 		  zprint_string(" (held over for next output)");
 		show_box (link (page_head));
-		if (page_contents > empty) {
+		if (page_contents > EMPTY_CODE) {
 		  print_nl_string("total height ");
 		  print_totals();
 		  print_nl_string(" goal height ");
@@ -178,14 +178,14 @@ show_activities (void) {
 			t = qo (subtype (r));
 			print_int (t);
 			zprint_string(" adds ");
-			t = x_over_n (height (r), 1000) * count (t);
+			t = x_over_n (height (r), 1000) * COUNT (t);
 			print_scaled (t);
-			if (type (r) == split_up) {
+			if (TYPE_FIELD (r) == split_up) {
 			  q = page_head;
 			  t = 0;
 			  do {
 				q = link (q);
-				if ((type (q) == ins_node) && (subtype (q) = subtype (r)))
+				if ((TYPE_FIELD (q) == ins_node) && (subtype (q) = subtype (r)))
 				  incr (t);
 			  } while (q != broken_ins (r));
 			  zprint_string(", #");
@@ -294,7 +294,7 @@ alter_prev_graf (void) {
  * |show_save_groups| procedure were first discussed by Donald~E. Knuth in
  * {\sl TUGboat\/} {\bf 11}, 165--170 and 499--511, 1990.
  * 
- * In order to understand a group type we also have to know its mode.
+ * In order to understand a group TYPE_FIELD we also have to know its mode.
  * Since unrestricted horizontal modes are not associated with grouping,
  * they are skipped when traversing the semantic nest.
  */
@@ -417,7 +417,7 @@ show_save_groups (void)  {
 	  print_char ('$');
 	  goto FOUND;
 	case math_left_group:
-	  if (type (nest[p + 1].eTeX_aux_field) == left_noad) {
+	  if (TYPE_FIELD (nest[p + 1].eTeX_aux_field) == left_noad) {
 		print_esc_string ("left");
 	  } else {
 		print_esc_string ("middle");

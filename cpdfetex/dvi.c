@@ -716,7 +716,7 @@ dvi_font_def (internal_font_number f) {
  * $$3_z\,1_y\,4_d\,1_y\,5_y\,9_d\,2_d\,6_d\,5_y\,3_z\,5_y\,8_d\,9_d.$$
  * There are three $y$-hits ($1_y\ldots1_y$ and $5_y\ldots5_y\ldots5_y$) and
  * one $z$-hit ($3_z\ldots3_z$); there are no $d$-hits, since the two appearances
- * of $9_d$ have $d$'s between them, but we don't count $d$-hits so it doesn't
+ * of $9_d$ have $d$'s between them, but we don't COUNT $d$-hits so it doesn't
  * matter how many there are. These subscripts are analogous to the \.{DVI}
  * commands called \\{down}, $y$, and $z$, and the digits are analogous to
  * different amounts of vertical motion; a $y$-hit or $z$-hit corresponds to
@@ -1286,7 +1286,7 @@ hlist_out (void) {
 	}  else {
 	  /* begin expansion of Output the non-|char_node| |p| for |hlist_out| and move to the next node */
 	  /* module 622 */
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 		/* begin expansion of Output a box in an hlist */
@@ -1301,7 +1301,7 @@ hlist_out (void) {
 		  edge = cur_h + width (p);
 		  if (cur_dir == right_to_left)
 			cur_h = edge;
-		  if (type (p) == vlist_node) {
+		  if (TYPE_FIELD (p) == vlist_node) {
 			vlist_out();
 		  } else {
 			hlist_out();
@@ -1339,7 +1339,7 @@ hlist_out (void) {
 		  /* begin expansion of Output leaders in an hlist, |goto FIN_RULE| if a rule or to |NEXTP| if done */
 		  /* module 626 */
 		  leader_box = leader_ptr (p);
-		  if (type (leader_box) == rule_node) {
+		  if (TYPE_FIELD (leader_box) == rule_node) {
 			rule_ht = height (leader_box);
 			rule_dp = depth (leader_box);
 			goto FIN_RULE;
@@ -1402,7 +1402,7 @@ hlist_out (void) {
 				cur_h = cur_h + leader_wd;
 			  outer_doing_leaders = doing_leaders;
 			  doing_leaders = true;
-			  if (type (leader_box) == vlist_node) {
+			  if (TYPE_FIELD (leader_box) == vlist_node) {
 				vlist_out();
 			  } else {
 				hlist_out();
@@ -1527,7 +1527,7 @@ vlist_out (void) {	/* output a |vlist_node| box */
 	} else {
 	  /* begin expansion of Output the non-|char_node| |p| for |vlist_out| */
 	  /* module 631 */
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 		/* begin expansion of Output a box in a vlist */
@@ -1549,7 +1549,7 @@ vlist_out (void) {	/* output a |vlist_node| box */
 			cur_h = left_edge + shift_amount (p); /* shift the box right */ 
 		  }
 		  temp_ptr = p;
-		  if (type (p) == vlist_node) {
+		  if (TYPE_FIELD (p) == vlist_node) {
 			vlist_out();
 		  } else {
 			hlist_out();
@@ -1585,7 +1585,7 @@ vlist_out (void) {	/* output a |vlist_node| box */
 			 if a rule or to |NEXTP| if done */
 		  /* module 635 */
 		  leader_box = leader_ptr (p);
-		  if (type (leader_box) == rule_node) {
+		  if (TYPE_FIELD (leader_box) == rule_node) {
 			rule_wd = width (leader_box);
 			rule_dp = 0;
 			goto FIN_RULE;
@@ -1633,7 +1633,7 @@ vlist_out (void) {	/* output a |vlist_node| box */
 			  temp_ptr = leader_box;
 			  outer_doing_leaders = doing_leaders;
 			  doing_leaders = true;
-			  if (type (leader_box) == vlist_node) {
+			  if (TYPE_FIELD (leader_box) == vlist_node) {
 				vlist_out();
 			  } else {
 				hlist_out();
@@ -1703,7 +1703,7 @@ vlist_out (void) {	/* output a |vlist_node| box */
 void 
 dvi_ship_out (pointer p) { /* output the box |p| */
   int page_loc; /* location of the current |bop| */ 
-  unsigned char j, k; /* indices to first ten count registers */ 
+  unsigned char j, k; /* indices to first ten COUNT registers */ 
   pool_pointer s; /* index into |str_pool| */ 
   unsigned char old_setting; /* saved |selector| setting */ 
   if (tracing_output > 0) {
@@ -1718,10 +1718,10 @@ dvi_ship_out (pointer p) { /* output the box |p| */
   }
   print_char ('[');
   j = 9;
-  while ((count (j) == 0) && (j > 0))
+  while ((COUNT (j) == 0) && (j > 0))
 	decr (j);
   for (k = 0; k <= j; k++) {
-	print_int (count (k));
+	print_int (COUNT (k));
 	if (k < j)
 	  print_char ('.');
   };
@@ -1795,12 +1795,12 @@ dvi_ship_out (pointer p) { /* output the box |p| */
   page_loc = dvi_offset + dvi_ptr;
   dvi_out (bop);
   for (k = 0; k <= 9; k++)
-	dvi_four (count (k));
+	dvi_four (COUNT (k));
   dvi_four (last_bop);
   last_bop = page_loc;
   cur_v = height (p) + v_offset;
   temp_ptr = p;
-  if (type (p) == vlist_node) {
+  if (TYPE_FIELD (p) == vlist_node) {
 	vlist_out();
   } else {
 	hlist_out();

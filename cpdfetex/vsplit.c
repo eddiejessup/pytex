@@ -26,7 +26,7 @@
  * otherwise they are collected in a list starting at |split_disc|.
  * 
  * In this routine and those that follow, we make use of the fact that a
- * vertical list contains no character nodes, hence the |type| field exists
+ * vertical list contains no character nodes, hence the |TYPE_FIELD| field exists
  * for each node in the list.
  */
 pointer 
@@ -37,7 +37,7 @@ prune_page_top (pointer p, boolean s) { 	/* adjust top after page break */
   prev_p = temp_head;
   link (temp_head) = p;
   while (p != null)
-	switch (type (p)) {
+	switch (TYPE_FIELD (p)) {
 	case hlist_node:
 	case vlist_node:
 	case rule_node:
@@ -114,14 +114,14 @@ scaled best_height_plus_depth; /* height of the best box, without stretching or 
  */
 pointer 
 vert_break (pointer p, scaled h, scaled d) {  /* finds optimum page break */
-  pointer prev_p; /* if |p| is a glue node, |type(prev_p)| determines whether |p| is a legal breakpoint */
+  pointer prev_p; /* if |p| is a glue node, |TYPE_FIELD(prev_p)| determines whether |p| is a legal breakpoint */
   pointer q, r; /* glue specifications */ 
   int pi; /* penalty value */ 
   int b; /* badness at a trial breakpoint */ 
   int least_cost; /* the smallest badness plus penalties found so far */ 
   pointer best_place; /* the most recent break that leads to |least_cost| */ 
   scaled prev_dp; /* depth of previous box in the list */ 
-  small_number t; /* |type| of the node following a kern */ 
+  small_number t; /* |TYPE_FIELD| of the node following a kern */ 
   pointer retval; /* our return value */
   pi = 0; best_place=null; /*TH -Wall*/
   prev_p = p; /* an initial glue node is not a legal breakpoint */
@@ -144,7 +144,7 @@ vert_break (pointer p, scaled h, scaled d) {  /* finds optimum page break */
 		 depth measurements; if this node is not a legal breakpoint, |goto not_found|
 		 or |update_heights|, otherwise set |pi| to the associated penalty at the break */
 	  /* module 1118 */
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 	  case rule_node:
@@ -173,7 +173,7 @@ vert_break (pointer p, scaled h, scaled d) {  /* finds optimum page break */
 		if (link (p) == null) {
 		  t = penalty_node;
 		} else {
-		  t = type (link (p));
+		  t = TYPE_FIELD (link (p));
 		}
 		if (t == glue_node) {
 		  pi = 0;
@@ -233,7 +233,7 @@ vert_break (pointer p, scaled h, scaled d) {  /* finds optimum page break */
 	  }
 	};
 	/* end expansion of Check if node |p| is a new champion breakpoint;.. */
-	if ((type (p) < glue_node) || (type (p) > kern_node)) {
+	if ((TYPE_FIELD (p) < glue_node) || (TYPE_FIELD (p) > kern_node)) {
 	  do_something;
 	  goto NOT_FOUND;
 	}
@@ -245,7 +245,7 @@ vert_break (pointer p, scaled h, scaled d) {  /* finds optimum page break */
 	 * contain infinite shrinkability, since that would permit any amount of
 	 * information to ``fit'' on one page.
 	 */
-	if (type (p) == kern_node) {
+	if (TYPE_FIELD (p) == kern_node) {
 	  q = p;
 	} else {
 	  q = glue_ptr (p);
@@ -281,7 +281,7 @@ vert_break (pointer p, scaled h, scaled d) {  /* finds optimum page break */
   retval = best_place;
   if (best_place == null) {
 	last_vbreak_penalty = eject_penalty;
-  } else if (type (best_place) == penalty_node) {
+  } else if (TYPE_FIELD (best_place) == penalty_node) {
 	last_vbreak_penalty = penalty (best_place);
   } else {
 	last_vbreak_penalty = 0;
@@ -331,7 +331,7 @@ vsplit (halfword n, scaled h) { /* extracts a page of height |h| from box |n| */
   if (v == null) {
 	return null;
   };
-  if (type (v) != vlist_node) {
+  if (TYPE_FIELD (v) != vlist_node) {
 	print_err  ("");
 	print_esc_string ("vsplit");
 	zprint_string(" needs a ");
@@ -354,7 +354,7 @@ vsplit (halfword n, scaled h) { /* extracts a page of height |h| from box |n| */
 	list_ptr (v) = null;
   } else {
 	loop {
-	  if (type (p) == mark_node) {
+	  if (TYPE_FIELD (p) == mark_node) {
 		if (mark_class (p) != 0) {
 		  /* begin expansion of Update the current marks for |vsplit| */
 		  /* module 1772 */

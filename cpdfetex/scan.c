@@ -114,7 +114,7 @@ scan_keyword (char * str) {	/* look for a given string */
  * immediately after `\.{\\hskip}'; and one can even say \.{\\the} with
  * respect to token lists in constructions like
  * `\.{\\xdef\\o\{\\the\\output\}}'. On the other hand, only integers are
- * allowed after a construction like `\.{\\count}'. To handle the various
+ * allowed after a construction like `\.{\\COUNT}'. To handle the various
  * possibilities, |scan_something_internal| has a |level| parameter, which
  * tells the ``highest'' kind of quantity that |scan_something_internal| is
  * allowed to produce. Six levels are distinguished, namely |int_val|,
@@ -128,13 +128,13 @@ scan_keyword (char * str) {	/* look for a given string */
  * three parameters \.{\\thinmuskip}, \.{\\medmuskip}, \.{\\thickmuskip};
  * |ident_val| is used only when |cur_val| points to a font identifier;
  * |tok_val| is used only when |cur_val| points to |null| or to the reference
- * count of a token list. The last two cases are allowed only when
+ * COUNT of a token list. The last two cases are allowed only when
  * |scan_something_internal| is called with |level=tok_val|.
  * 
  * If the output is glue, |cur_val| will point to a glue specification, and
- * the reference count of that glue will have been updated to reflect this
+ * the reference COUNT of that glue will have been updated to reflect this
  * reference; if the output is a nonempty token list, |cur_val| will point to
- * its reference count, but in this case the count will not have been updated.
+ * its reference COUNT, but in this case the COUNT will not have been updated.
  * Otherwise |cur_val| will contain the integer or scaled value in question.
  */
 integer cur_val; /* value returned by numeric scanners */ 
@@ -296,7 +296,7 @@ scan_something_internal (small_number level, boolean negative) {
 	  /* Inside an \.{\\output} routine, a user may wish to look at the page totals
 	   * that were present at the moment when output was triggered.
 	   */
-	  if ((page_contents == empty) && (!output_active)) {
+	  if ((page_contents == EMPTY_CODE) && (!output_active)) {
 		if (m == 0) {
 		  cur_val = max_dimen;
 		} else {
@@ -410,7 +410,7 @@ scan_something_internal (small_number level, boolean negative) {
 		} else {
 		  switch (cur_val_level) {
 		  case int_val:
-			cur_val = count (cur_val);
+			cur_val = COUNT (cur_val);
 			break;
 		  case dimen_val:
 			cur_val = dimen (cur_val);
@@ -429,7 +429,7 @@ scan_something_internal (small_number level, boolean negative) {
 	  /* begin expansion of Fetch an item in the current node, if appropriate */
 	  /* module 424 */
 	  /* Here is where \.{\\lastpenalty}, \.{\\lastkern}, and \.{\\lastskip} are
-	   * implemented. The reference count for \.{\\lastskip} will be updated later.
+	   * implemented. The reference COUNT for \.{\\lastskip} will be updated later.
 	   * A final \.{\\endM} node is temporarily removed.
 	   * 
 	   * We also handle \.{\\inputlineno} and \.{\\badness} here, because they are
@@ -442,7 +442,7 @@ scan_something_internal (small_number level, boolean negative) {
 		  /* This code for reducing |cur_val_level| and\slash or negating the
 		   * result is similar to the one for all the other cases of
 		   * |scan_something_internal|, with the difference that |scan_expr| has
-		   * already increased the reference count of a glue specification.
+		   * already increased the reference COUNT of a glue specification.
 		   */
 		  if (m < eTeX_mu) {
 			switch (m) {
@@ -658,28 +658,28 @@ scan_something_internal (small_number level, boolean negative) {
 			cur_val_level = cur_chr;
 		  }
 		  if (!is_char_node (tail) && (MODE_FIELD != 0)) {
-			if ((type (tail) == math_node)&&(subtype (tail) == end_M_code))
+			if ((TYPE_FIELD (tail) == math_node)&&(subtype (tail) == end_M_code))
 			  remove_end_M();
 			switch (cur_chr) {
 			case int_val:
-			  if (type (tail) == penalty_node)
+			  if (TYPE_FIELD (tail) == penalty_node)
 				cur_val = penalty (tail);
 			  break;
 			case dimen_val:
-			  if (type (tail) == kern_node)
+			  if (TYPE_FIELD (tail) == kern_node)
 				cur_val = width (tail);
 			  break;
 			case glue_val:
-			  if (type (tail) == glue_node) {
+			  if (TYPE_FIELD (tail) == glue_node) {
 				cur_val = glue_ptr (tail);
 				if (subtype (tail) == mu_glue)
 				  cur_val_level = mu_val;
 			  };
 			  break;
 			case last_node_type_code:
-			  if ((type (tail) != math_node) || (subtype (tail) != end_M_code)) {
-				if (type (tail) <= unset_node) {
-				  cur_val = type (tail) + 1;
+			  if ((TYPE_FIELD (tail) != math_node) || (subtype (tail) != end_M_code)) {
+				if (TYPE_FIELD (tail) <= unset_node) {
+				  cur_val = TYPE_FIELD (tail) + 1;
 				} else {
 				  cur_val = unset_node + 2;
 				}
@@ -726,7 +726,7 @@ scan_something_internal (small_number level, boolean negative) {
 	/* begin expansion of Convert \(c)|cur_val| to a lower level */
 	/* module 429 */
 	/* When a |glue_val| changes to a |dimen_val|, we use the width component
-	 * of the glue; there is no need to decrease the reference count, since it
+	 * of the glue; there is no need to decrease the reference COUNT, since it
 	 * has not yet been increased. When a |dimen_val| changes to an |int_val|,
 	 * we use scaled points so that the value doesn't actually change. And when a
 	 * |mu_val| changes to a |glue_val|, the value doesn't change either.
@@ -739,10 +739,10 @@ scan_something_internal (small_number level, boolean negative) {
 	decr (cur_val_level);
 	/* end expansion of Convert \(c)|cur_val| to a lower level */
   };
-  /* begin expansion of Fix the reference count, if any, and negate |cur_val| if |negative| */
+  /* begin expansion of Fix the reference COUNT, if any, and negate |cur_val| if |negative| */
   /* module 430 */
   /* If |cur_val| points to a glue specification at this point, the reference
-   * count for the glue does not yet include the reference by |cur_val|.
+   * COUNT for the glue does not yet include the reference by |cur_val|.
    * If |negative| is |true|, |cur_val_level| is known to be |<=mu_val|.
    */
   if (negative) {
@@ -756,7 +756,7 @@ scan_something_internal (small_number level, boolean negative) {
   } else if ((cur_val_level >= glue_val) && (cur_val_level <= mu_val)) {
     add_glue_ref (cur_val);
   }
-  /* end expansion of Fix the reference count, if any, and negate |cur_val| if |negative| */
+  /* end expansion of Fix the reference COUNT, if any, and negate |cur_val| if |negative| */
 }
 
 /* module 432 */
@@ -975,7 +975,7 @@ scan_int (void) { /* sets |cur_val| to an integer */
 		  help2 ("I can only go up to 2147483647='17777777777=\"7FFFFFFF,",
 				 "so I'm using that number instead of yours.");
 		  error();
-		  cur_val = infinity;
+		  cur_val = INFINITY_NUMBER;
 		  OK_so_far = false;
 		};
 	  } else {
@@ -1016,10 +1016,10 @@ scan_int (void) { /* sets |cur_val| to an integer */
  * are permitted; and |shortcut| is |true| if |cur_val| already contains
  * an integer and only the units need to be considered.
  * 
- * The order of infinity that was found in the case of infinite glue is returned
+ * The order of INFINITY_NUMBER that was found in the case of infinite glue is returned
  * in the global variable |cur_order|.
  */
-glue_ord cur_order; /* order of infinity found by |scan_dimen| */
+glue_ord cur_order; /* order of INFINITY_NUMBER found by |scan_dimen| */
 
 /* module 451 */
 
@@ -1227,7 +1227,7 @@ scan_dimen (boolean mu, boolean inf, boolean shortcut) { /* sets |cur_val| to a 
 	  zprint_string("mu inserted)");
 	  help4( "The unit of measurement in math glue must be mu.",
 			 "To recover gracefully from this error, it's best to",
-			 "delete the erroneous units; e.g., type `2' to delete",
+			 "delete the erroneous units; e.g., TYPE_FIELD `2' to delete",
 			 "two letters. (See Chapter 27 of The TeXbook.)");
 	  error();
 	  goto ATTACH_FRACTION;
@@ -1283,7 +1283,7 @@ scan_dimen (boolean mu, boolean inf, boolean shortcut) { /* sets |cur_val| to a 
 		   "cm, mm, dd, cc, bp, or sp; but yours is a new one!",
 		   "I'll assume that you meant to say pt, for printer's points.",
 		   "To recover gracefully from this error, it's best to",
-		   "delete the erroneous units; e.g., type `2' to delete",
+		   "delete the erroneous units; e.g., TYPE_FIELD `2' to delete",
 		   "two letters. (See Chapter 27 of The TeXbook.)");
 	error();
 	goto DONE2;
@@ -1325,7 +1325,7 @@ scan_dimen (boolean mu, boolean inf, boolean shortcut) { /* sets |cur_val| to a 
 /* module 461 */
 
 /* The final member of \TeX's value-scanning trio is |scan_glue|, which
- * makes |cur_val| point to a glue specification. The reference count of that
+ * makes |cur_val| point to a glue specification. The reference COUNT of that
  * glue spec will take account of the fact that |cur_val| is pointing to~it.
  * 
  * The |level| parameter should be either |glue_val| or |mu_val|.
@@ -1477,7 +1477,7 @@ void scan_spec (group_code c, boolean three_codes) { /* scans a box specificatio
 
 /* The token list (balanced text) created by |scan_general_text| begins
  * at |link(temp_head)| and ends at |cur_val|. (If |cur_val=temp_head|,
- * the list is empty.)
+ * the list is EMPTY_CODE.)
  */
 
 void
@@ -1513,7 +1513,7 @@ scan_general_text (void) {
   };
 FOUND:
   q = link (def_ref);
-  free_avail (def_ref); /* discard reference count */ 
+  free_avail (def_ref); /* discard reference COUNT */ 
   if (q == null) {
     cur_val = temp_head;
   } else {
@@ -1565,10 +1565,10 @@ FOUND:
 void
 scan_expr (void) {/* scans and evaluates an expression */
   boolean a, b; /* saved values of |arith_error| */ 
-  small_number l; /* type of expression */ 
+  small_number l; /* TYPE_FIELD of expression */ 
   small_number r; /* state of expression so far */ 
   small_number s; /* state of term so far */ 
-  small_number o; /* next operation or type of next factor */ 
+  small_number o; /* next operation or TYPE_FIELD of next factor */ 
   int e; /* expression so far */ 
   int t; /* term so far */ 
   int f; /* current factor */ 
@@ -1579,7 +1579,7 @@ scan_expr (void) {/* scans and evaluates an expression */
   a = arith_error;
   b = false;
   p = null;
-  /* begin expansion of Scan and evaluate an expression |e| of type |l| */
+  /* begin expansion of Scan and evaluate an expression |e| of TYPE_FIELD |l| */
   /* module 1728 */
   /* Evaluating an expression is a recursive process: When the left
    * parenthesis of a subexpression is scanned we descend to the next level
@@ -1598,7 +1598,7 @@ scan_expr (void) {/* scans and evaluates an expression */
   } else {
     o = int_val;
   }
-  /* begin expansion of Scan a factor |f| of type |o| or start a subexpression */
+  /* begin expansion of Scan a factor |f| of TYPE_FIELD |o| or start a subexpression */
   /* module 1730 */
   /* Get the next non-blank non-call... */
   get_nblank_ncall;
@@ -1608,14 +1608,14 @@ scan_expr (void) {/* scans and evaluates an expression */
 	/* Parenthesized subexpressions can be inside expressions, and this
 	 * nesting has a stack. Seven local variables represent the top of the
 	 * expression stack: |p| points to pushed-down entries, if any; |l|
-	 * specifies the type of expression currently beeing evaluated; |e| is the
+	 * specifies the TYPE_FIELD of expression currently beeing evaluated; |e| is the
 	 * expression so far and |r| is the state of its evaluation; |t| is the
 	 * term so far and |s| is the state of its evaluation; finally |n| is the
 	 * numerator for a combined multiplication and division, if any.
 	 */
 	q = get_node (expr_node_size);
 	link (q) = p;
-	type (q) = l;
+	TYPE_FIELD (q) = l;
 	subtype (q) = 4 * s + r;
 	expr_e_field (q) = e;
 	expr_t_field (q) = t;
@@ -1636,7 +1636,7 @@ scan_expr (void) {/* scans and evaluates an expression */
     scan_mu_glue();
   }
   f = cur_val;
-  /* end expansion of Scan a factor |f| of type |o| or start a subexpression */
+  /* end expansion of Scan a factor |f| of TYPE_FIELD |o| or start a subexpression */
  FOUND:
   /* begin expansion of Scan the next operator and set |o| */
   /* module 1729 */
@@ -1666,7 +1666,7 @@ scan_expr (void) {/* scans and evaluates an expression */
   /* begin expansion of Make sure that |f| is in the proper range */
   /* module 1735 */
   /* We want to make sure that each term and (intermediate) result is in
-   * the proper range. Integer values must not exceed |infinity|
+   * the proper range. Integer values must not exceed |INFINITY_NUMBER|
    * ($2^{31}-1$) in absolute value, dimensions must not exceed |max_dimen|
    * ($2^{30}-1$). We avoid the absolute value of an integer, because this
    * might fail for the value $-2^{31}$ using 32-bit arithmetic.
@@ -1679,7 +1679,7 @@ scan_expr (void) {/* scans and evaluates an expression */
    * to simply modify the glue components.
    */
   if ((l == int_val) || (s > expr_sub)) {
-	if ((f > infinity) || (f < -infinity))
+	if ((f > INFINITY_NUMBER) || (f < -INFINITY_NUMBER))
 	  num_error (f);
   } else if (l == dimen_val) {
 	if (abs (f) > max_dimen)
@@ -1735,7 +1735,7 @@ scan_expr (void) {/* scans and evaluates an expression */
 	 */
   case expr_scale:
 	if (l == int_val) {
-	  t = fract (t, n, f, infinity);
+	  t = fract (t, n, f, INFINITY_NUMBER);
 	} else if (l == dimen_val) {
 	  expr_s (t);
 	} else {
@@ -1757,7 +1757,7 @@ scan_expr (void) {/* scans and evaluates an expression */
 	if (r == expr_none) {
 	  e = t;
 	} else if (l == int_val) {
-	  e = expr_add_sub (e, t, infinity);
+	  e = expr_add_sub (e, t, INFINITY_NUMBER);
 	} else  if (l == dimen_val) {
 	  e = expr_a (e, t);
 	} else {
@@ -1799,13 +1799,13 @@ scan_expr (void) {/* scans and evaluates an expression */
 	n = expr_n_field (q);
 	s = subtype (q) / 4;
 	r = subtype (q) % 4;
-	l = type (q);
+	l = TYPE_FIELD (q);
 	p = link (q);
 	free_node (q, expr_node_size);
 	goto FOUND;
 	/* end expansion of Pop the expression stack and |goto found| */
   }
-  /* end expansion of Scan and evaluate an expression |e| of type |l| */
+  /* end expansion of Scan and evaluate an expression |e| of TYPE_FIELD |l| */
   if (b) {
 	print_err ("Arithmetic overflow");
 	help2 ("I can't evaluate this expression,","since the result is out of range.");

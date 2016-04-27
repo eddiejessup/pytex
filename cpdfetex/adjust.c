@@ -52,7 +52,7 @@ pointer
 new_adjust_node (pointer p, integer i) {
   pointer q;
   q = get_node (small_node_size);
-  type (q) = adjust_node;
+  TYPE_FIELD (q) = adjust_node;
   adjust_pre (q) = i; /* the |subtype| is used for |adjust_pre| */
   adjust_ptr (q) = list_ptr (p);
   return q;

@@ -88,7 +88,7 @@ post_line_break (boolean d) {
 	  };
 	  while (q != cur_break (cur_p)) {
 		if (!is_char_node (q)) {
-		  if (type (q) == math_node) {
+		  if (TYPE_FIELD (q) == math_node) {
 			/* Adjust \(t)the LR stack for the |p... */
             adjust_LR_stack;
 		  }
@@ -109,13 +109,13 @@ post_line_break (boolean d) {
 	disc_break = false;
 	post_disc_break = false;
 	if (q != null)	{ /* |q| cannot be a |char_node| */
-	  if (type (q) == glue_node) {
+	  if (TYPE_FIELD (q) == glue_node) {
 		delete_glue_ref (glue_ptr (q));
 		glue_ptr (q) = right_skip;
 		subtype (q) = right_skip_code + 1;
 		add_glue_ref (right_skip);
 		goto DONE;
-	  } else if (type (q) == disc_node) {
+	  } else if (TYPE_FIELD (q) == disc_node) {
 		/* begin expansion of Change discretionary to compulsory and set |disc_break:=true| */
 		/* module 1026 */
 		t = replace_count (q);
@@ -168,9 +168,9 @@ post_line_break (boolean d) {
 		link (q) = r;
 		disc_break = true;
 		/* end expansion of Change discretionary to compulsory and set |disc_break:=true| */
-	  } else if (type (q) == kern_node) {
+	  } else if (TYPE_FIELD (q) == kern_node) {
 		width (q) = 0;
-	  } else if (type (q) == math_node) {
+	  } else if (TYPE_FIELD (q) == math_node) {
 		width (q) = 0;
 		if (TeXXeT_en) {
 		  /* Adjust \(t)the LR stack for the |p... */
@@ -192,7 +192,7 @@ post_line_break (boolean d) {
   DONE:
 	if (pdf_protrude_chars > 0) {
 	  p = prev_rightmost (temp_head, q);
-	  if ((p != null)&& ((type (p) == disc_node)|| (type (p) == penalty_node)))
+	  if ((p != null)&& ((TYPE_FIELD (p) == disc_node)|| (TYPE_FIELD (p) == penalty_node)))
 		p = prev_rightmost (temp_head, p);
 	  w = right_pw (p);
 	  if (p != null) {
@@ -379,13 +379,13 @@ post_line_break (boolean d) {
 		  if (non_discardable (q)) {
 			goto DONE1;
 		  }
-		  if (type (q) == kern_node) {
-			if (subtype (q) != explicit) {
+		  if (TYPE_FIELD (q) == kern_node) {
+			if (subtype (q) != EXPLICIT_CODE) {
 			  goto DONE1;
 			}
 		  }
-		  r = q; /* now |type(q)=glue_node|, |kern_node|, |math_node| or |penalty_node| */
-		  if (type (q) == math_node) {
+		  r = q; /* now |TYPE_FIELD(q)=glue_node|, |kern_node|, |math_node| or |penalty_node| */
+		  if (TYPE_FIELD (q) == math_node) {
 			if (TeXXeT_en) {
 			  /* begin expansion of Adjust \(t)the LR stack for the |post_line_break| routine */
 			  adjust_LR_stack;

@@ -43,7 +43,7 @@ new_snap_node (small_number s) {
   if (width (cur_val) < 0)
 	pdf_error_string("ext1","negative snap glue");
   p = get_node (snap_node_size);
-  type (p) = whatsit_node;
+  TYPE_FIELD (p) = whatsit_node;
   subtype (p) = s;
   link (p) = null;
   snap_glue_ptr (p) = cur_val;

@@ -12,7 +12,7 @@ pointer
 new_penalty (int m) {
   pointer p;			/* the new node */
   p = get_node (small_node_size);
-  type (p) = penalty_node;
+  TYPE_FIELD (p) = penalty_node;
   subtype (p) = 0;		/* the |subtype| is not used */
   penalty (p) = m;
   return p;

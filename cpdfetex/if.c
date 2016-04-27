@@ -78,7 +78,7 @@ pass_text (void) {
 		  p = cond_ptr;\
 		  if_line = if_line_field (p);\
 		  cur_if = subtype (p);\
-		  if_limit = type (p);\
+		  if_limit = TYPE_FIELD (p);\
 		  cond_ptr = link (p);\
 		  free_node (p, if_node_size); }
 
@@ -99,7 +99,7 @@ change_if_limit (small_number l, pointer p) {
 	  if (q == null)
 		confusion ("if");
 	  if (link (q) == p) {
-	    type (q) = l;
+	    TYPE_FIELD (q) = l;
 	    return;
 	  };
 	  q = link (q);
@@ -128,7 +128,7 @@ conditional (void) {
   pointer p, q; /* for traversing token lists in \.{\\ifx} tests */ 
   small_number save_scanner_status; /* |scanner_status| upon entry */ 
   pointer save_cond_ptr; /* |cond_ptr| corresponding to this conditional */ 
-  small_number this_if; /* type of this conditional */ 
+  small_number this_if; /* TYPE_FIELD of this conditional */ 
   boolean is_unless; /* was this if preceded by `\.{\\unless}' ? */
   b=false; /*TH -Wall*/
   if (tracing_ifs > 0)
@@ -144,7 +144,7 @@ conditional (void) {
    */
   p = get_node (if_node_size);
   link (p) = cond_ptr;
-  type (p) = if_limit;
+  TYPE_FIELD (p) = if_limit;
   subtype (p) = cur_if;
   if_line_field (p) = if_line;
   cond_ptr = p;
@@ -258,9 +258,9 @@ conditional (void) {
 	} else if (p == null) {
 	  b = false;
 	} else if (this_if == if_hbox_code) {
-	  b = (type (p) == hlist_node);
+	  b = (TYPE_FIELD (p) == hlist_node);
 	} else {
-	  b = (type (p) == vlist_node);
+	  b = (TYPE_FIELD (p) == vlist_node);
 	}
 	/* end expansion of Test box register status */
 	break;

@@ -81,8 +81,8 @@ EXTERN pointer last_rightmost_char;
 #define determine_stretch_order           \
   if (total_stretch[filll] != 0) {        \
     o = filll;                            \
-  } else if (total_stretch[fill] != 0) {  \
-    o = fill;                             \
+  } else if (total_stretch[FILL_CODE] != 0) {  \
+    o = FILL_CODE;                             \
   } else if (total_stretch[fil] != 0) {   \
     o = fil;                              \
   } else {                                \
@@ -94,8 +94,8 @@ EXTERN pointer last_rightmost_char;
 #define determine_shrink_order            \
   if (total_shrink[filll] != 0) {         \
     o = filll;                            \
-  } else if (total_shrink[fill] != 0) {   \
-    o = fill;                             \
+  } else if (total_shrink[FILL_CODE] != 0) {   \
+    o = FILL_CODE;                             \
   } else if (total_shrink[fil] != 0) {    \
     o = fil;                              \
   } else {                                \

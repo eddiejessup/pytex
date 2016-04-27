@@ -317,7 +317,7 @@ append_italic_correction (void) {
   if (tail != head) {
 	if (is_char_node (tail)) {
 	  p = tail;
-	} else if (type (tail) == ligature_node) {
+	} else if (TYPE_FIELD (tail) == ligature_node) {
 	  p = lig_char (tail);
 	} else {
 	  do_something;
@@ -325,7 +325,7 @@ append_italic_correction (void) {
 	}
 	f = font (p);
 	tail_append (new_kern (char_italic (f, char_info (f, character (p)))));
-	subtype (tail) = explicit;
+	subtype (tail) = EXPLICIT_CODE;
   };
 }
 

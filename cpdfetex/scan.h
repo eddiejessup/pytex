@@ -57,7 +57,7 @@ EXTERN small_number radix; /* |scan_int| sets this to 8, 10, 16, or zero */
 
 
 /* module 445 */
-#define infinity 2147483647
+#define INFINITY_NUMBER 2147483647
 #define zero_token  (other_token  +  '0')
 #define A_token  (letter_token  +  'A')
 #define other_A_token  (other_token  +  'A')

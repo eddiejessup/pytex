@@ -1,10 +1,10 @@
 
 /* module 147 */
 #define math_node 9
-#define before 0
+#define BEFORE_CODE 0
 #define after 1
 #define M_code 2
-#define begin_M_code  (M_code  +  before)
+#define begin_M_code  (M_code  +  BEFORE_CODE)
 #define end_M_code  (M_code  +  after)
 #define L_code 4
 #define begin_L_code  (L_code  +  begin_M_code)
@@ -14,14 +14,14 @@
 #define end_R_code  (R_code  +  end_M_code)
 #define end_LR( arg )  odd ( subtype ( arg ))
 #define end_LR_type( arg ) ( L_code  * ( subtype ( arg )  /  L_code ) +  end_M_code )
-#define begin_LR_type( arg ) ( arg  -  after  +  before )
+#define begin_LR_type( arg ) ( arg  -  after  +  BEFORE_CODE )
 
 EXTERN pointer new_math (scaled w, small_number s);
 
 
 /* module 825 */
 
-/* Each noad is four or more words long. The first word contains the |type|
+/* Each noad is four or more words long. The first word contains the |TYPE_FIELD|
  * and |subtype| and |link| fields that are already so familiar to us; the
  * second, third, and fourth words are called the noad's |nucleus|, |subscr|,
  * and |supscr| fields.
@@ -96,9 +96,9 @@ EXTERN pointer new_math (scaled w, small_number s);
  * noads), \TeX\ will insert a penalty node (with the current |rel_penalty|)
  * just after the formula that corresponds to the |rel_noad|, unless there
  * already was a penalty immediately following; and a ``thick space'' will be
- * inserted just before the formula that corresponds to the |op_noad|.
+ * inserted just BEFORE_CODE the formula that corresponds to the |op_noad|.
  * 
- * A noad of type |ord_noad|, |op_noad|, \dots, |inner_noad| usually
+ * A noad of TYPE_FIELD |ord_noad|, |op_noad|, \dots, |inner_noad| usually
  * has a |subtype=normal|. The only exception is that an |op_noad| might
  * have |subtype=limits| or |no_limits|, if the normal positioning of
  * limits has been overridden for this operator.
@@ -122,7 +122,7 @@ EXTERN pointer new_math (scaled w, small_number s);
  * A |fraction_noad| is six words long; it has a |right_delimiter| field
  * as well as a |left_delimiter|.
  * 
- * Delimiter fields are of type |four_quarters|, and they have four subfields
+ * Delimiter fields are of TYPE_FIELD |four_quarters|, and they have four subfields
  * called |small_fam|, |small_char|, |large_fam|, |large_char|. These subfields
  * represent variable-size delimiters by giving the ``small'' and ``large''
  * starting characters, as explained in Chapter~17 of {\sl The \TeX book}.
@@ -196,7 +196,7 @@ EXTERN pointer new_noad (void);
 #define right_noad  (left_noad  + 1)
 #define delimiter  nucleus
 #define middle_noad 1
-#define scripts_allowed( arg ) ( type ( arg ) >=  ord_noad )  && ( type ( arg ) <  left_noad )
+#define scripts_allowed( arg ) ( TYPE_FIELD ( arg ) >=  ord_noad )  && ( TYPE_FIELD ( arg ) <  left_noad )
 
 
 /* module 832 */

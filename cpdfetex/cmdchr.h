@@ -78,7 +78,7 @@ extern int first_count; /* another variable for pseudoprinting */
 #define no_align 34
 #define vrule 35
 #define hrule 36
-#define insert 37
+#define INSERT_CODE 37
 #define vadjust 38
 #define ignore_spaces 39
 #define after_assignment 40
@@ -144,7 +144,7 @@ extern int first_count; /* another variable for pseudoprinting */
 #define def_font 88
 #define register_cmd 89
 #define max_internal 89
-#define advance 90
+#define ADVANCE_CODE 90
 #define multiply 91
 #define divide 92
 #define PREFIX_CODE 93

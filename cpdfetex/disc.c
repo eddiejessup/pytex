@@ -26,7 +26,7 @@ pointer
 new_disc (void) { /* creates an empty |disc_node| */
   pointer p;			/* the new node */
   p = get_node (small_node_size);
-  type (p) = disc_node;
+  TYPE_FIELD (p) = disc_node;
   replace_count (p) = 0;
   pre_break (p) = null;
   post_break (p) = null;
@@ -76,9 +76,9 @@ build_discretionary (void) {
   n = 0;
   while (p != null) {
 	if (!is_char_node (p))
-	  if (type (p) > rule_node)
-		if (type (p) != kern_node)
-		  if (type (p) != ligature_node) {
+	  if (TYPE_FIELD (p) > rule_node)
+		if (TYPE_FIELD (p) != kern_node)
+		  if (TYPE_FIELD (p) != ligature_node) {
 			print_err ("Improper discretionary list");
 			help1  ("Discretionary lists must contain only boxes and kerns.");
 			error();

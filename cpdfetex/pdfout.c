@@ -17,7 +17,7 @@
  * font. After initialization flag of each font is set to |new_font_type|.
  * The first time when a character of a font is written out, pdfTeX looks for
  * the corresponding virtual font. If the corresponding virtual font exists, then
- * the font type is set to |virtual_font_type|; otherwise it will be set to
+ * the font TYPE_FIELD is set to |virtual_font_type|; otherwise it will be set to
  * |real_font_type|. |subst_font_type| indicates fonts that have been substituted
  * during adjusting spacing. Such fonts are linked via the |pdf_font_link| array.
  */
@@ -128,7 +128,7 @@ pdf_hlist_out (void) { /* output an |hlist_node| box */
   scaled left_edge; /* the left coordinate for this box */ 
   scaled save_h; /* what |cur_h| should pop to */ 
   pointer this_box; /* pointer to containing box */ 
-  unsigned char g_sign; /* selects type of glue */ 
+  unsigned char g_sign; /* selects TYPE_FIELD of glue */ 
   pointer p; /* current position in the hlist */ 
   pointer leader_box; /* the leader box being replicated */ 
   scaled leader_wd; /* width of leader box being replicated */ 
@@ -221,7 +221,7 @@ pdf_hlist_out (void) { /* output an |hlist_node| box */
 	} else {
 	  /* begin expansion of Output the non-|char_node| |p| for |pdf_hlist_out| and move to the next node */
 	  /* module 703 */
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 		/* begin expansion of (\pdfTeX) Output a box in an hlist */
@@ -234,7 +234,7 @@ pdf_hlist_out (void) { /* output an |hlist_node| box */
 		  edge = cur_h + width (p);
 		  if (cur_dir == right_to_left)
 			cur_h = edge;
-		  if (type (p) == vlist_node) {
+		  if (TYPE_FIELD (p) == vlist_node) {
 			pdf_vlist_out();
 		  } else {
 			pdf_hlist_out();
@@ -340,7 +340,7 @@ pdf_hlist_out (void) { /* output an |hlist_node| box */
 			 |goto FIN_RULE| if a rule or to |NEXTP| if done */
 		  /* module 707 */
 		  leader_box = leader_ptr (p);
-		  if (type (leader_box) == rule_node) {
+		  if (TYPE_FIELD (leader_box) == rule_node) {
 			rule_ht = height (leader_box);
 			rule_dp = depth (leader_box);
 			goto FIN_RULE;
@@ -382,7 +382,7 @@ pdf_hlist_out (void) { /* output an |hlist_node| box */
 				cur_h = cur_h + leader_wd;
 			  outer_doing_leaders = doing_leaders;
 			  doing_leaders = true;
-			  if (type (leader_box) == vlist_node) {
+			  if (TYPE_FIELD (leader_box) == vlist_node) {
 				pdf_vlist_out();
 			  } else {
 				pdf_hlist_out();
@@ -453,7 +453,7 @@ pdf_hlist_out (void) { /* output an |hlist_node| box */
 			};
 			/* end expansion of Reverse an hlist segment and |goto reswitch| */
 		  };
-		  type (p) = kern_node;
+		  TYPE_FIELD (p) = kern_node;
 		}
 		/* end expansion of Adjust \(t)the LR stack for the |hlist_out| routine;...*/
 		cur_h = cur_h + width (p);
@@ -514,7 +514,7 @@ pdf_vlist_out (void) { /* output a |pdf_vlist_node| box */
   scaled top_edge; /* the top coordinate for this box */ 
   scaled save_v; /* what |cur_v| should pop to */ 
   pointer this_box; /* pointer to containing box */ 
-  unsigned char g_sign; /* selects type of glue */ 
+  unsigned char g_sign; /* selects TYPE_FIELD of glue */ 
   pointer p; /* current position in the vlist */ 
   pointer leader_box; /* the leader box being replicated */ 
   scaled leader_ht; /* height of leader box being replicated */ 
@@ -542,7 +542,7 @@ pdf_vlist_out (void) { /* output a |pdf_vlist_node| box */
 	} else {
 	  /* begin expansion of Output the non-|char_node| |p| for |pdf_vlist_out| */
 	  /* module 715 */
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 		/* begin expansion of (\pdfTeX) Output a box in a vlist */
@@ -558,7 +558,7 @@ pdf_vlist_out (void) { /* output a |pdf_vlist_node| box */
 			cur_h = left_edge + shift_amount (p); /* shift the box right */ 
 		  }
 		  temp_ptr = p;
-		  if (type (p) == vlist_node) {
+		  if (TYPE_FIELD (p) == vlist_node) {
 			pdf_vlist_out();
 		  } else {
 			pdf_hlist_out();
@@ -660,7 +660,7 @@ pdf_vlist_out (void) { /* output a |pdf_vlist_node| box */
 			/* begin expansion of (\pdfTeX) Output leaders in a vlist, |goto FIN_RULE| if a rule or to |NEXTP| if done */
 			/* module 719 */
 			leader_box = leader_ptr (p);
-			if (type (leader_box) == rule_node) {
+			if (TYPE_FIELD (leader_box) == rule_node) {
 			  rule_wd = width (leader_box);
 			  rule_dp = 0;
 			  goto FIN_RULE;
@@ -702,7 +702,7 @@ pdf_vlist_out (void) { /* output a |pdf_vlist_node| box */
 				temp_ptr = leader_box;
 				outer_doing_leaders = doing_leaders;
 				doing_leaders = true;
-				if (type (leader_box) == vlist_node) {
+				if (TYPE_FIELD (leader_box) == vlist_node) {
 				  pdf_vlist_out();
 				} else {
 				  pdf_hlist_out();
@@ -817,10 +817,10 @@ pdf_ship_out (pointer p, boolean shipping_page) {  /* output the box |p| */
 	  print_char (' ');
 	print_char ('[');
 	j = 9;
-	while ((count (j) == 0) && (j > 0))
+	while ((COUNT (j) == 0) && (j > 0))
 	  decr (j);
 	for (k = 0; k <= j; k++) {
-	  print_int (count (k));
+	  print_int (COUNT (k));
 	  if (k < j)
 		print_char ('.');
 	};
@@ -951,7 +951,7 @@ pdf_ship_out (pointer p, boolean shipping_page) {  /* output the box |p| */
   };
   /* end expansion of Start stream of page/form contents */
   /* end expansion of Initialize variables as |pdf_ship_out| begins */
-  if (type (p) == vlist_node) {
+  if (TYPE_FIELD (p) == vlist_node) {
 	pdf_vlist_out();
   } else
 	pdf_hlist_out();
@@ -1211,7 +1211,7 @@ pdf_ship_out (pointer p, boolean shipping_page) {  /* output the box |p| */
 			};
 			break;
 		  default:
-			pdf_error_string("ext5","unknown dest type");
+			pdf_error_string("ext5","unknown dest TYPE_FIELD");
 			;
 		  };
 		  pdf_print_ln (']');
@@ -1421,7 +1421,7 @@ pdf_write_obj (int n) {	/* write a raw PDF object */
 
 void 
 flush_whatsit_node (pointer p, small_number s) {
-  type (p) = whatsit_node;
+  TYPE_FIELD (p) = whatsit_node;
   subtype (p) = s;
   if (link (p) != null)
 	pdf_error_string("flush_whatsit_node","link(p) is not null");

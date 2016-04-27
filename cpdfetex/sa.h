@@ -7,7 +7,7 @@
 #define box_val_limit 80
 #define tok_val_limit 96
 #define index_node_size 9
-#define sa_index  type
+#define sa_index  TYPE_FIELD
 #define sa_used  subtype
 
 /* module 1761 */

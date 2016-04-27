@@ -50,7 +50,7 @@ trap_zero_glue (void) {
 
 /* module 1381 */
 
-/* We use the fact that |register<advance<multiply<divide|.  */
+/* We use the fact that |register<ADVANCE_CODE<multiply<divide|.  */
 void 
 do_register_command (small_number a) {
   pointer l, q, r, s; /* for list manipulation */ 
@@ -129,7 +129,7 @@ do_register_command (small_number a) {
   };
   arith_error = false;
   if (q < multiply) {
-	/* begin expansion of Compute result of |register| or |advance|, put it in |cur_val| */
+	/* begin expansion of Compute result of |register| or |ADVANCE_CODE|, put it in |cur_val| */
 	/* module 1383 */
 	if (p < glue_val) {
 	  if (p == int_val) {
@@ -137,11 +137,11 @@ do_register_command (small_number a) {
 	  } else {
 		scan_normal_dimen;
 	  }
-	  if (q == advance)
+	  if (q == ADVANCE_CODE)
 		cur_val = cur_val + w;
 	} else {
 	  scan_glue (p);
-	  if (q == advance) {
+	  if (q == ADVANCE_CODE) {
 		/* begin expansion of Compute the sum of two glue specs */
 		/* module 1384 */
 		q = new_spec (cur_val);
@@ -167,7 +167,7 @@ do_register_command (small_number a) {
 		cur_val = q;
 		/* end expansion of Compute the sum of two glue specs */
 	  }
-	  /* end expansion of Compute result of |register| or |advance|, put it in |cur_val| */
+	  /* end expansion of Compute result of |register| or |ADVANCE_CODE|, put it in |cur_val| */
 	}
   } else {
 	/* begin expansion of Compute result of |multiply| or |divide|, put it in |cur_val| */
@@ -473,7 +473,7 @@ prefixed_command (void) {
   /* end expansion of Adjust \(f)for the setting of \.{\\globaldefs} */
   switch (cur_cmd) {
   case set_font:
-	DEFINE (cur_font_loc, data, cur_chr);
+	DEFINE (cur_font_loc, DATA_CODE, cur_chr);
 	break;
 	/* module 1363 */
 	/* When a |def| command has been scanned,
@@ -550,7 +550,7 @@ prefixed_command (void) {
 		  end_diagnostic (false);
 		};
 		n = n * 256 + cur_val;
-		DEFINE (p, data, hi (n));
+		DEFINE (p, DATA_CODE, hi (n));
 		if ((p - char_sub_code_base) < char_sub_def_min)
 		  WORD_DEFINE (int_base + char_sub_def_min_code, p - char_sub_code_base);
 		if ((p - char_sub_code_base) > char_sub_def_max)
@@ -784,9 +784,9 @@ prefixed_command (void) {
 		cur_val = 0;
 	  };
 	  if (p < math_code_base) {
-		DEFINE (p, data, cur_val);
+		DEFINE (p, DATA_CODE, cur_val);
 	  } else if (p < del_code_base) {
-		DEFINE (p, data, hi (cur_val));
+		DEFINE (p, DATA_CODE, hi (cur_val));
 	  } else {
 		WORD_DEFINE (p, cur_val);
 	  }
@@ -798,12 +798,12 @@ prefixed_command (void) {
 	p = p + cur_val;
 	scan_optional_equals();
 	scan_font_ident();
-	DEFINE (p, data, cur_val);
+	DEFINE (p, DATA_CODE, cur_val);
 	break;
 	/* module 1380 */
 	/* Next we consider changes to \TeX's numeric registers. */
   case register_cmd:
-  case advance:
+  case ADVANCE_CODE:
   case multiply:
   case divide:
 	do_register_command (a);

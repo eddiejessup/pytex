@@ -37,7 +37,7 @@ EXTERN void insert_end_M (void);
 
 /* module 1658 */
 /* Initialize the LR stack, this will never match */
-#define initialize_LR_stack { put_LR (before); }
+#define initialize_LR_stack { put_LR (BEFORE_CODE); }
 
 
 /* module 1661 */
@@ -58,7 +58,7 @@ EXTERN void insert_end_M (void);
 /* module 1663 */
 /* Check for LR anomalies at the end of |hlist_out| */
 #define check_LR_after_hlist_out {         \
-  while (info (LR_ptr) != before) {        \
+  while (info (LR_ptr) != BEFORE_CODE) {        \
 	if (info (LR_ptr) > L_code)            \
 	  LR_problems = LR_problems + 10000;   \
 	pop_LR;                                \

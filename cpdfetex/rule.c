@@ -13,7 +13,7 @@ pointer
 new_rule (void) {
   pointer p;			/* the new node */
   p = get_node (rule_node_size);
-  type (p) = rule_node;
+  TYPE_FIELD (p) = rule_node;
   subtype (p) = 0;		/* the |subtype| is not used */
   width (p) = null_flag;
   depth (p) = null_flag;

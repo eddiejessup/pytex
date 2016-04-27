@@ -93,7 +93,7 @@ extern str_number maketexstring (const char*);
  */
 #define loop  while (  true  )
 #define do_nothing 
-#define empty 0
+#define EMPTY_CODE 0
 
 extern int junk_nothing;
 #define do_something junk_nothing=0

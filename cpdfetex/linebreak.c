@@ -59,7 +59,7 @@
 /* The |line_break| procedure should be invoked only in horizontal mode; it
  * leaves that mode and places its output into the current vlist of the
  * enclosing vertical mode (or internal vertical mode).
- * There is one explicit parameter: |d| is true for partial paragraphs
+ * There is one EXPLICIT_CODE parameter: |d| is true for partial paragraphs
  * preceding display math mode; in this case the amount of additional
  * penalty inserted before the final line is |display_widow_penalty|
  * instead of |widow_penalty|.
@@ -330,7 +330,7 @@ scaled second_indent; /* left margin to go with |second_width| */
 #define act_width  active_width [1]
 #define kern_break {                                 \
     if (!is_char_node(link(cur_p)) && auto_breaking) \
-      if (type (link(cur_p)) == glue_node)           \
+      if (TYPE_FIELD (link(cur_p)) == glue_node)           \
         try_break (0 , unhyphenated);                \
      act_width = act_width + width (cur_p);          \
    }
@@ -476,7 +476,7 @@ total_pw (pointer q, pointer p) {
   }
   r = prev_rightmost (prev_p, p); /*  get |link(r)=p|  */ 
   if (r != null) {
-	if ((type (r) == disc_node) && (type (p) == disc_node) && (pre_break (p) == null))	 {
+	if ((TYPE_FIELD (r) == disc_node) && (TYPE_FIELD (p) == disc_node) && (pre_break (p) == null))	 {
 	  /*  I cannot remember when this case happens but I encountered it once  */
 	  /*  find the predecessor of |r|  */
 	  if (r == prev_p)	{ /*  |link(prev_p)=p| and |prev_p| is also a |disc_node|  */
@@ -485,7 +485,7 @@ total_pw (pointer q, pointer p) {
 	  } else {
 		r = prev_rightmost (prev_p, p);
 	  }
-	} else if ((p != null) && (type (p) == disc_node) && (pre_break (p) != null)) {	
+	} else if ((p != null) && (TYPE_FIELD (p) == disc_node) && (pre_break (p) != null)) {	
 	  /*  a |disc_node| with non-empty |pre_break|, protrude the last char  */
 	  r = pre_break (p);
 	  while (link (r) != null)
@@ -495,7 +495,7 @@ total_pw (pointer q, pointer p) {
  RESWITCH:
   while ((l != null) && discardable (l))
 	l = link (l);
-  if ((l != null) && (type (l) == disc_node)) {
+  if ((l != null) && (TYPE_FIELD (l) == disc_node)) {
 	if (post_break (l) != null) {
 	  l = post_break (l);
 	} else {
@@ -548,7 +548,7 @@ try_break (int pi, small_number break_type) {
   pointer lp, rp, cp;
   /* begin expansion of Other local variables for |try_break| */
   /* module 974 */
-  pointer prev_prev_r; /* a step behind |prev_r|, if |type(prev_r)=delta_node| */
+  pointer prev_prev_r; /* a step behind |prev_r|, if |TYPE_FIELD(prev_r)=delta_node| */
   pointer s; /* runs through nodes ahead of |cur_p| */ 
   pointer q; /* points to a new node being created */ 
   pointer v; /* points to a glue specification or a node ahead of |cur_p| */
@@ -587,17 +587,17 @@ try_break (int pi, small_number break_type) {
   while (1) {
   CONTINUE:
 	r = link (prev_r);
-	/* begin expansion of If node |r| is of type |delta_node|, update |cur_active_width|,
+	/* begin expansion of If node |r| is of TYPE_FIELD |delta_node|, update |cur_active_width|,
 	   set |prev_r| and |prev_prev_r|, then |goto continue| */
 	/* module 976 */
-	/* The following code uses the fact that |type(last_active)<>delta_node|. */
-	if (type (r) == delta_node) {
+	/* The following code uses the fact that |TYPE_FIELD(last_active)<>delta_node|. */
+	if (TYPE_FIELD (r) == delta_node) {
 	  do_all_eight (update_width);
 	  prev_prev_r = prev_r;
 	  prev_r = r;
 	  goto CONTINUE;
 	};
-	/* end expansion of If node |r| is of type |delta_node|, update |cur_active_width|, ...*/
+	/* end expansion of If node |r| is of TYPE_FIELD |delta_node|, update |cur_active_width|, ...*/
 	/* begin If a line number class has ended, create new active nodes for the best feasible 
 	   breaks in that class; then |return| if |r=last_active|, otherwise compute the new |line_width| */
 	/* module 979 */
@@ -640,7 +640,7 @@ if (no_break_yet) {
    * ahead to eliminate all subsequent glue and penalty and kern and math
    * nodes, subtracting their widths as well.
    * 
-   * Kern nodes do not disappear at a line break unless they are |explicit|.
+   * Kern nodes do not disappear at a line break unless they are |EXPLICIT_CODE|.
    */
   no_break_yet = false;
   do_all_eight (set_break_width_to_background);
@@ -669,7 +669,7 @@ if (no_break_yet) {
 			sub_char_shrink (break_width[8],character (v));
 		  };
 		} else {
-		  switch (type (v)) {
+		  switch (TYPE_FIELD (v)) {
 		  case ligature_node:
 			f = font (lig_char (v));
 			break_width[1] =break_width[1] -char_width (f, char_info(f, character(lig_char(v))));
@@ -684,7 +684,7 @@ if (no_break_yet) {
 		  case rule_node:
 		  case kern_node:
 			break_width[1] = break_width[1] - width (v);
-			if ((type (v) == kern_node) && (pdf_adjust_spacing >1) && (subtype (v) == normal)) {
+			if ((TYPE_FIELD (v) == kern_node) && (pdf_adjust_spacing >1) && (subtype (v) == normal)) {
 			  sub_kern_stretch(break_width[7],v);
 			  sub_kern_shrink (break_width[8],v);
 			};
@@ -707,7 +707,7 @@ if (no_break_yet) {
 			add_char_shrink (break_width[8], character (s));
 		  };
 		} else {
-		  switch (type (s)) {
+		  switch (TYPE_FIELD (s)) {
 		  case ligature_node:
 			f = font (lig_char (s));
 			break_width[1] = break_width[1] +char_width (f, char_info(f, character(lig_char(s))));
@@ -722,7 +722,7 @@ if (no_break_yet) {
 		  case rule_node:
 		  case kern_node:
 			break_width[1] =break_width[1] + width (s);
-			if ((type (s) == kern_node)&& (pdf_adjust_spacing > 1)  && (subtype (s) == normal)){
+			if ((TYPE_FIELD (s) == kern_node)&& (pdf_adjust_spacing > 1)  && (subtype (s) == normal)){
 			  add_kern_stretch (break_width[7],s);
 			  add_kern_shrink  (break_width[8],s);
 			};
@@ -742,7 +742,7 @@ if (no_break_yet) {
   while (s != null) {
 	if (is_char_node (s))
 	  goto DONE;
-	switch (type (s)) {
+	switch (TYPE_FIELD (s)) {
 	case glue_node:
 	  /* begin expansion of Subtract glue from |break_width| */
 	  /* module 982 */
@@ -759,7 +759,7 @@ if (no_break_yet) {
 	  break_width[1] = break_width[1] - width (s);
 	  break;
 	case kern_node:
-	  if (subtype (s) != explicit) {
+	  if (subtype (s) != EXPLICIT_CODE) {
 		goto DONE;
 	  } else {
 		break_width[1] = break_width[1] - width (s);
@@ -777,16 +777,16 @@ if (no_break_yet) {
 /* end expansion of Compute the values of |break_width| */
 /* begin expansion of Insert a delta node to prepare for breaks at |cur_p| */
 /* module 987 */
-/* We use the fact that |type(active)<>delta_node|.
+/* We use the fact that |TYPE_FIELD(active)<>delta_node|.
  */
-if (type (prev_r) == delta_node)	{/* modify an existing delta node */
+if (TYPE_FIELD (prev_r) == delta_node)	{/* modify an existing delta node */
   do_all_eight (convert_to_break_width);
 } else if (prev_r == active)	{ /* no delta node needed at the beginning */
   do_all_eight (store_break_width);
 } else {
   q = get_node (delta_node_size);
   link (q) = r;
-  type (q) = delta_node;
+  TYPE_FIELD (q) = delta_node;
   subtype (q) = 0; /* the |subtype| is not used */
   do_all_eight (new_delta_to_break_width);
   link (prev_r) = q;
@@ -817,7 +817,7 @@ for (fit_class = very_loose_fit; fit_class <= tight_fit; fit_class++){
 	break_node (q) = passive;
 	line_number (q) = best_pl_line[fit_class] + 1;
 	fitness (q) = fit_class;
-	type (q) = break_type;
+	TYPE_FIELD (q) = break_type;
 	total_demerits (q) = minimal_demerits[fit_class];
 	if (do_last_line_fit) {
 	  /* begin expansion of Store \(a)additional data in the new active node */
@@ -874,12 +874,12 @@ minimum_demerits = awful_bad;
 /* begin expansion of Insert a delta node to prepare for the next active node */
 /* module 988 */
 /* When the following code is performed, we will have just inserted at
- * least one active node before |r|, so |type(prev_r)<>delta_node|.
+ * least one active node before |r|, so |TYPE_FIELD(prev_r)<>delta_node|.
  */
 if (r != last_active) {
   q = get_node (delta_node_size);
   link (q) = r;
-  type (q) = delta_node;
+  TYPE_FIELD (q) = delta_node;
   subtype (q) = 0; /* the |subtype| is not used */
   do_all_eight (new_delta_from_break_width);
   link (prev_r) = q;
@@ -1186,7 +1186,7 @@ if (r != last_active) {
 		  d = d - pi * pi; 
 	  } 
 	}
-	if ((break_type == hyphenated) && (type (r) == hyphenated)) {
+	if ((break_type == hyphenated) && (TYPE_FIELD (r) == hyphenated)) {
 	  if (cur_p != null) {
 		d = d + double_hyphen_demerits;
 	  } else {
@@ -1219,12 +1219,12 @@ if (r != last_active) {
 	print_nl_string ("@");
 	if (cur_p == null) {
 	  print_esc_string ("par");
-	} else if (type (cur_p) != glue_node) {
-	  if (type (cur_p) == penalty_node) {
+	} else if (TYPE_FIELD (cur_p) != glue_node) {
+	  if (TYPE_FIELD (cur_p) == penalty_node) {
 		print_esc_string ("penalty");
-	  } else if (type (cur_p) == disc_node) {
+	  } else if (TYPE_FIELD (cur_p) == disc_node) {
 		print_esc_string ("discretionary");
-	  } else if (type (cur_p) == kern_node) {
+	  } else if (TYPE_FIELD (cur_p) == kern_node) {
 		print_esc_string ("kern");
 	  } else {
 		print_esc_string ("math");
@@ -1288,7 +1288,7 @@ if (r != last_active) {
  * |cur_active_width| represents the length of material from |link(prev_r)|
  * to~|cur_p|.
  *
- * The following code uses the fact that |type(last_active)<>delta_node|. If the
+ * The following code uses the fact that |TYPE_FIELD(last_active)<>delta_node|. If the
  * active list has just become empty, we do not need to update the
  * |active_width| array, since it will be initialized when an active
  * node is next inserted.
@@ -1297,20 +1297,20 @@ link (prev_r) = link (r);
 free_node (r, active_node_size);
 if (prev_r == active) {
   r = link (active);
-  if (type (r) == delta_node) {
+  if (TYPE_FIELD (r) == delta_node) {
 	do_all_eight (update_active);
 	do_all_eight (copy_to_cur_active);
 	link (active) = link (r);
 	free_node (r, delta_node_size);
   };
-} else if (type (prev_r) == delta_node) {
+} else if (TYPE_FIELD (prev_r) == delta_node) {
   r = link (prev_r);
   if (r == last_active) {
 	do_all_eight (downdate_width);
 	link (prev_prev_r) = last_active;
 	free_node (prev_r, delta_node_size);
 	prev_r = prev_prev_r;
-  } else if (type (r) == delta_node) {
+  } else if (TYPE_FIELD (r) == delta_node) {
 	do_all_eight (update_width);
 	do_all_eight (combine_two_deltas);
 	link (prev_r) = link (r);
@@ -1335,7 +1335,7 @@ if (prev_r == active) {
 	 */
 	if (cur_p == printed_node) {
 	  if (cur_p != null) {
-		if (type (cur_p) == disc_node) {
+		if (TYPE_FIELD (cur_p) == disc_node) {
 		  t = replace_count (cur_p);
 		  while (t > 0) {
 			decr (t);
@@ -1366,7 +1366,7 @@ if (prev_r == active) {
 #define cleanup_memory 	q = link (active);\
 	while (q != last_active) {\
 	  cur_p = link (q);\
-	  if (type (q) == delta_node) {\
+	  if (TYPE_FIELD (q) == delta_node) {\
 		free_node (q, delta_node_size);\
 	  } else {\
 		free_node (q, active_node_size);\
@@ -1409,10 +1409,10 @@ line_break (boolean d) {
   link (temp_head) = link (head);
   if (is_char_node (tail)) {
 	tail_append (new_penalty (inf_penalty));
-  } else if (type (tail) != glue_node) {
+  } else if (TYPE_FIELD (tail) != glue_node) {
 	tail_append (new_penalty (inf_penalty));
   } else {
-	type (tail) = penalty_node;
+	TYPE_FIELD (tail) = penalty_node;
 	delete_glue_ref (glue_ptr (tail));
 	flush_node_list (leader_ptr (tail));
 	penalty (tail) = inf_penalty;
@@ -1534,9 +1534,9 @@ line_break (boolean d) {
    * 
    * The current node of interest in the hlist is pointed to by |cur_p|. Another
    * variable, |prev_p|, is usually one step behind |cur_p|, but the real
-   * meaning of |prev_p| is this: If |type(cur_p)=glue_node| then |cur_p| is a legal
+   * meaning of |prev_p| is this: If |TYPE_FIELD(cur_p)=glue_node| then |cur_p| is a legal
    * breakpoint if and only if |auto_breaking| is true and |prev_p| does not
-   * point to a glue node, penalty node, explicit kern node, or math node.
+   * point to a glue node, penalty node, EXPLICIT_CODE kern node, or math node.
    * 
    * The following declarations provide for a few other local variables that are
    * used in special calculations.
@@ -1585,7 +1585,7 @@ line_break (boolean d) {
 	   * This is a sequence of nodes $p_0p_1\ldots p_m$ where $p_0$ is a glue node,
 	   * $p_1\ldots p_{m-1}$ are either character or ligature or whatsit or
 	   * implicit kern nodes, and $p_m$ is a glue or penalty or insertion or adjust
-	   * or mark or whatsit or explicit kern node. (Therefore hyphenation is
+	   * or mark or whatsit or EXPLICIT_CODE kern node. (Therefore hyphenation is
 	   * disabled by boxes, math formulas, and discretionary nodes already inserted
 	   * by the user.) The ligature nodes among $p_1\ldots p_{m-1}$ are effectively
 	   * expanded into the original non-ligature characters; the kern nodes and
@@ -1638,7 +1638,7 @@ line_break (boolean d) {
 	 * corresponding passive node.
 	 */
 	q = get_node (active_node_size);
-	type (q) = unhyphenated;
+	TYPE_FIELD (q) = unhyphenated;
 	fitness (q) = decent_fit;
 	link (q) = last_active;
 	break_node (q) = null;
@@ -1704,7 +1704,7 @@ line_break (boolean d) {
 		} while (is_char_node (cur_p));
 		/* end expansion of Advance \(c)|cur_p| to the node following the present string of characters */
 	  };
-	  switch (type (cur_p)) {
+	  switch (TYPE_FIELD (cur_p)) {
 	  case hlist_node:
 	  case vlist_node:
 	  case rule_node:
@@ -1730,7 +1730,7 @@ line_break (boolean d) {
 			try_break (0, unhyphenated);
 		  } else if (precedes_break (prev_p)) {
 			try_break (0, unhyphenated);
-		  } else if ((type (prev_p) == kern_node) && (subtype (prev_p) != explicit))
+		  } else if ((TYPE_FIELD (prev_p) == kern_node) && (subtype (prev_p) != EXPLICIT_CODE))
 			try_break (0, unhyphenated);
 		};
 		check_shrinkage (glue_ptr (cur_p));
@@ -1757,7 +1757,7 @@ line_break (boolean d) {
 			  if (is_char_node (s)) {
 				c = qo (character (s));
 				hf = font (s);
-			  } else if (type (s) == ligature_node) {
+			  } else if (TYPE_FIELD (s) == ligature_node) {
 				if (lig_ptr (s) == null) {
 				  goto CONTINUE;
 				} else {
@@ -1765,9 +1765,9 @@ line_break (boolean d) {
 				  c = qo (character (q));
 				  hf = font (q);
 				}
-			  } else if ((type (s) == kern_node) && (subtype (s) == normal)) {
+			  } else if ((TYPE_FIELD (s) == kern_node) && (subtype (s) == normal)) {
 				goto CONTINUE;
-			  } else if (type (s) == whatsit_node) {
+			  } else if (TYPE_FIELD (s) == whatsit_node) {
 				/* begin expansion of Advance \(p)past a whatsit node in the \(p)pre-hyphenation loop */
 				/* module 1559 */
 				if (subtype (s) == language_node) {
@@ -1826,7 +1826,7 @@ line_break (boolean d) {
 				hu[hn] = c;
 				hc[hn] = hc[0];
 				hyf_bchar = non_char;
-			  } else if (type (s) == ligature_node) {
+			  } else if (TYPE_FIELD (s) == ligature_node) {
 				/* begin expansion of Move the characters of a ligature node to |hu| and |hc|;
 				   but |goto done3| if they are not all letters */
 				/* module 1042 */
@@ -1861,7 +1861,7 @@ line_break (boolean d) {
 				  hyf_bchar = non_char;
 				}
 				/* end expansion of Move the characters of a ligature node to |hu| and |hc|;... */
-			  } else if ((type (s) == kern_node) && (subtype (s) == normal)) {
+			  } else if ((TYPE_FIELD (s) == kern_node) && (subtype (s) == normal)) {
 				hb = s;
 				hyf_bchar = font_bchar[hf];
 			  } else {
@@ -1879,7 +1879,7 @@ line_break (boolean d) {
 			  goto DONE1; /* |l_hyf| and |r_hyf| are |>=1| */ 
 			loop {
 			  if (!(is_char_node (s))) {
-				switch (type (s)) {
+				switch (TYPE_FIELD (s)) {
 				case ligature_node:
 				  do_something;
 				  break;
@@ -1913,7 +1913,7 @@ line_break (boolean d) {
 		};
 		break;
 	  case kern_node:
-		if (subtype (cur_p) == explicit) {
+		if (subtype (cur_p) == EXPLICIT_CODE) {
 		  kern_break;
 		} else {
 		  act_width = act_width + width (cur_p);
@@ -1956,7 +1956,7 @@ line_break (boolean d) {
 				  add_char_shrink (disc_width[8], character (s));
 				};
 			  } else {
-				switch (type (s)) {
+				switch (TYPE_FIELD (s)) {
 				case ligature_node:
 				  f = font (lig_char (s));
 				  disc_width[1] = disc_width[1] + char_width (f, char_info (f, character (lig_char (s))));
@@ -1971,7 +1971,7 @@ line_break (boolean d) {
 				case rule_node:
 				case kern_node:
 				  disc_width[1] = disc_width[1] + width (s);
-				  if ((type (s) == kern_node) && (pdf_adjust_spacing > 1) && (subtype (s) == normal)) {
+				  if ((TYPE_FIELD (s) == kern_node) && (pdf_adjust_spacing > 1) && (subtype (s) == normal)) {
 					add_kern_stretch (disc_width[7],s);
 					add_kern_shrink (disc_width[8],s);
 				  };
@@ -2001,7 +2001,7 @@ line_break (boolean d) {
 				add_char_shrink (active_width[8], character (s));
 			  };
 			} else {
-			  switch (type (s)) {
+			  switch (TYPE_FIELD (s)) {
 			  case ligature_node:
 				f = font (lig_char (s));
 				act_width =act_width + char_width (f, char_info (f, character (lig_char (s))));
@@ -2016,7 +2016,7 @@ line_break (boolean d) {
 			  case rule_node:
 			  case kern_node:
 				act_width = act_width + width (s);
-				if ((type (s) == kern_node) && (pdf_adjust_spacing > 1) && (subtype (s) == normal)) {
+				if ((TYPE_FIELD (s) == kern_node) && (pdf_adjust_spacing > 1) && (subtype (s) == normal)) {
 				  add_kern_stretch (active_width[7],s);
 				  add_kern_shrink (active_width[8],s);
 				};
@@ -2088,7 +2088,7 @@ line_break (boolean d) {
 		r = link (active);
 		fewest_demerits = awful_bad;
 		do {
-		  if (type (r) != delta_node)
+		  if (TYPE_FIELD (r) != delta_node)
 			if (total_demerits (r) < fewest_demerits) {
 			  fewest_demerits = total_demerits (r);
 			  best_bet = r;
@@ -2110,7 +2110,7 @@ line_break (boolean d) {
 		  r = link (active);
 		  actual_looseness = 0;
 		  do {
-			if (type (r) != delta_node){
+			if (TYPE_FIELD (r) != delta_node){
 			  line_diff = intcast (line_number (r)) - intcast (best_line);
 			  if (((line_diff < actual_looseness) && (looseness <= line_diff))
 				  || ((line_diff > actual_looseness) && (looseness >= line_diff))) {
@@ -2345,7 +2345,7 @@ new_hyph_exceptions (void) {  /* enters new exceptions */
 /* module 964 */
 void
 linebreak_initialize_init (void) {
-  type (last_active) = hyphenated;
+  TYPE_FIELD (last_active) = hyphenated;
   line_number (last_active) = max_halfword;
   subtype (last_active) = 0;	/* the |subtype| is never examined by the algorithm */
 }

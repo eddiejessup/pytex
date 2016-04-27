@@ -648,7 +648,7 @@ fin_col (void) {
     } else if (w > width (cur_align)) {
       width (cur_align) = w;
     }
-    type (u) = unset_node;
+    TYPE_FIELD (u) = unset_node;
     span_count (u) = n;
     /* Determine the stretch order */
 	determine_stretch_order;
@@ -707,7 +707,7 @@ fin_row (void) {
     tail = p;
     space_factor = 1000;
   };
-  type (p) = unset_node;
+  TYPE_FIELD (p) = unset_node;
   glue_stretch (p) = 0;
   if (every_cr != null)
     begin_token_list (every_cr, every_cr_text);
@@ -820,7 +820,7 @@ fin_align (void) {
       } while (r != end_span);
     };
     /* end expansion of Merge the widths in the span nodes of |q| with those of |p|, destroying the span nodes of |q| */
-    type (q) = unset_node;
+    TYPE_FIELD (q) = unset_node;
     span_count (q) = min_quarterword;
     height (q) = 0;
     depth (q) = 0;
@@ -871,19 +871,19 @@ fin_align (void) {
   s = head;
   while (q != null) {
     if (!is_char_node (q)) {
-      if (type (q) == unset_node) {
+      if (TYPE_FIELD (q) == unset_node) {
 		/* begin expansion of Set the unset box |q| and the unset boxes in it */
 		/* module 951 */
 		/* The unset box |q| represents a row that contains one or more unset boxes,
 		 * depending on how soon \.{\\cr} occurred in that row.
 		 */
 		if (MODE_FIELD == -vmode) {
-		  type (q) = hlist_node;
+		  TYPE_FIELD (q) = hlist_node;
 		  width (q) = width (p);
 		  if (nest[nest_ptr - 1].mode_field == mmode)
 			subtype (q) = dlist; /* for |ship_out| */ 
 		} else {
-		  type (q) = vlist_node;
+		  TYPE_FIELD (q) = vlist_node;
 		  height (q) = height (p);
 		};
 		glue_order (q) = glue_order (p);
@@ -930,7 +930,7 @@ fin_align (void) {
 			if (MODE_FIELD == -vmode){
 			  width (u) = width (s);
 			} else {
-			  type (u) = vlist_node;
+			  TYPE_FIELD (u) = vlist_node;
 			  height (u) = width (s);
 			}
 			/* end expansion of Append tabskip glue and an empty box to list |u|, and update |s|..*/
@@ -964,7 +964,7 @@ fin_align (void) {
 			  }
 			};
 			width (r) = w;
-			type (r) = hlist_node;
+			TYPE_FIELD (r) = hlist_node;
 			/* end expansion of Make the unset node |r| into an |hlist_node| of width  ...*/
 		  } else {
 			/* begin expansion of Make the unset node |r| into a |vlist_node| of height 
@@ -994,7 +994,7 @@ fin_align (void) {
 			  }
 			};
 			height (r) = w;
-			type (r) = vlist_node;
+			TYPE_FIELD (r) = vlist_node;
 		  };
 		  /* end expansion of Make the unset node |r| into a |vlist_node| of height |w|, .. */
 		  shift_amount (r) = 0;
@@ -1008,7 +1008,7 @@ fin_align (void) {
 		  s = link (link (s));
 		} while (r != null);
 		/* end expansion of 951 */
-      } else if (type (q) == rule_node) {
+      } else if (TYPE_FIELD (q) == rule_node) {
 		/* begin expansion of Make the running dimensions in rule |q| extend to the 
 		   boundaries of the alignment */
 		/* module 950 */

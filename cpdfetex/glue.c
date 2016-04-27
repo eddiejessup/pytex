@@ -34,7 +34,7 @@ new_param_glue (small_number n) {
   pointer p;			/* the new node */
   pointer q;			/* the glue specification */
   p = get_node (small_node_size);
-  type (p) = glue_node;
+  TYPE_FIELD (p) = glue_node;
   subtype (p) = n + 1;
   leader_ptr (p) = null;
   q = glue_par(n);
@@ -53,7 +53,7 @@ pointer
 new_glue (pointer q) {
   pointer p;			/* the new node */
   p = get_node (small_node_size);
-  type (p) = glue_node;
+  TYPE_FIELD (p) = glue_node;
   subtype (p) = normal;
   leader_ptr (p) = null;
   glue_ptr (p) = q;
@@ -261,13 +261,13 @@ do_glue (pointer this_box, pointer p) {
   }
   q = p;
 CONTINUE:
-  type (q) = kern_node;
+  TYPE_FIELD (q) = kern_node;
   width (q) = width (g);
   fast_delete_glue_ref (g);
  NEXTP:
   q = link (q);
   if ((q != null) && !is_char_node (q)) {
-    switch (type (q)) {
+    switch (TYPE_FIELD (q)) {
 	case ins_node:
 	case mark_node:
 	case adjust_node:
@@ -291,7 +291,7 @@ CONTINUE:
   if (s != 0) {
 	vet_glue (zfloat (glue_set (this_box)) * s);
 	s = zround (glue_temp);
-	if (type (p) == kern_node)
+	if (TYPE_FIELD (p) == kern_node)
 	  width (p) = width (p) + s;
   };
   return s;

@@ -16,7 +16,7 @@ pointer
 new_ligature (internal_font_number f, quarterword c, pointer q) {
   pointer p;			/* the new node */
   p = get_node (small_node_size);
-  type (p) = ligature_node;
+  TYPE_FIELD (p) = ligature_node;
   font (lig_char (p)) = f;
   character (lig_char (p)) = c;
   lig_ptr (p) = q;

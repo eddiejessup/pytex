@@ -678,7 +678,7 @@ void init_prim (int noninit) {  /* initialize all the primitives */
   primitive('/', ital_corr, 0);
   }
   primitive_str("accent", accent, 0);
-  primitive_str("advance", advance, 0);
+  primitive_str("advance", ADVANCE_CODE, 0);
   primitive_str("afterassignment", after_assignment, 0);
   primitive_str("aftergroup", after_group, 0);
   primitive_str("begingroup", begin_group, 0);
@@ -698,7 +698,7 @@ void init_prim (int noninit) {  /* initialize all the primitives */
   primitive_str("halign", halign, 0);
   primitive_str("hrule", hrule, 0);
   primitive_str("ignorespaces", ignore_spaces, 0);
-  primitive_str("insert", insert, 0);
+  primitive_str("insert", INSERT_CODE, 0);
   primitive_str("mark", mark, 0);
   primitive_str("mathaccent", math_accent, 0);
   primitive_str("mathchar", math_char_num, 0);
@@ -897,7 +897,7 @@ void init_prim (int noninit) {  /* initialize all the primitives */
   primitive_str("vss", vskip, ss_code);
   primitive_str("vfilneg", vskip, fil_neg_code);
   primitive_str("mskip", mskip, mskip_code);
-  primitive_str("kern", kern, explicit);
+  primitive_str("kern", kern, EXPLICIT_CODE);
   primitive_str("mkern", mkern, mu_glue);
   /* module 1216 */
   /* Now let's turn to the question of how \.{\\hbox} is treated. We actually

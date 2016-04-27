@@ -114,13 +114,13 @@ short_display_n (int p, int m) { /* prints highlights of list |p| */
 		print_ASCII (qo (character (p)));
 	  };
 	} else {
-	  if ((type (p) == glue_node) || (type (p) == disc_node)
-		  || (type (p) == penalty_node)
-		  || ((type (p) == kern_node) && (subtype (p) == explicit)))
+	  if ((TYPE_FIELD (p) == glue_node) || (TYPE_FIELD (p) == disc_node)
+		  || (TYPE_FIELD (p) == penalty_node)
+		  || ((TYPE_FIELD (p) == kern_node) && (subtype (p) == EXPLICIT_CODE)))
 		incr (i);
 	  if (i >= m)
 		return;
-	  if ((type (p) == disc_node)) {
+	  if ((TYPE_FIELD (p) == disc_node)) {
 		zprint ('|');
 		short_display (pre_break (p));
 		zprint ('|');
@@ -181,7 +181,7 @@ show_line_breaking (void)	{
   print_nl_string("active list: ");
   p = link (active);
   while (true) {
-	if (type (p) == 2 ) { /* |delta_node| == 2 */
+	if (TYPE_FIELD (p) == 2 ) { /* |delta_node| == 2 */
 	  zprint_string("delta: ");
 	  print_delta_like_node (delta_field);
 	} else {

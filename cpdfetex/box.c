@@ -15,7 +15,7 @@ pointer
 new_null_box (void) { /* creates a new box node */
   pointer p;			/* the new node */
   p = get_node (box_node_size);
-  type (p) = hlist_node;
+  TYPE_FIELD (p) = hlist_node;
   subtype (p) = min_quarterword;
   width (p) = 0;
   depth (p) = 0;
@@ -209,16 +209,16 @@ begin_box (int box_context) {
 	  error();
 	} else {
 	  if (!is_char_node (tail)) {
-		if ((type (tail) == math_node) && (subtype (tail) == end_M_code))
+		if ((TYPE_FIELD (tail) == math_node) && (subtype (tail) == end_M_code))
 		  remove_end_M();
-		if ((type (tail) == hlist_node) || (type (tail) == vlist_node)) {
+		if ((TYPE_FIELD (tail) == hlist_node) || (TYPE_FIELD (tail) == vlist_node)) {
 		  /* begin expansion of Remove the last box, unless it's part of a discretionary */
 		  /* module 1226 */
 		  q = head;
 		  do {
 			p = q;
 			if (!is_char_node (q))
-			  if (type (q) == disc_node) {
+			  if (TYPE_FIELD (q) == disc_node) {
 				for (m = 1; m <= replace_count (q); m++)
 				  p = link (p);
 				if (p == tail)
@@ -340,7 +340,7 @@ package (small_number c) {
 	  h = 0;
 	  p = list_ptr (cur_box);
 	  if (p != null)
-		if (type (p) <= rule_node)
+		if (TYPE_FIELD (p) <= rule_node)
 		  h = height (p);
 	  depth (cur_box) = depth (cur_box) - h + height (cur_box);
 	  height (cur_box) = h;
@@ -372,8 +372,8 @@ unpackage (void) {
   if (p == null)
 	return;
   if ((abs (MODE_FIELD) == mmode)
-	  || ((abs (MODE_FIELD) == vmode) && (type (p) != vlist_node))
-	  || ((abs (MODE_FIELD) == hmode) && (type (p) != hlist_node))) {
+	  || ((abs (MODE_FIELD) == vmode) && (TYPE_FIELD (p) != vlist_node))
+	  || ((abs (MODE_FIELD) == hmode) && (TYPE_FIELD (p) != hlist_node))) {
 	print_err ("Incompatible list can't be unboxed");
 	help3 ("Sorry, Pandora. (You sneaky devil.)",
 		   "I refuse to unbox an \\hbox in vertical mode or vice versa.",
@@ -395,7 +395,7 @@ unpackage (void) {
   } else {
 	while (link (tail) != null) {
 	  r = link (tail);
-	  if (!is_char_node (r) && (type (r) == margin_kern_node)) {
+	  if (!is_char_node (r) && (TYPE_FIELD (r) == margin_kern_node)) {
 		link (tail) = link (r);
 		free_avail (margin_char (r));
 		free_node (r, margin_kern_node_size);

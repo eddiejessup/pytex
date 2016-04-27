@@ -18,12 +18,12 @@
  * The actual sequence of letters forming a control sequence identifier is
  * stored in the |str_pool| array together with all the other strings. An
  * auxiliary array |hash| consists of items with two halfword fields per
- * word. The first of these, called |next(p)|, points to the next identifier
+ * word. The first of these, called |NEXT_FIELD(p)|, points to the NEXT_FIELD identifier
  * belonging to the same coalesced list as the identifier corresponding to~|p|;
  * and the other, called |text(p)|, points to the |str_start| entry for
  * |p|'s identifier. If position~|p| of the hash table is empty, we have
  * |text(p)=0|; if position |p| is either empty or the end of a coalesced
- * hash list, we have |next(p)=0|. An auxiliary pointer variable called
+ * hash list, we have |NEXT_FIELD(p)=0|. An auxiliary pointer variable called
  * |hash_used| is maintained in such a way that all locations |p>=hash_used|
  * are nonempty. The global variable |cs_count| tells how many multiletter
  * control sequences have been defined, if statistics are being kept.
@@ -78,7 +78,7 @@ id_lookup (int j, int l) { /* search the hash table */
       if (length (text (p)) == l)
 		if (str_eq_buf (text (p), j))
 		  goto FOUND;
-    if (next (p) == 0) {
+    if (NEXT_FIELD (p) == 0) {
       if (is_no_new_control_sequence()) {
 	    p = undefined_control_sequence;
 	  } else {
@@ -90,7 +90,7 @@ id_lookup (int j, int l) { /* search the hash table */
 		  overflow ("hash size", HASH_SIZE);
 		decr (hash_used);
 	      } while (text (hash_used) != 0);	/* search for an empty location in |hash| */
-	      next (p) = hash_used;
+	      NEXT_FIELD (p) = hash_used;
 	      p = hash_used;
 	    };
 	    str_room (l);
@@ -109,7 +109,7 @@ id_lookup (int j, int l) { /* search the hash table */
 	/* end expansion of Insert a new control sequence after |p|, then make |p| point to it */
 	goto FOUND;
 	};
-    p = next (p);
+    p = NEXT_FIELD (p);
   };
  FOUND:
   return p;
@@ -148,7 +148,7 @@ id_lookup_string (str_number string) { /* search the hash table */
       if (length (text (p)) == (l-j))
 		if (str_eq_str (text (p), string))
 		  goto FOUND;
-    if (next (p) == 0) {
+    if (NEXT_FIELD (p) == 0) {
       if (is_no_new_control_sequence()) {
 	    p = undefined_control_sequence;
 	  } else {
@@ -160,7 +160,7 @@ id_lookup_string (str_number string) { /* search the hash table */
 		  overflow ("hash size", HASH_SIZE);
 		decr (hash_used);
 	      } while (text (hash_used) != 0);	/* search for an empty location in |hash| */
-	      next (p) = hash_used;
+	      NEXT_FIELD (p) = hash_used;
 	      p = hash_used;
 	    };
 	    text (p) = string;
@@ -169,7 +169,7 @@ id_lookup_string (str_number string) { /* search the hash table */
 	/* Insert a new control sequence after |p|, then make |p| point to it */
 	goto FOUND;
 	};
-    p = next (p);
+    p = NEXT_FIELD (p);
   };
  FOUND:
   return p;
@@ -228,7 +228,7 @@ hash_initialize (void) {
   hash_used = hash_top;
   memset((void *)yhash,0,sizeof(two_halves)*((hash_top-hash_offset)+1));
 	/*
-	  next (hash_base) = 0;
+	  NEXT_FIELD (hash_base) = 0;
 	  text (hash_base) = 0;
 	  for (hash_used = hash_base + 1; hash_used <= hash_top; hash_used++)
 	  hash[hash_used] = hash[hash_base]; 

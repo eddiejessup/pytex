@@ -233,7 +233,7 @@ scan_image (void) {
 
 /* module 1515 */
 
-/* The following function finds object with identifier |i| and type |t|.
+/* The following function finds object with identifier |i| and TYPE_FIELD |t|.
  * |i < 0| indicates that |-i| should be treated as a string number. If no
  * such object exists then it will be created. This function is used mainly to
  * find destination for link annotations and outlines; however it is also used
@@ -312,7 +312,7 @@ pointer scan_action (void) {
   } else if (scan_keyword ("thread")) {
 	pdf_action_type (p) = pdf_action_thread;
   } else {
-	pdf_error_string("ext1","action type missing");
+	pdf_error_string("ext1","action TYPE_FIELD missing");
   }
   if (pdf_action_type (p) == pdf_action_user) {
 	scan_toks (false, true);
@@ -347,7 +347,7 @@ pointer scan_action (void) {
 	pdf_action_named_id (p) = 0;
 	pdf_action_id (p) = cur_val;
   } else {
-	pdf_error_string("ext1","identifier type missing");
+	pdf_error_string("ext1","identifier TYPE_FIELD missing");
   }
   if (scan_keyword ("newwindow")) {
 	pdf_action_new_window (p) = 1;
@@ -671,7 +671,7 @@ save_link_level (pointer l) {
 
 void 
 do_link (pointer p, pointer parent_box, scaled x, scaled y) {
-  if (type (parent_box) != hlist_node)
+  if (TYPE_FIELD (parent_box) != hlist_node)
 	pdf_error_string("ext4","link annotations can be inside hbox only");
   save_link_level (p);
   set_rect_dimens (p, parent_box, x, y, pdf_link_wd, pdf_link_ht, pdf_link_dp, pdf_link_margin);
@@ -726,7 +726,7 @@ void
 append_link (pointer parent_box, scaled x, scaled y) {
   /* append a new |pdf_start_link_node| to |pdf_link_list| and update |last_link| */
   int r; /* p*/
-  if (type (parent_box) != hlist_node)
+  if (TYPE_FIELD (parent_box) != hlist_node)
 	pdf_error_string("ext4","link annotations can be inside hbox only");
   r = copy_node_list (link_ptr (link_level_stack)); /* copy link node to |r| */ 
   info (r) = max_halfword; /* mark that this node is not a whatsit node */ 

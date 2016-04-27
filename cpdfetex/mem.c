@@ -599,7 +599,7 @@ mem_initialize_init (void) {
   stretch (fil_glue) = unity;
   stretch_order (fil_glue) = fil;
   stretch (fill_glue) = unity;
-  stretch_order (fill_glue) = fill;
+  stretch_order (fill_glue) = FILL_CODE;
   stretch (ss_glue) = unity;
   stretch_order (ss_glue) = fil;
   shrink (ss_glue) = unity;

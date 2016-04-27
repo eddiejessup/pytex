@@ -17,7 +17,7 @@
 EXTERN const int hash_prime;
 
 /* module 256 */
-#define next(arg)  hash[arg].lhfield
+#define NEXT_FIELD(arg)  hash[arg].lhfield
 #define text(arg)  hash[arg].rh
 
 EXTERN two_halves *hash; /* the hash table */ 

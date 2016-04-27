@@ -91,7 +91,7 @@
 #define pdf_action_thread 2
 #define pdf_action_user 3
 #define pdf_action_size 3
-#define pdf_action_type  type
+#define pdf_action_type  TYPE_FIELD
 #define pdf_action_named_id  subtype
 #define pdf_action_id  link
 #define pdf_action_file( arg )  info ( arg  + 1 )
@@ -120,7 +120,7 @@
 #define pdf_dest_fitr 7
 #define obj_dest_ptr  obj_aux
 #define pdf_dest_node_size 7
-#define pdf_dest_type( arg )  type ( arg  + 5 )
+#define pdf_dest_type( arg )  TYPE_FIELD ( arg  + 5 )
 #define pdf_dest_named_id( arg )  subtype ( arg  + 5 )
 #define pdf_dest_id( arg )  link ( arg  + 5 )
 #define pdf_dest_xyz_zoom( arg )  info ( arg  + 6 )

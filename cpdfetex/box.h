@@ -31,7 +31,7 @@
 #define list_offset 5
 #define list_ptr( arg )  link ( arg  +  list_offset )
 #define glue_order( arg )  subtype ( arg  +  list_offset )
-#define glue_sign( arg )  type ( arg  +  list_offset )
+#define glue_sign( arg )  TYPE_FIELD ( arg  +  list_offset )
 #define normal 0
 #define stretching 1
 #define shrinking 2

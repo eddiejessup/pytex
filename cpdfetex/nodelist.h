@@ -13,7 +13,7 @@
  * kinds of nodes. We do this by putting a `|type|' field in the first word,
  * together with the link and an optional `|subtype|'.
  */
-#define type( arg )  mem [ arg ]. hh . b0
+#define TYPE_FIELD( arg )  mem [ arg ]. hh . b0
 #define subtype( arg )  mem [ arg ]. hh . b1
 
 /* module 148 */
@@ -25,8 +25,8 @@
  * |type| of the previous node is less than |math_node|. Furthermore, a
  * node is discarded after a break if its type is |math_node| or~more.
  */
-#define precedes_break( arg ) ( type ( arg ) <  math_node )
-#define non_discardable( arg ) ( type ( arg ) <  math_node )
+#define precedes_break( arg ) ( TYPE_FIELD ( arg ) <  math_node )
+#define non_discardable( arg ) ( TYPE_FIELD ( arg ) <  math_node )
 
 /* module 160 */
 

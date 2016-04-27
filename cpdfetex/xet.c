@@ -98,7 +98,7 @@ void
 insert_end_M (void) {
   pointer p; /* runs through the current list */ 
   if (!is_char_node (tail))
-    if ((type (tail) == math_node) && (subtype (tail) == begin_M_code)) {
+    if ((TYPE_FIELD (tail) == math_node) && (subtype (tail) == begin_M_code)) {
 	  free_node (LR_temp, small_node_size);
 	  p = head;
 	  while (link (p) != tail)
@@ -120,7 +120,7 @@ pointer
 new_edge (small_number s, scaled w) {	  /* create an edge node */
   pointer p; /* the new node */ 
   p = get_node (edge_node_size);
-  type (p) = edge_node;
+  TYPE_FIELD (p) = edge_node;
   subtype (p) = s;
   width (p) = w;
   edge_dist (p) = 0; /* the |edge_dist| field will be set later */ 
@@ -142,7 +142,7 @@ reverse (pointer this_box, pointer t) {
   pointer l; /* the new list */ 
   pointer p; /* the current node */ 
   pointer q; /* the next node */ 
-  unsigned char g_sign; /* selects type of glue */ 
+  unsigned char g_sign; /* selects TYPE_FIELD of glue */ 
   halfword m, n; /* count of unmatched math nodes */ 
   g_sign = glue_sign (this_box);
   l = t;
@@ -169,7 +169,7 @@ reverse (pointer this_box, pointer t) {
 	  /* begin expansion of Move the non-|char_node| |p| to the new list */
 	  /* module 1670 */
 	  q = link (p);
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 	  case rule_node:
@@ -189,7 +189,7 @@ reverse (pointer this_box, pointer t) {
 		  add_glue (rule_wd);
 		if (subtype (p) >= a_leaders) {
 		  temp_ptr = leader_ptr (p);
-		  if (type (temp_ptr) == rule_node) {
+		  if (TYPE_FIELD (temp_ptr) == rule_node) {
 			delete_glue_ref (g);
 			free_node (p, small_node_size);
 			p = temp_ptr;
@@ -216,7 +216,7 @@ reverse (pointer this_box, pointer t) {
 		rule_wd = width (p);
 		if (end_LR (p))
 		  if (info (LR_ptr) != end_LR_type (p)){
-			type (p) = kern_node;
+			TYPE_FIELD (p) = kern_node;
 			incr (LR_problems);
 		  } else {
 			pop_LR;
@@ -224,7 +224,7 @@ reverse (pointer this_box, pointer t) {
 			  decr (n);
 			  decr (subtype (p));				/* change |after| into |before| */ 
 			} else {
-			  type (p) = kern_node;
+			  TYPE_FIELD (p) = kern_node;
 			  if (m > min_halfword) {
 				decr (m);
 			  } else {
@@ -248,7 +248,7 @@ reverse (pointer this_box, pointer t) {
 			  incr (n);
 			  incr (subtype (p)); /* change |before| into |after| */ 
 			} else {
-			  type (p) = kern_node;
+			  TYPE_FIELD (p) = kern_node;
 			  incr (m);
 			};
 		  };
@@ -264,7 +264,7 @@ reverse (pointer this_box, pointer t) {
 	  cur_h = cur_h + rule_wd;
 	NEXTP:
 	  link (p) = l;
-	  if (type (p) == kern_node)
+	  if (TYPE_FIELD (p) == kern_node)
 	    if ((rule_wd == 0) || (l == null)) {
 		  free_node (p, small_node_size);
 		  p = l;

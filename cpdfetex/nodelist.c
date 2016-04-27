@@ -59,7 +59,7 @@ short_display (pointer p) { /* prints highlights of list |p| */
 pointer
 print_short_node (pointer p) {
   int n;			/* for replacement counts */
-  switch (type (p)) {
+  switch (TYPE_FIELD (p)) {
   case hlist_node:
   case vlist_node:
   case ins_node:
@@ -154,16 +154,16 @@ show_node_list (int p) { /* prints a node list symbolically */
 	if (is_char_node (p)) {
 	  print_font_and_char (p);
 	} else {
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 	  case unset_node:
 		/* begin expansion of Display box |p| */
 		/* module 184 */
 		{
-		  if (type (p) == hlist_node) {
+		  if (TYPE_FIELD (p) == hlist_node) {
 		    print_esc_string (( "h" ));
-		  } else if (type (p) == vlist_node) {
+		  } else if (TYPE_FIELD (p) == vlist_node) {
 			print_esc_string (("v"));
 		  } else {
 			print_esc_string ("unset");
@@ -174,7 +174,7 @@ show_node_list (int p) { /* prints a node list symbolically */
 		  print_scaled (depth (p));
 		  zprint_string(")x");
 		  print_scaled (width (p));
-		  if (type (p) == unset_node) {
+		  if (TYPE_FIELD (p) == unset_node) {
 		    /* begin expansion of Display special fields of the unset node |p| */
 		    /* module 185 */
 		    if (span_count (p) != min_quarterword) {
@@ -195,7 +195,7 @@ show_node_list (int p) { /* prints a node list symbolically */
 		    /* begin expansion of Display the value of |glue_set(p)| */
 			/* module 186 */
 			/* The code will have to change in this place if |glue_ratio| is
-			 * a structured type instead of an ordinary |real|. Note that this routine
+			 * a structured TYPE_FIELD instead of an ordinary |real|. Note that this routine
 			 * should avoid arithmetic errors even if the |glue_set| field holds an
 			 * arbitrary random value. The following code assumes that a properly
 			 * formed nonzero |real| number has absolute value $2^{20}$ or more when
@@ -234,7 +234,7 @@ show_node_list (int p) { /* prints a node list symbolically */
 			  /* An hbox with subtype dlist will never be reversed, even when embedded
 			   * in right-to-left text.
 			   */
-		      if ((type (p) == hlist_node) && (subtype (p) == dlist))
+		      if ((TYPE_FIELD (p) == hlist_node) && (subtype (p) == dlist))
 				zprint_string(", display");
 			  /* end expansion of Display if this box is never to be reversed */
 			};
@@ -385,7 +385,7 @@ show_node_list (int p) { /* prints a node list symbolically */
 			};
 			break;
 		  default:
-			pdf_error_string("displaying","unknown action type");
+			pdf_error_string("displaying","unknown action TYPE_FIELD");
 		  };
 		  break;
 		case pdf_end_link_node:
@@ -572,7 +572,7 @@ show_node_list (int p) { /* prints a node list symbolically */
 		  };
 		} else {
 		  print_esc_string ("math");
-		  if (subtype (p) == before) {
+		  if (subtype (p) == BEFORE_CODE) {
 			zprint_string("on");
 		  } else {
 			zprint_string("off");
@@ -609,7 +609,7 @@ show_node_list (int p) { /* prints a node list symbolically */
 		/* begin expansion of Display discretionary |p| */
 		/* module 195 */
 		/* The |post_break| list of a discretionary node is indicated by a prefixed
-		 * `\.{\char'174}' instead of the `\..' before the |pre_break| list.
+		 * `\.{\char'174}' instead of the `\..' BEFORE_CODE the |pre_break| list.
 		 */
 		print_esc_string ("discretionary");
 		if (replace_count (p) > 0) {
@@ -697,7 +697,7 @@ show_node_list (int p) { /* prints a node list symbolically */
 	  case right_noad:
 		/* begin expansion of Display normal noad |p| */
 		/* module 840 */
-		switch (type (p)) {
+		switch (TYPE_FIELD (p)) {
 		  case ord_noad:
 		    print_esc_string ("mathord");
 		    break;
@@ -751,7 +751,7 @@ show_node_list (int p) { /* prints a node list symbolically */
 			};
 			print_delimiter (nucleus (p));
 		};
-		if (type (p) < left_noad) {
+		if (TYPE_FIELD (p) < left_noad) {
 		  if (subtype (p) != normal) {
 			if (subtype (p) == limits) {
 			  print_esc_string ("limits");
@@ -793,7 +793,7 @@ show_node_list (int p) { /* prints a node list symbolically */
 		/* end expansion of Display fraction noad |p| */
 		break;
 	  default:
-		zprint_string("Unknown node type!");
+		zprint_string("Unknown node TYPE_FIELD!");
 	  };
 	  /* end expansion of Display node |p| */
 	};
@@ -855,7 +855,7 @@ flush_node_list (pointer p) {
 	if (is_char_node (p)) {
 	  free_avail (p);
 	} else {
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 	  case unset_node:
@@ -1001,9 +1001,9 @@ flush_node_list (pointer p) {
 		  flush_node_list (info (supscr (p)));
 		if (math_type (subscr (p)) >= sub_box)
 		  flush_node_list (info (subscr (p)));
-		if (type (p) == radical_noad) {
+		if (TYPE_FIELD (p) == radical_noad) {
 		  free_node (p, radical_noad_size);
-		} else if (type (p) == accent_noad) {
+		} else if (TYPE_FIELD (p) == accent_noad) {
 		  free_node (p, accent_noad_size);
 		} else {
 		  free_node (p, noad_size);
@@ -1056,7 +1056,7 @@ copy_node_list (pointer p) {
 	  /* begin expansion of Case statement to copy different types and 
 	     set |words| to the number of initial words not yet copied */
 	  /* module 206 */
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 	  case unset_node:
@@ -1161,7 +1161,7 @@ node_type (pointer p)	{
   if (is_char_node (p)) {
     zprint_string ("char_node") ;
   } else {
-    switch (type (p)) {
+    switch (TYPE_FIELD (p)) {
     case hlist_node:
       zprint_string("hlist_node");
       break;

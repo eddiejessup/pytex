@@ -642,7 +642,7 @@ void
 new_whatsit (small_number s, small_number w) {
   pointer p; /* the new node */ 
   p = get_node (w);
-  type (p) = whatsit_node;
+  TYPE_FIELD (p) = whatsit_node;
   subtype (p) = s;
   link (tail) = p;
   tail = p;

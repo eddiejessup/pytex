@@ -355,7 +355,7 @@ file_warning (void) {
 	zprint_string(" is incomplete");
 	if_line = if_line_field (cond_ptr);
 	cur_if = subtype (cond_ptr);
-	if_limit = type (cond_ptr);
+	if_limit = TYPE_FIELD (cond_ptr);
 	cond_ptr = link (cond_ptr);
   };
   cond_ptr = p;

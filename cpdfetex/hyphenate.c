@@ -512,7 +512,7 @@ hyphenate (void) {
 	   init_list = ha;
 	   init_lig = false;
 	   hu[0] = qo (character (ha));
-	 } else if (type (ha) == ligature_node)
+	 } else if (TYPE_FIELD (ha) == ligature_node)
 	   if (font (lig_char (ha)) != hf) {
 		 goto FOUND2;
 	   } else {
@@ -528,7 +528,7 @@ hyphenate (void) {
 		 free_node (ha, small_node_size);
 	   } else { /* no punctuation found; look for left boundary */
 		 if (!is_char_node (r))
-		   if (type (r) == ligature_node)
+		   if (TYPE_FIELD (r) == ligature_node)
 			 if (subtype (r) > 1)
 			   goto FOUND2;
 		 j = 1;
@@ -536,7 +536,7 @@ hyphenate (void) {
 		 init_list = null;
 		 goto COMMON_ENDING;
 	   };
-   s = cur_p; /* we have |cur_p<>ha| because |type(cur_p)=glue_node| */
+   s = cur_p; /* we have |cur_p<>ha| because |TYPE_FIELD(cur_p)=glue_node| */
    while (link (s) != ha)
 	 s = link (s);
    j = 0;
@@ -580,7 +580,7 @@ hyphenate (void) {
 	   do {
 		 r = get_node (small_node_size);
 		 link (r) = link (hold_head);
-		 type (r) = disc_node;
+		 TYPE_FIELD (r) = disc_node;
 		 major_tail = r;
 		 r_count = 0;
 		 while (link (major_tail) > null)

@@ -20,7 +20,7 @@ pointer
 new_math (scaled w, small_number s) {
   pointer p;			/* the new node */
   p = get_node (small_node_size);
-  type (p) = math_node;
+  TYPE_FIELD (p) = math_node;
   subtype (p) = s;
   width (p) = w;
   return p;
@@ -39,7 +39,7 @@ new_math (scaled w, small_number s) {
  * are mlists in their own right.
  * 
  * An entire formula is parsed into such a tree before any of the actual
- * typesetting is done, because the current style of type is usually not
+ * typesetting is done, because the current style of TYPE_FIELD is usually not
  * known until the formula has been fully scanned. For example, when the
  * formula `\.{\$a+b \\over c+d\$}' is being read, there is no way to tell
  * that `\.{a+b}' will be in script size until `\.{\\over}' has appeared.
@@ -61,18 +61,18 @@ new_math (scaled w, small_number s) {
  * of ``noads'' (pronounced ``no-adds''), to distinguish them from the somewhat
  * similar ``nodes'' in hlists and vlists. Certain kinds of ordinary nodes are
  * allowed to appear in mlists together with the noads; \TeX\ tells the difference
- * by means of the |type| field, since a noad's |type| is always greater than
+ * by means of the |TYPE_FIELD| field, since a noad's |TYPE_FIELD| is always greater than
  * that of a node. An mlist does not contain character nodes, hlist nodes, vlist
  * nodes, math nodes, ligature nodes,
  * or unset nodes; in particular, each mlist item appears in the
- * variable-size part of |mem|, so the |type| field is always present.
+ * variable-size part of |mem|, so the |TYPE_FIELD| field is always present.
  */
 
 
 
 /* module 828 */
 
-/* The global variable |empty_field| is set up for initialization of empty
+/* The global variable |empty_field| is set up for initialization of EMPTY_CODE
  * fields in new noads. Similarly, |null_delimiter| is for the initialization
  * of delimiter fields.
  */
@@ -84,7 +84,7 @@ four_quarters null_delimiter;
 
 void
 math_initialize (void) {
-  empty_field.rh = empty;
+  empty_field.rh = EMPTY_CODE;
   empty_field.lhfield = null;
   null_delimiter.b0 = 0;
   null_delimiter.b1 = min_quarterword;
@@ -100,7 +100,7 @@ math_initialize (void) {
 pointer new_noad (void) {
   pointer p;
   p = get_node (noad_size);
-  type (p) = ord_noad;
+  TYPE_FIELD (p) = ord_noad;
   subtype (p) = normal;
   mem[nucleus (p)].hh = empty_field;
   mem[subscr (p)].hh = empty_field;
@@ -129,7 +129,7 @@ pointer new_style (small_number s) {
   /* create a style node */
   pointer p; /* the new node */
   p = get_node (style_node_size);
-  type (p) = style_node;
+  TYPE_FIELD (p) = style_node;
   subtype (p) = s;
   width (p) = 0;
   depth (p) = 0;  /* the |width| and |depth| are not used */ 
@@ -146,7 +146,7 @@ pointer new_style (small_number s) {
 pointer new_choice (void) { /* create a choice node */
   pointer p; /* the new node */
   p = get_node (style_node_size);
-  type (p) = choice_node;
+  TYPE_FIELD (p) = choice_node;
   subtype (p) = 0; /* the |subtype| is not used */
   display_mlist (p) = null;
   text_mlist (p) = null;
@@ -183,8 +183,8 @@ print_delimiter (pointer p) { /* prints a delimiter as 24-bit hex value */
 
 /* The next subroutine will descend to another level of recursion when a
  * subsidiary mlist needs to be displayed. The parameter |c| indicates what
- * character is to become part of the recursion history. An empty mlist is
- * distinguished from a field with |math_type(p)=empty|, because these are
+ * character is to become part of the recursion history. An EMPTY_CODE mlist is
+ * distinguished from a field with |math_type(p)=EMPTY_CODE|, because these are
  * not equivalent (as explained above).
  */
 
@@ -192,7 +192,7 @@ void
 print_subsidiary_data (pointer p, ASCII_code c) {
   /* display a noad field */
   if (cur_length >= depth_threshold) {
-	if (math_type (p) != empty)
+	if (math_type (p) != EMPTY_CODE)
 	  zprint_string (" []");
   } else {
 	append_char (c);		/* include |c| in the recursion history */
@@ -514,7 +514,7 @@ var_delimiter (pointer d, small_number s, scaled v) {
 	  /* module 857 */
 	  {
 		b = new_null_box();
-		type (b) = vlist_node;
+		TYPE_FIELD (b) = vlist_node;
 		r = font_info[exten_base[f] + rem_byte (q)].qqqq;
 		/* begin expansion of Compute the minimum suitable height, |w|, and the 
 		   corresponding number of extension steps, |n|; also set |width(b)| */
@@ -601,7 +601,7 @@ rebox (pointer b, scaled w) {
   internal_font_number f; /* font in a one-character box */ 
   scaled v; /* width of a character without italic correction */
   if ((width (b) != w) && (list_ptr (b) != null)) {
-	if (type (b) == vlist_node)
+	if (TYPE_FIELD (b) == vlist_node)
 	  b = hpack (b, 0, additional);
 	p = list_ptr (b);
 	if ((is_char_node (p)) && (link (p) == null)) {
@@ -677,7 +677,7 @@ math_kern (pointer p, scaled m) {
 	  f = f + 65536;
 	};
 	width (p) = mu_mult (width (p));
-	subtype (p) = explicit;
+	subtype (p) = EXPLICIT_CODE;
   };
 };
 
@@ -764,7 +764,7 @@ clean_box (pointer p, small_number s) {
  FOUND:
   if (is_char_node (q) || (q == null)) {
 	x = hpack (q, 0, additional);
-  } else if ((link (q) == null) && (type (q) <= vlist_node) && (shift_amount (q) == 0)) {
+  } else if ((link (q) == null) && (TYPE_FIELD (q) <= vlist_node) && (shift_amount (q) == 0)) {
 	x = q;	/* it's already clean */
   } else {
 	x = hpack (q, 0, additional);
@@ -778,7 +778,7 @@ clean_box (pointer p, small_number s) {
 	if (r != null)
 	  if (link (r) == null)
 		if (!is_char_node (r))
-		  if (type (r) == kern_node) {	/* unneeded italic correction */
+		  if (TYPE_FIELD (r) == kern_node) {	/* unneeded italic correction */
 			free_node (r, small_node_size);
 			link (q) = null;
 		  };
@@ -805,7 +805,7 @@ four_quarters cur_i;/* the |char_info| of a |math_char|,  or a lig/kern instruct
  * and |cur_i| to the font code, character code, and character information bytes of
  * a given noad field. It also takes care of issuing error messages for
  * nonexistent characters; in such cases, |char_exists(cur_i)| will be |false|
- * after |fetch| has acted, and the field will also have been reset to |empty|.
+ * after |fetch| has acted, and the field will also have been reset to |EMPTY_CODE|.
  */
 void 
 fetch (pointer a) { /* unpack the |math_char| field |a| */
@@ -827,7 +827,7 @@ fetch (pointer a) { /* unpack the |math_char| field |a| */
 		   "and I'll try to forget that I needed that character.");
 	error();
 	cur_i = null_character;
-	math_type (a) = empty;
+	math_type (a) = EMPTY_CODE;
 	/* end expansion of Complain about an undefined family and set |cur_i| null */
   } else {
 	if ((qo (cur_c) >= font_bc[cur_f]) && (qo (cur_c) <= font_ec[cur_f])) {
@@ -837,7 +837,7 @@ fetch (pointer a) { /* unpack the |math_char| field |a| */
 	}
 	if (!(char_exists (cur_i))) {
 	  char_warning (cur_f, qo (cur_c));
-	  math_type (a) = empty;
+	  math_type (a) = EMPTY_CODE;
 	};
   };
 };
@@ -903,7 +903,7 @@ make_vcenter (pointer q) {
   pointer v; /* the box that should be centered vertically */ 
   scaled delta; /* its height plus depth */ 
   v = info (nucleus (q));
-  if (type (v) != vlist_node)
+  if (TYPE_FIELD (v) != vlist_node)
 	confusion ("vcenter");
   delta = height (v) + depth (v);
   height (v) = axis_height (cur_size) + half (delta);
@@ -1020,7 +1020,7 @@ make_math_accent (pointer q) {
 	} else {
 	  delta = x_height (f);
 	}
-	if ((math_type (supscr (q)) != empty) || (math_type (subscr (q)) != empty))
+	if ((math_type (supscr (q)) != EMPTY_CODE) || (math_type (subscr (q)) != EMPTY_CODE))
 	  if (math_type (nucleus (q)) == math_char) {
 		/* begin expansion of Swap the subscript and superscript into box |x| */
 		/* module 886 */
@@ -1139,7 +1139,7 @@ make_fraction (pointer q) {
 	 and |shift_down| */
   /* module 891 */
   v = new_null_box();
-  type (v) = vlist_node;
+  TYPE_FIELD (v) = vlist_node;
   height (v) = shift_up + height (x);
   depth (v) = depth (z) + shift_down;
   width (v) = width (x); /* this also equals |width(z)| */ 
@@ -1213,7 +1213,7 @@ make_op (pointer q) {
 	};
 	delta = char_italic (cur_f, cur_i);
 	x = clean_box (nucleus (q), cur_style);
-	if ((math_type (subscr (q)) != empty) && (subtype (q) != limits))
+	if ((math_type (subscr (q)) != EMPTY_CODE) && (subtype (q) != limits))
 	  width (x) = width (x) - delta; /* remove italic correction */ 
 	shift_amount (x) =half (height (x) - depth (x)) - axis_height (cur_size); /* center vertically */ 
 	math_type (nucleus (q)) = sub_box; info (nucleus (q)) = x;
@@ -1230,7 +1230,7 @@ make_op (pointer q) {
 	y = clean_box (nucleus (q), cur_style);
 	z = clean_box (subscr (q), sub_style (cur_style));
 	v = new_null_box();
-	type (v) = vlist_node;
+	TYPE_FIELD (v) = vlist_node;
 	width (v) = width (y);
 	if (width (x) > width (v))
 	  width (v) = width (x);
@@ -1250,7 +1250,7 @@ make_op (pointer q) {
 	 * |z|. The vlist inside box |v| will consist of |x| followed by |y| followed
 	 * by |z|, with kern nodes for the spaces between and around them.
 	 */
-	if (math_type (supscr (q)) == empty) {
+	if (math_type (supscr (q)) == EMPTY_CODE) {
 	  free_node (x, box_node_size);
 	  list_ptr (v) = y;
 	} else {
@@ -1267,7 +1267,7 @@ make_op (pointer q) {
 		height (v) + big_op_spacing5 + height (x) +
 		depth (x) + shift_up;
 	};
-	if (math_type (subscr (q)) == empty) {
+	if (math_type (subscr (q)) == EMPTY_CODE) {
 	  free_node (z, box_node_size);
 	} else {
 	  shift_down = big_op_spacing4 - height (z);
@@ -1304,12 +1304,12 @@ make_ord (pointer q) {
   int a; /* address of lig/kern instruction */ 
   pointer p, r; /* temporary registers for list manipulation */ 
  RESTART:
-  if (math_type (subscr (q)) == empty) {
-	if (math_type (supscr (q)) == empty) {
+  if (math_type (subscr (q)) == EMPTY_CODE) {
+	if (math_type (supscr (q)) == EMPTY_CODE) {
 	  if (math_type (nucleus (q)) == math_char) {
 		p = link (q);
 		if (p != null) {
-		  if ((type (p) >= ord_noad) && (type (p) <= punct_noad)) {
+		  if ((TYPE_FIELD (p) >= ord_noad) && (TYPE_FIELD (p) <= punct_noad)) {
 			if (math_type (nucleus (p)) == math_char) {
 			  if (fam (nucleus (p)) == fam (nucleus (q))) {
 				math_type (nucleus (q)) = math_text_char;
@@ -1403,7 +1403,7 @@ make_ord (pointer q) {
 
 /* The purpose of |make_scripts(q,delta)| is to attach the subscript and/or
  * superscript of noad |q| to the list that starts at |new_hlist(q)|,
- * given that subscript and superscript aren't both empty. The superscript
+ * given that subscript and superscript aren't both EMPTY_CODE. The superscript
  * will appear to the right of the subscript by a given distance |delta|.
  * 
  * We set |shift_down| and |shift_up| to the minimum amounts to shift the
@@ -1429,7 +1429,7 @@ make_scripts (pointer q, scaled delta) {
 	shift_down = depth (z) + sub_drop (t);
 	free_node (z, box_node_size);
   };
-  if (math_type (supscr (q)) == empty) {
+  if (math_type (supscr (q)) == EMPTY_CODE) {
 	/* begin expansion of Construct a subscript box |x| when there is no superscript */
 	/* module 901 */
 	/* When there is a subscript without a superscript, the top of the subscript
@@ -1465,7 +1465,7 @@ make_scripts (pointer q, scaled delta) {
 	if (shift_up < clr)
 	  shift_up = clr;
 	/* end expansion of Construct a superscript box |x| */
-	if (math_type (subscr (q)) == empty) {
+	if (math_type (subscr (q)) == EMPTY_CODE) {
 	  shift_amount (x) = -shift_up;
 	} else {
 	  /* begin expansion of Construct a sub/superscript combination box |x|, 
@@ -1563,13 +1563,13 @@ make_left_right (pointer q, small_number style,	scaled max_d, scaled max_h) {
   if (delta < delta2)
 	delta = delta2;
   new_hlist (q) = var_delimiter (delimiter (q), cur_size, delta);
-  return type (q) - (left_noad - open_noad);
+  return TYPE_FIELD (q) - (left_noad - open_noad);
   /* |open_noad| or |close_noad| */ 
 };
 
 
 /* module 873 */
-#define convert_final_bin_to_ord if (r_type == bin_noad) {type (r) = ord_noad; }
+#define convert_final_bin_to_ord if (r_type == bin_noad) {TYPE_FIELD (r) = ord_noad; }
 
 /* module 870 */
 
@@ -1585,8 +1585,8 @@ mlist_to_hlist (void) {
   small_number save_style; /* holds |cur_style| during recursion */ 
   pointer q; /* runs through the mlist */ 
   pointer r; /* the most recent noad preceding |q| */ 
-  small_number r_type; /* the |type| of noad |r|, or |op_noad| if |r=null| */
-  small_number t; /* the effective |type| of noad |q| during the second pass */
+  small_number r_type; /* the |TYPE_FIELD| of noad |r|, or |op_noad| if |r=null| */
+  small_number t; /* the effective |TYPE_FIELD| of noad |q| during the second pass */
   pointer p, x, y, z; /* temporary registers for list construction */ 
   int pen; /* a penalty to be inserted */ 
   small_number s; /* the size of a noad to be deleted */ 
@@ -1608,9 +1608,9 @@ mlist_to_hlist (void) {
 	   for the second pass of |mlist_to_hlist|, then move to the next item in the mlist */
 	/* module 871 */
 	/* We use the fact that no character nodes appear in an mlist, hence
-	 * the field |type(q)| is always present.
+	 * the field |TYPE_FIELD(q)| is always present.
 	 */
-	/* begin expansion of Do first-pass processing based on |type(q)|; |goto done_with_noad| 
+	/* begin expansion of Do first-pass processing based on |TYPE_FIELD(q)|; |goto done_with_noad| 
 	   if a noad has been fully processed, |goto check_dimensions| if it has been translated 
 	   into |new_hlist(q)|, or |goto done_with_node| if a node has been fully processed */
 	/* module 872 */
@@ -1620,7 +1620,7 @@ mlist_to_hlist (void) {
 	 */
   RESWITCH:
 	delta = 0;
-	switch (type (q)) {
+	switch (TYPE_FIELD (q)) {
 	case bin_noad:
 	  switch (r_type) {
 	  case bin_noad:
@@ -1629,7 +1629,7 @@ mlist_to_hlist (void) {
 	  case open_noad:
 	  case punct_noad:
 	  case left_noad:
-		type (q) = ord_noad;
+		TYPE_FIELD (q) = ord_noad;
 		goto RESWITCH;
 		break;
 	  default:
@@ -1643,7 +1643,7 @@ mlist_to_hlist (void) {
 	case right_noad:
 	  /* Convert \(a)a final |bin_noad| to an |ord_noad| */
 	  convert_final_bin_to_ord;
-	  if (type (q) == right_noad)
+	  if (TYPE_FIELD (q) == right_noad)
 		goto DONE_WITH_NOAD;
 	  do_something;
 	  break;
@@ -1712,7 +1712,7 @@ mlist_to_hlist (void) {
 	  flush_node_list (text_mlist (q));
 	  flush_node_list (script_mlist (q));
 	  flush_node_list (script_script_mlist (q));
-	  type (q) = style_node;
+	  TYPE_FIELD (q) = style_node;
 	  subtype (q) = cur_style;
 	  width (q) = 0;
 	  depth (q) = 0;
@@ -1758,7 +1758,7 @@ mlist_to_hlist (void) {
 	  } else if ((cur_size != text_size) && (subtype (q) == cond_math_glue)) {
 		p = link (q);
 		if (p != null)
-		  if ((type (p) == glue_node) || (type (p) == kern_node)) {
+		  if ((TYPE_FIELD (p) == glue_node) || (TYPE_FIELD (p) == kern_node)) {
 			link (q) = link (p);
 			link (p) = null;
 			flush_node_list (p);
@@ -1798,7 +1798,7 @@ mlist_to_hlist (void) {
 		if ((math_type (nucleus (q)) == math_text_char) && (space (cur_f) != 0))
 		  delta = 0;
 		/* no italic correction in mid-word of text font */
-		if ((math_type (subscr (q)) == empty) && (delta != 0)) {
+		if ((math_type (subscr (q)) == EMPTY_CODE) && (delta != 0)) {
 		  link (p) = new_kern (delta);
 		  delta = 0;
 		};
@@ -1807,7 +1807,7 @@ mlist_to_hlist (void) {
 	  }
 	  /* end expansion of Create a character node |p| for |nucleus(q)|,... */
 	  break;
-	case empty:
+	case EMPTY_CODE:
 	  p = null;
 	  break;
 	case sub_box:
@@ -1827,11 +1827,11 @@ mlist_to_hlist (void) {
 	  confusion ("mlist2");
 	};
 	new_hlist (q) = p;
-	if ((math_type (subscr (q)) == empty) && (math_type (supscr (q)) == empty))
+	if ((math_type (subscr (q)) == EMPTY_CODE) && (math_type (supscr (q)) == EMPTY_CODE))
 	  goto CHECK_DIMENSIONS;
 	make_scripts (q, delta);
 	  /* end expansion of Convert \(n)|nucleus(q)| to an hlist and attach the sub/superscripts */
-	  /* end expansion of Do first-pass processing based on |type(q)|; |goto done_with_noad| if.. */
+	  /* end expansion of Do first-pass processing based on |TYPE_FIELD(q)|; |goto done_with_noad| if.. */
   CHECK_DIMENSIONS:
 	z = hpack (new_hlist (q), 0, additional);
 	if (height (z) > max_h)
@@ -1841,7 +1841,7 @@ mlist_to_hlist (void) {
 	free_node (z, box_node_size);
   DONE_WITH_NOAD:
 	r = q;
-	r_type = type (r);
+	r_type = TYPE_FIELD (r);
 	if (r_type == right_noad) {
 	  r_type = left_noad;
 	  cur_style = style;
@@ -1873,7 +1873,7 @@ mlist_to_hlist (void) {
   while (q != null) {
 	/* begin expansion of If node |q| is a style node, change the style and |goto delete_q|;
 	   otherwise if it is not a noad, put it into the hlist, advance |q|, and |goto done|;
-	   otherwise set |s| to the size of noad |q|, set |t| to the associated type (|ord_noad.. inner_noad|),
+	   otherwise set |s| to the size of noad |q|, set |t| to the associated TYPE_FIELD (|ord_noad.. inner_noad|),
 	   and set |pen| to the associated penalty */
 	/* module 905 */
 	/* Just before doing the big |case| switch in the second pass, the program
@@ -1882,13 +1882,13 @@ mlist_to_hlist (void) {
 	t = ord_noad;
 	s = noad_size;
 	pen = inf_penalty;
-	switch (type (q)) {
+	switch (TYPE_FIELD (q)) {
 	case op_noad:
 	case open_noad:
 	case close_noad:
 	case punct_noad:
 	case inner_noad:
-	  t = type (q);
+	  t = TYPE_FIELD (q);
 	  break;
 	case bin_noad:
 	  t = bin_noad;
@@ -2007,7 +2007,7 @@ mlist_to_hlist (void) {
 	if (penalties)
 	  if (link (q) != null)
 		if (pen < inf_penalty) {
-		  r_type = type (link (q));
+		  r_type = TYPE_FIELD (link (q));
 		  if (r_type != penalty_node)
 			if (r_type != rel_noad) {
 			  z = new_penalty (pen);
@@ -2016,7 +2016,7 @@ mlist_to_hlist (void) {
 			};
 		};
 	/* end expansion of Append any |new_hlist| entries for |q|, and any appropriate penalties */
-	if (type (q) == right_noad)
+	if (TYPE_FIELD (q) == right_noad)
 	  t = open_noad;
 	r_type = t;
   DELETE_Q:

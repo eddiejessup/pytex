@@ -19,17 +19,17 @@
  * We shall use the term ``current page'' for that part of the main vlist that
  * is being considered as a candidate for being broken off and sent to the
  * user's output routine. The current page starts at |link(page_head)|, and
- * it ends at |page_tail|. We have |page_head=page_tail| if this list is empty.
+ * it ends at |page_tail|. We have |page_head=page_tail| if this list is EMPTY_CODE.
  * 
  * Utter chaos would reign if the user kept changing page specifications
  * while a page is being constructed, so the page builder keeps the pertinent
  * specifications frozen as soon as the page receives its first box or
- * insertion. The global variable |page_contents| is |empty| when the
+ * insertion. The global variable |page_contents| is |EMPTY_CODE| when the
  * current page contains only mark nodes and content-less whatsit nodes; it
  * is |inserts_only| if the page contains only insertion nodes in addition to
  * marks and whatsits. Glue nodes, kern nodes, and penalty nodes are
  * discarded until a box or rule node appears, at which time |page_contents|
- * changes to |box_there|. As soon as |page_contents| becomes non-|empty|,
+ * changes to |box_there|. As soon as |page_contents| becomes non-|EMPTY_CODE|,
  * the current |vsize| and |max_depth| are squirreled away into |page_goal|
  * and |page_max_depth|; the latter values will be used until the page has
  * been forwarded to the user's output routine. The \.{\\topskip} adjustment
@@ -71,11 +71,11 @@ scaled best_size; /* its |page_goal| */
  * at the end of the list. A record is present for each insertion number that
  * appears in the current page.
  * 
- * The |type| field in these nodes distinguishes two possibilities that
+ * The |TYPE_FIELD| field in these nodes distinguishes two possibilities that
  * might occur as we look ahead before deciding on the optimum page break.
- * If |type(r)=inserting|, then |height(r)| contains the total of the
+ * If |TYPE_FIELD(r)=inserting|, then |height(r)| contains the total of the
  * height-plus-depth dimensions of the box and all its inserts seen so far.
- * If |type(r)=split_up|, then no more insertions will be made into this box,
+ * If |TYPE_FIELD(r)=split_up|, then no more insertions will be made into this box,
  * because at least one previous insertion was too big to fit on the current
  * page; |broken_ptr(r)| points to the node where that insertion will be
  * split, if \TeX\ decides to split it, |broken_ins(r)| points to the
@@ -151,7 +151,7 @@ void print_totals (void) {
 /* module 1132 */
 
 /* Here is a procedure that is called when the |page_contents| is changing
- * from |empty| to |inserts_only| or |box_there|.
+ * from |EMPTY_CODE| to |inserts_only| or |box_there|.
  */
 #define set_page_so_far_zero( arg )  page_so_far [ arg ]  = 0
 
@@ -198,16 +198,16 @@ freeze_page_specs (small_number s) {
  * optimum break will go back onto the contribution list, and control will
  * effectively pass to the user's output routine.
  * 
- * We make |type(page_head)=glue_node|, so that an initial glue node on
+ * We make |TYPE_FIELD(page_head)=glue_node|, so that an initial glue node on
  * the current page will not be considered a valid breakpoint.
  */
 
 void
 buildpage_initialize_init (void) {
       subtype (page_ins_head) = qi (255);
-      type (page_ins_head) = split_up;
+      TYPE_FIELD (page_ins_head) = split_up;
       link (page_ins_head) = page_ins_head;
-      type (page_head) = glue_node;
+      TYPE_FIELD (page_head) = glue_node;
       subtype (page_head) = normal;
 }
 
@@ -256,7 +256,7 @@ ensure_vbox (eight_bits n) {
   pointer p; /* the box register contents */ 
   p = box (n);
   if (p != null)
-	if (type (p) == hlist_node) {
+	if (TYPE_FIELD (p) == hlist_node) {
 	  print_err ("Insertions can only be added to a vbox");
 	  help3  ("Tut tut: You're trying to \\insert into a",
 			  "\\box register that now contains an \\hbox.",
@@ -272,7 +272,7 @@ ensure_vbox (eight_bits n) {
  */
 void
 start_new_page  (void) {
-  page_contents = empty;
+  page_contents = EMPTY_CODE;
   page_tail = page_head;
   last_glue = max_halfword;
   last_penalty = 0;
@@ -309,7 +309,7 @@ fire_up (pointer c) {
   pointer save_split_top_skip; /* saved value of |split_top_skip| */
   /* begin expansion of Set the value of |output_penalty| */
   /* module 1158 */
-  if (type (best_page_break) == penalty_node) {
+  if (TYPE_FIELD (best_page_break) == penalty_node) {
 	geq_word_define (int_base + output_penalty_code, penalty (best_page_break));
 	penalty (best_page_break) = inf_penalty;
   } else {
@@ -337,7 +337,7 @@ fire_up (pointer c) {
    */
   if (c == best_page_break)
 	      best_page_break = null; /* |c| not yet linked in */
-  /* begin expansion of Ensure that box 255 is empty before output */
+  /* begin expansion of Ensure that box 255 is EMPTY_CODE before output */
   /* module 1160 */
   if (box (255) != null) {
 	print_err ("");
@@ -347,8 +347,8 @@ fire_up (pointer c) {
 		   "Proceed, and I'll discard its present contents.");
 	box_error (255);
   };
-  /* end expansion of Ensure that box 255 is empty before output */
-  insert_penalties = 0;  /* this will count the number of insertions held over */
+  /* end expansion of Ensure that box 255 is EMPTY_CODE before output */
+  insert_penalties = 0;  /* this will COUNT the number of insertions held over */
   save_split_top_skip = split_top_skip;
   if (holding_inserts <= 0) {
 	/* begin expansion of Prepare all the boxes involved in insertions to act as queues */
@@ -380,7 +380,7 @@ fire_up (pointer c) {
   prev_p = page_head;
   p = link (prev_p);
   while (p != best_page_break) {
-	if (type (p) == ins_node) {
+	if (TYPE_FIELD (p) == ins_node) {
 	  if (holding_inserts <= 0) {
 		/* begin expansion of Either insert the material specified by node |p| into the appropriate box, 
 		   or hold it for the next page; also delete node |p| from the current page */
@@ -403,7 +403,7 @@ fire_up (pointer c) {
 			/* begin expansion of Wrap up the box specified by node |r|, splitting node |p| if called for; 
 			   set |wait:=true| if node |p| holds a remainder after splitting */
 			/* module 1166 */
-			if (type (r) == split_up)
+			if (TYPE_FIELD (r) == split_up)
 			  if ((broken_ins (r) == p) && (broken_ptr (r) != null)) {
 				while (link (s) != broken_ptr (r))
 				  s = link (s);
@@ -446,7 +446,7 @@ fire_up (pointer c) {
 		/* end expansion of Either append the insertion node |p| after node |q|, and remo... */
 	  };
 	  /* end expansion of Either insert the material specified by node |p| into the appropriate ..*/
-	} else if (type (p) == mark_node) {
+	} else if (TYPE_FIELD (p) == mark_node) {
 	  if (mark_class (p) != 0) {
 		/* begin expansion of Update the current marks for |fire_up| */
 		/* module 1775 */
@@ -627,15 +627,15 @@ void build_page (void) { /* append contributions to the current page */
 	  delete_glue_ref (last_glue);
 	last_penalty = 0;
 	last_kern = 0;
-	last_node_type = type (p) + 1;
-	if (type (p) == glue_node) {
+	last_node_type = TYPE_FIELD (p) + 1;
+	if (TYPE_FIELD (p) == glue_node) {
 	  last_glue = glue_ptr (p);
 	  add_glue_ref (last_glue);
 	} else {
 	  last_glue = max_halfword;
-	  if (type (p) == penalty_node) {
+	  if (TYPE_FIELD (p) == penalty_node) {
 		last_penalty = penalty (p);
-	  } else if (type (p) == kern_node) {
+	  } else if (TYPE_FIELD (p) == kern_node) {
 		last_kern = width (p);
 	  }
 	};
@@ -650,7 +650,7 @@ void build_page (void) { /* append contributions to the current page */
 	 * 
 	 * the various labels have a well-understood meaning.
 	 */
-	/* begin expansion of If the current page is empty and node |p| is to be deleted, |goto done1|;
+	/* begin expansion of If the current page is EMPTY_CODE and node |p| is to be deleted, |goto done1|;
 	   otherwise use node |p| to update the state of the current page; if this node is an insertion,
 	   |goto contribute|; otherwise if this node is not a legal breakpoint, |goto contribute| or 
 	   |update_heights|; otherwise set |pi| to the penalty associated with this breakpoint */
@@ -660,7 +660,7 @@ void build_page (void) { /* append contributions to the current page */
 	 * kern node at the end of the contribution list will not be contributed until
 	 * we know its successor.
 	 */
-	switch (type (p)) {
+	switch (TYPE_FIELD (p)) {
 	case hlist_node:
 	case vlist_node:
 	case rule_node:
@@ -668,7 +668,7 @@ void build_page (void) { /* append contributions to the current page */
 		/* begin expansion of Initialize the current page, insert the \.{\\topskip} glue ahead of 
 		   |p|, and |goto continue| */
 		/* module 1146 */
-		if (page_contents == empty) {
+		if (page_contents == EMPTY_CODE) {
 		  freeze_page_specs (box_there);
 		} else {
 		  page_contents = box_there;
@@ -716,7 +716,7 @@ void build_page (void) { /* append contributions to the current page */
 		goto DONE1;
 	  } else if (link (p) == null) {
 		return;
-	  } else  if (type (link (p)) == glue_node) {
+	  } else  if (TYPE_FIELD (link (p)) == glue_node) {
 		pi = 0;
 	  } else {
 		do_something; 
@@ -738,7 +738,7 @@ void build_page (void) { /* append contributions to the current page */
 	  /* begin expansion of Append an insertion to the current page and |goto contribute| */
 	  /* module 1153 */
 	  {
-		if (page_contents == empty)
+		if (page_contents == EMPTY_CODE)
 		  freeze_page_specs (inserts_only);
 		n = subtype (p);
 		r = page_ins_head;
@@ -760,7 +760,7 @@ void build_page (void) { /* append contributions to the current page */
 		  link (r) = q;
 		  r = q;
 		  subtype (r) = qi (n);
-		  type (r) = inserting;
+		  TYPE_FIELD (r) = inserting;
 		  ensure_vbox (n);
 		  if (box (n) == null) {
 			height (r) = 0;
@@ -769,10 +769,10 @@ void build_page (void) { /* append contributions to the current page */
 		  }
 		  best_ins_ptr (r) = null;
 		  q = skip (n);
-		  if (count (n) == 1000) {
+		  if (COUNT (n) == 1000) {
 			h = height (r);
 		  } else {
-			h = x_over_n (height (r), 1000) * count (n);
+			h = x_over_n (height (r), 1000) * COUNT (n);
 		  }
 		  page_goal = page_goal - h - width (q);
 		  page_so_far[2 + stretch_order (q)] = page_so_far[2 + stretch_order (q)] + stretch (q);
@@ -788,23 +788,23 @@ void build_page (void) { /* append contributions to the current page */
 		  };
 		};
 		/* end expansion of Create a page insertion node with |subtype(r)=qi(n)|, a...*/
-		if (type (r) == split_up) {
+		if (TYPE_FIELD (r) == split_up) {
 		  insert_penalties = insert_penalties + float_cost (p);
 		} else {
 		  last_ins_ptr (r) = p;
 		  delta = page_goal - page_total - page_depth + page_shrink;
 		  /* this much room is left if we shrink the maximum */
-		  if (count (n) == 1000) {
+		  if (COUNT (n) == 1000) {
 			h = height (p);
 		  } else {
-			h = x_over_n (height (p), 1000) * count (n);
+			h = x_over_n (height (p), 1000) * COUNT (n);
 		  }
 		  /* this much room is needed */
 		  if (((h <= 0) || (h<= delta))&& (height (p) + height (r) <= dimen (n))) {
 			page_goal = page_goal - h;
 			height (r) = height (r) + height (p);
 		  } else {
-			/* begin expansion of Find the best way to split the insertion, and change |type(r)| to |split_up| */
+			/* begin expansion of Find the best way to split the insertion, and change |TYPE_FIELD(r)| to |split_up| */
 			/* module 1155 */
 			/* Here is the code that will split a long footnote between pages, in an
 			 * emergency. The current situation deserves to be recapitulated: Node |p|
@@ -812,16 +812,16 @@ void build_page (void) { /* append contributions to the current page */
 			 * either because it would make the total contents of box |n| greater than
 			 * \.{\\dimen} |n|, or because it would make the incremental amount of growth
 			 * |h| greater than the available space |delta|, or both. (This amount |h| has
-			 * been weighted by the insertion scaling factor, i.e., by \.{\\count} |n|
+			 * been weighted by the insertion scaling factor, i.e., by \.{\\COUNT} |n|
 			 * over 1000.) Now we will choose the best way to break the vlist of the
 			 * insertion, using the same criteria as in the \.{\\vsplit} operation.
 			 */
-			if (count (n) <= 0) {
+			if (COUNT (n) <= 0) {
 			  w = max_dimen;
 			} else {
 			  w = page_goal - page_total - page_depth;
-			  if (count (n) != 1000)
-				w = x_over_n (w, count (n)) * 1000;
+			  if (COUNT (n) != 1000)
+				w = x_over_n (w, COUNT (n)) * 1000;
 			};
 			if (w > dimen (n) - height (r))
 			  w = dimen (n) - height (r);
@@ -840,7 +840,7 @@ void build_page (void) { /* append contributions to the current page */
 			  zprint_string(" p=");
 			  if (q == null) {
 				print_int (eject_penalty);
-			  } else if (type (q) == penalty_node) {
+			  } else if (TYPE_FIELD (q) == penalty_node) {
 				print_int (penalty (q));
 			  } else {
 				print_char ('0');
@@ -848,18 +848,18 @@ void build_page (void) { /* append contributions to the current page */
 			  end_diagnostic (false);
 			};
 			/* end expansion of Display the insertion split cost */
-			if (count (n) != 1000)
-			  best_height_plus_depth = x_over_n (best_height_plus_depth, 1000) * count (n);
+			if (COUNT (n) != 1000)
+			  best_height_plus_depth = x_over_n (best_height_plus_depth, 1000) * COUNT (n);
 			page_goal = page_goal - best_height_plus_depth;
-			type (r) = split_up;
+			TYPE_FIELD (r) = split_up;
 			broken_ptr (r) = q;
 			broken_ins (r) = p;
 			if (q == null) {
 			  insert_penalties = insert_penalties + eject_penalty;
-			} else if (type (q) == penalty_node)
+			} else if (TYPE_FIELD (q) == penalty_node)
 			  insert_penalties = insert_penalties + penalty (q);
 		  };
-		  /* end expansion of Find the best way to split the insertion, and change |type(r)| to |split_up| */
+		  /* end expansion of Find the best way to split the insertion, and change |TYPE_FIELD(r)| to |split_up| */
 		};
 		goto CONTRIBUTE;
 	  };
@@ -868,7 +868,7 @@ void build_page (void) { /* append contributions to the current page */
 	default:
 	  confusion ("page");
 	}
-	/* end expansion of If the current page is empty and node |p| is to be deleted,  ...*/
+	/* end expansion of If the current page is EMPTY_CODE and node |p| is to be deleted,  ...*/
 	/* begin expansion of Check if node |p| is a new champion breakpoint; then \(if)if it is
 	   time for a page break, prepare for output, and either fire up the user's output routine 
 	   and |return| or ship out the page and |goto done| */
@@ -949,13 +949,13 @@ void build_page (void) { /* append contributions to the current page */
 	  };
 	};
 	/* end expansion of Check if node |p| is a new champion breakpoint; ..*/
-	if ((type (p) < glue_node) || (type (p) > kern_node))
+	if ((TYPE_FIELD (p) < glue_node) || (TYPE_FIELD (p) > kern_node))
 	  { do_something; goto CONTRIBUTE; }
   UPDATE_HEIGHTS:
 	/* begin expansion of Update the current page measurements with respect to 
 	   the glue or kern specified by node~|p| */
 	/* module 1149 */
-	if (type (p) == kern_node) {
+	if (TYPE_FIELD (p) == kern_node) {
 	  q = p;
 	} else {
 	  q = glue_ptr (p);
@@ -1014,14 +1014,14 @@ void build_page (void) { /* append contributions to the current page */
 	/* end expansion of Move node |p| to the current page; if it is time for a page break..*/
 	do_nothing;
   } while (link (contrib_head) != null);
-  /* begin expansion of Make the contribution list empty by setting its tail to |contrib_head| */
+  /* begin expansion of Make the contribution list EMPTY_CODE by setting its tail to |contrib_head| */
   /* module 1140 */
   if (nest_ptr == 0) {
 	tail = contrib_head;	/* vertical mode */
   } else {
 	contrib_tail = contrib_head;	/* other modes */
   };
-  /* end expansion of Make the contribution list empty by setting its tail to |contrib_head| */
+  /* end expansion of Make the contribution list EMPTY_CODE by setting its tail to |contrib_head| */
 };
 
 

@@ -76,8 +76,8 @@
 #define discardable( arg )                                         \
    !(is_char_node (arg) ||                                         \
      non_discardable (arg) ||                                      \
-     (( type(arg) == kern_node) && (subtype (arg) != explicit)) || \
-     (type (arg) == margin_kern_node))
+     (( TYPE_FIELD(arg) == kern_node) && (subtype (arg) != EXPLICIT_CODE)) || \
+     (TYPE_FIELD (arg) == margin_kern_node))
 
 /* module 977 */
 #define awful_bad 1073741823

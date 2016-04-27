@@ -39,7 +39,7 @@
  * Character nodes appear only in horizontal lists, never in vertical lists.
  */
 #define is_char_node( arg ) ( arg  >=  hi_mem_min )
-#define font  type
+#define font  TYPE_FIELD
 #define character  subtype
 
 /* module 544 */
@@ -155,29 +155,29 @@
 
 /* module 547 */
 
-/* The final portion of a \.{TFM} file is the |param| array, which is another
+/* The final portion of a \.{TFM} file is the |FONT_PARAM| array, which is another
  * sequence of |fix_word| values.
  * 
- * \yskip\hang|param[1]=slant| is the amount of italic slant, which is used
+ * \yskip\hang|FONT_PARAM[1]=slant| is the amount of italic slant, which is used
  * to help position accents. For example, |slant=.25| means that when you go
  * up one unit, you also go .25 units to the right. The |slant| is a pure
  * number; it's the only |fix_word| other than the design size itself that is
  * not scaled by the design size.
  * 
- * \hang|param[2]=space| is the normal spacing between words in text.
+ * \hang|FONT_PARAM[2]=space| is the normal spacing between words in text.
  * Note that character |" "| in the font need not have anything to do with
  * blank spaces.
  * 
- * \hang|param[3]=space_stretch| is the amount of glue stretching between words.
+ * \hang|FONT_PARAM[3]=space_stretch| is the amount of glue stretching between words.
  * 
- * \hang|param[4]=space_shrink| is the amount of glue shrinking between words.
+ * \hang|FONT_PARAM[4]=space_shrink| is the amount of glue shrinking between words.
  * 
- * \hang|param[5]=x_height| is the size of one ex in the font; it is also
+ * \hang|FONT_PARAM[5]=x_height| is the size of one ex in the font; it is also
  * the height of letters for which accents don't have to be raised or lowered.
  * 
- * \hang|param[6]=quad| is the size of one em in the font.
+ * \hang|FONT_PARAM[6]=quad| is the size of one em in the font.
  * 
- * \hang|param[7]=extra_space| is the amount added to |param[2]| at the
+ * \hang|FONT_PARAM[7]=extra_space| is the amount added to |FONT_PARAM[2]| at the
  * ends of sentences.
  * 
  * \yskip\noindent
@@ -304,14 +304,14 @@
 #define lig_kern_restart(a,b)  lig_kern_base [a] + 256 * op_byte(b) + rem_byte(b) + 32768 - kern_base_offset
 
 /* module 558 */
-#define param(a,b)        font_info [a + param_base [b]].sc
-#define slant(a)          param ( slant_code,a)
-#define space(a)          param ( space_code,a)
-#define space_stretch(a)  param ( space_stretch_code,a)
-#define space_shrink(a)   param ( space_shrink_code,a)
-#define x_height(a)       param ( x_height_code,a)
-#define quad(a)           param ( quad_code,a)
-#define extra_space(a)    param ( extra_space_code,a)
+#define FONT_PARAM(a,b)        font_info [a + param_base [b]].sc
+#define slant(a)          FONT_PARAM ( slant_code,a)
+#define space(a)          FONT_PARAM ( space_code,a)
+#define space_stretch(a)  FONT_PARAM ( space_stretch_code,a)
+#define space_shrink(a)   FONT_PARAM ( space_shrink_code,a)
+#define x_height(a)       FONT_PARAM ( x_height_code,a)
+#define quad(a)           FONT_PARAM ( quad_code,a)
+#define extra_space(a)    FONT_PARAM ( extra_space_code,a)
 
 
 

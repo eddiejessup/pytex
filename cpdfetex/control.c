@@ -22,7 +22,7 @@ int main_s; /* space factor value */
 halfword bchar; /* right boundary character of current font, or |non_char| */
 halfword false_bchar; /* nonexistent character matching |bchar|,  or |non_char| */
 boolean cancel_boundary; /* should the left boundary be ignored? */
-boolean ins_disc; /* should we insert a discretionary node? */
+boolean ins_disc; /* should we INSERT_CODE a discretionary node? */
 
 
 /* module comment 1174 */
@@ -77,7 +77,7 @@ boolean ins_disc; /* should we insert a discretionary node? */
       else   space_factor   =  main_s
 
 /* module 1180 */
-/* If the current horizontal list is empty, the reference to |character(tail)|
+/* If the current horizontal list is EMPTY_CODE, the reference to |character(tail)|
  * here is not strictly legal, since |tail| will be a node freshly returned by
  * |get_avail|. But this should cause no problem on most implementations, and we
  * do want the inner loop to be fast.
@@ -86,7 +86,7 @@ boolean ins_disc; /* should we insert a discretionary node? */
  * restricted horizontal MODE_FIELD. In particular, this avoids putting discretionary
  * nodes inside of other discretionaries.
  */
-/* Make a ligature node, if |ligature_present|; insert a null discretionary, if appropriate */
+/* Make a ligature node, if |ligature_present|; INSERT_CODE a null discretionary, if appropriate */
 #define pack_lig( arg ) {                                                    \
    main_p   =  new_ligature ( main_f , cur_l , link ( cur_q ));              \
    if (  lft_hit  )  { subtype ( main_p )  = 2 ; lft_hit   =  false ;};      \
@@ -234,7 +234,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	/* begin expansion of Math-only cases in non-math modes, or vice versa */
 	/* module 1191 */
 	/* Here is a list of cases where the user has probably gotten into or out of math
-	 * MODE_FIELD by mistake. \TeX\ will insert a dollar sign and rescan the current token.
+	 * MODE_FIELD by mistake. \TeX\ will INSERT_CODE a dollar sign and rescan the current token.
 	 */
   case NON_MATH (sup_mark):
   case NON_MATH (sub_mark):
@@ -405,7 +405,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	/* module 1239 */
 	/* A paragraph ends when a |par_end| command is sensed, or when we are in
 	 * horizontal MODE_FIELD when reaching the right brace of vertical-MODE_FIELD routines
-	 * like \.{\\vbox}, \.{\\insert}, or \.{\\output}.
+	 * like \.{\\vbox}, \.{\\INSERT_CODE}, or \.{\\output}.
 	 */
   case vmode + par_end:
 	normal_paragraph();
@@ -430,7 +430,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	/* Insertion and adjustment and mark nodes are constructed by the following
 	 * pieces of the program.
 	 */
-  case ANY_MODE (insert):
+  case ANY_MODE (INSERT_CODE):
   case hmode + vadjust:
   case mmode + vadjust:
 	begin_insert_or_adjust();
@@ -616,7 +616,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	/* module 1303 */
   case mmode + math_comp:
 	tail_append (new_noad());
-	type (tail) = cur_chr;
+	TYPE_FIELD (tail) = cur_chr;
 	scan_math (nucleus (tail));
 	break;
   case mmode + limit_switch:
@@ -706,7 +706,7 @@ main_control (void) {	 /* governs \TeX's activities */
   case ANY_MODE (set_font):
   case ANY_MODE (def_font):
   case ANY_MODE (register_cmd):
-  case ANY_MODE (advance):
+  case ANY_MODE (ADVANCE_CODE):
   case ANY_MODE (multiply):
   case ANY_MODE (divide):
   case ANY_MODE (PREFIX_CODE):
@@ -802,7 +802,7 @@ main_control (void) {	 /* governs \TeX's activities */
   cur_l = non_char;
   goto MAIN_LIG_LOOP1;  /* begin with cursor after left boundary */ 
  MAIN_LOOP_WRAPUP:
-  /* Make a ligature node, if |ligature_present|; insert a  null discretionary, if appropriate */
+  /* Make a ligature node, if |ligature_present|; INSERT_CODE a  null discretionary, if appropriate */
   wrapup (rt_hit);
  MAIN_LOOP_MOVE:
   /* begin expansion of If the cursor is immediately followed by the right boundary, |goto reswitch|;
@@ -833,7 +833,7 @@ main_control (void) {	 /* governs \TeX's activities */
   tail_append (lig_stack);	/* |MAIN_LOOP_LOOKAHEAD| is next */
   /* end expansion of If the cursor is immediately followed by the right boundary, ...*/
  MAIN_LOOP_LOOKAHEAD:
-  /* begin expansion of Look ahead for another character, or leave |lig_stack| empty if there's none there */
+  /* begin expansion of Look ahead for another character, or leave |lig_stack| EMPTY_CODE if there's none there */
   /* module 1183 */
   /* The result of \.{\\char} can participate in a ligature or kern, so we must
    * look ahead for it.
@@ -870,7 +870,7 @@ main_control (void) {	 /* governs \TeX's activities */
   character (lig_stack) = cur_r;
   if (cur_r == false_bchar)
 	cur_r = non_char;	/* this prevents spurious ligatures */
-  /* end expansion of Look ahead for another character, or leave |lig_stack| empty if there's none there */
+  /* end expansion of Look ahead for another character, or leave |lig_stack| EMPTY_CODE if there's none there */
  MAIN_LIG_LOOP:
   /* begin expansion of If there's a ligature/kern command relevant to |cur_l| and |cur_r|,
 	 adjust the text appropriately; exit to |MAIN_LOOP_WRAPUP| */
@@ -1090,7 +1090,7 @@ privileged (void) {
  * several times before things really grind to a halt. (The output routine
  * might even say `\.{\\gdef\\end\{...\}}', to prolong the life of the job.)
  * Therefore |its_all_over| is |true| only when the current page
- * and contribution list are empty, and when the last output was not a
+ * and contribution list are EMPTY_CODE, and when the last output was not a
  * ``dead cycle.''
  */
 static boolean 
@@ -1169,7 +1169,7 @@ handle_right_brace (void) {
 	pop_nest();
 	if (saved (0) < 255) {
 	  tail_append (get_node (ins_node_size));
-	  type (tail) = ins_node;
+	  TYPE_FIELD (tail) = ins_node;
 	  subtype (tail) = qi (saved (0));
 	  height (tail) = height (p) + depth (p);
 	  ins_ptr (tail) = list_ptr (p);
@@ -1207,18 +1207,18 @@ handle_right_brace (void) {
 	unsave();
 	output_active = false;
 	insert_penalties = 0;
-	/* begin expansion of Ensure that box 255 is empty after output */
+	/* begin expansion of Ensure that box 255 is EMPTY_CODE after output */
 	/* module 1173 */
 	if (box (255) != null) {
 	  print_err ("Output routine didn't use all of ");
 	  print_esc_string ("box");
 	  print_int (255);
-	  help3 ("Your \\output commands should empty \\box255,",
+	  help3 ("Your \\output commands should EMPTY_CODE \\box255,",
 			 "e.g., by saying `\\shipout\\box255'.",
 			 "Proceed; I'll discard its present contents.");
 	  box_error (255);
 	};
-	/* end expansion of Ensure that box 255 is empty after output */
+	/* end expansion of Ensure that box 255 is EMPTY_CODE after output */
 	if (tail != head)	{ /* current list goes after heldover insertions */
 	  link (page_tail) = link (head);
 	  page_tail = tail;
@@ -1269,7 +1269,7 @@ handle_right_brace (void) {
 	p = VPACK (link (head), saved (1), saved (0));
 	pop_nest();
 	tail_append (new_noad());
-	type (tail) = vcenter_noad;
+	TYPE_FIELD (tail) = vcenter_noad;
 	math_type (nucleus (tail)) = sub_box;
 	info (nucleus (tail)) = p;
 	break;
@@ -1291,15 +1291,15 @@ handle_right_brace (void) {
 	info (saved (0)) = p;
 	if (p != null) {
 	  if (link (p) == null) {
-		if (type (p) == ord_noad) {
-		  if (math_type (subscr (p)) == empty)
-			if (math_type (supscr (p)) == empty) {
+		if (TYPE_FIELD (p) == ord_noad) {
+		  if (math_type (subscr (p)) == EMPTY_CODE)
+			if (math_type (supscr (p)) == EMPTY_CODE) {
 			  mem[saved (0)].hh = mem[nucleus (p)].hh;
 			  free_node (p, noad_size);
 			};
-		} else if (type (p) == accent_noad) {
+		} else if (TYPE_FIELD (p) == accent_noad) {
 		  if (saved (0) == nucleus (tail)) {
-			if (type (tail) == ord_noad) {
+			if (TYPE_FIELD (tail) == ord_noad) {
 			  /* begin expansion of Replace the tail of the list by |p| */
 			  /* module 1332 */
 			  q = head;
@@ -1322,7 +1322,7 @@ handle_right_brace (void) {
 
 
 /* module 1250 */
-/* When |delete_last| is called, |cur_chr| is the |type| of node that
+/* When |delete_last| is called, |cur_chr| is the |TYPE_FIELD| of node that
  * will be deleted, if present.
  * A final \.{\\endM} node is temporarily removed.
  */
@@ -1347,14 +1347,14 @@ delete_last (void) {
 	/* end expansion of Apologize for inability to do the operation now, ... */
   } else {
 	if (!is_char_node (tail)) {
-	  if ((type (tail) == math_node)&& (subtype (tail) == end_M_code))
+	  if ((TYPE_FIELD (tail) == math_node)&& (subtype (tail) == end_M_code))
 		remove_end_M();
-	  if (type (tail) == cur_chr) {
+	  if (TYPE_FIELD (tail) == cur_chr) {
 		q = head;
 		do {
 		  p = q;
 		  if (!is_char_node (q))
-			if (type (q) == disc_node) {
+			if (TYPE_FIELD (q) == disc_node) {
 			  for (m = 1; m <= replace_count (q); m++)
 				p = link (p);
 			  if (p == tail)

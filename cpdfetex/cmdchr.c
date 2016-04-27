@@ -205,7 +205,7 @@ print_cmd_chr (quarterword cmd, halfword chr_code) {
   case accent:
 	print_esc_string ("accent");
 	break;
-  case advance:
+  case ADVANCE_CODE:
 	print_esc_string ("advance");
 	break;
   case after_assignment:
@@ -263,7 +263,7 @@ print_cmd_chr (quarterword cmd, halfword chr_code) {
   case ignore_spaces:
 	print_esc_string ("ignorespaces");
 	break;
-  case insert:
+  case INSERT_CODE:
 	print_esc_string ("insert");
 	break;
   case ital_corr:

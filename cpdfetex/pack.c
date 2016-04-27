@@ -13,11 +13,11 @@
  * is then used as if no other orders were present.
  * 
  * For example, suppose that the given list contains six glue nodes with
- * the respective stretchabilities 3pt, 8fill, 5fil, 6pt, $-3$fil, $-8$fill.
+ * the respective stretchabilities 3pt, 8fill, 5fil, 6pt, $-3$fil, $-8$FILL_CODE.
  * Then the total is essentially 2fil; and if a total additional space of 6pt
  * is to be achieved by stretching, the actual amounts of stretch will be
  * 0pt, 0pt, 15pt, 0pt, $-9$pt, and 0pt, since only `fil' glue will be
- * considered. (The `fill' glue is therefore not really stretching infinitely
+ * considered. (The `FILL_CODE' glue is therefore not really stretching infinitely
  * with respect to `fil'; nobody would actually want that to happen.)
  * 
  * The arrays |total_stretch| and |total_shrink| are used to determine how much
@@ -151,9 +151,9 @@ scaled kern_stretch (pointer p) {
 	return kern_stretch_r;
   l = prev_char_p;
   r = link (p);
-  if (type (l) == ligature_node)
+  if (TYPE_FIELD (l) == ligature_node)
 	l = lig_char (l);
-  if (type (r) == ligature_node)
+  if (TYPE_FIELD (r) == ligature_node)
 	r = lig_char (r);
   if (!(is_char_node (l) && is_char_node (r)
 		&& (font (l) = font (r))
@@ -173,9 +173,9 @@ scaled kern_shrink (pointer p) {
 	return kern_shrink_r;
   l = prev_char_p;
   r = link (p);
-  if (type (l) == ligature_node)
+  if (TYPE_FIELD (l) == ligature_node)
 	l = lig_char (l);
-  if (type (r) == ligature_node)
+  if (TYPE_FIELD (r) == ligature_node)
 	r = lig_char (r);
   if (!(is_char_node (l) && is_char_node (r)
 		&& (font (l) = font (r))
@@ -191,16 +191,16 @@ void do_subst_font (pointer p, int ex_ratio) {
   pointer r;
   int ef;
   r=null ; /*TH -Wall*/
-  if (!is_char_node (p) && (type (p) == disc_node)) {
+  if (!is_char_node (p) && (TYPE_FIELD (p) == disc_node)) {
 	r = pre_break (p);
 	while (r != null) {
-	  if (is_char_node (r) || (type (r) == ligature_node))
+	  if (is_char_node (r) || (TYPE_FIELD (r) == ligature_node))
 		do_subst_font (r, ex_ratio);
 	  r = link (r);
 	};
 	r = post_break (p);
 	while (r != null) {
-	  if (is_char_node (r) || (type (r) == ligature_node))
+	  if (is_char_node (r) || (TYPE_FIELD (r) == ligature_node))
 		do_subst_font (r, ex_ratio);
 	  r = link (r);
 	};
@@ -209,11 +209,11 @@ void do_subst_font (pointer p, int ex_ratio) {
   };
   if (is_char_node (p)) {
 	r = p;
-  } else if (type (p) == ligature_node) {
+  } else if (TYPE_FIELD (p) == ligature_node) {
 	r = lig_char (p);
   } else {
 	short_display_n (p, 5);
-	pdf_error_string("HZ","invalid node type");
+	pdf_error_string("HZ","invalid node TYPE_FIELD");
   };
   f = font (r);
   ef = get_ef_code (f, character (r));
@@ -252,7 +252,7 @@ scaled char_pw (pointer p, small_number side) {
   }
   if (p == null)
 	return char_pw_r;
-  if (type (p) == ligature_node) {
+  if (TYPE_FIELD (p) == ligature_node) {
 	p = lig_char (p);
   } else if (!is_char_node (p)) {
 	return char_pw_r;
@@ -274,7 +274,7 @@ scaled char_pw (pointer p, small_number side) {
 pointer new_margin_kern (scaled w, pointer p, small_number side) { 
   pointer k;
   k = get_node (margin_kern_node_size);
-  type (k) = margin_kern_node;
+  TYPE_FIELD (k) = margin_kern_node;
   subtype (k) = side;
   width (k) = w;
   if (p == null)
@@ -295,8 +295,8 @@ pointer new_margin_kern (scaled w, pointer p, small_number side) {
   total_shrink[normal] = 0;  \
   total_stretch[fil] = 0;    \
   total_shrink[fil] = 0;     \
-  total_stretch[fill] = 0;   \
-  total_shrink[fill] = 0;    \
+  total_stretch[FILL_CODE] = 0;   \
+  total_shrink[FILL_CODE] = 0;    \
   total_stretch[filll] = 0;  \
   total_shrink[filll] = 0
 
@@ -322,7 +322,7 @@ hpack (pointer p, scaled w, small_number m) {
   font_stretch=0; font_shrink=0; /*TH -Wall*/
   last_badness = 0;
   r = get_node (box_node_size);
-  type (r) = hlist_node;
+  TYPE_FIELD (r) = hlist_node;
   subtype (r) = min_quarterword;
   shift_amount (r) = 0;
   q = r + list_offset;
@@ -380,7 +380,7 @@ hpack (pointer p, scaled w, small_number m) {
 	};
 	/* end expansion of Incorporate character dimensions into th.. */
 	if (p != null) {
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 	  case rule_node:
@@ -392,7 +392,7 @@ hpack (pointer p, scaled w, small_number m) {
 		 * because it is a highly negative number.
 		 */
 		x = x + width (p);
-		if (type (p) >= rule_node) {
+		if (TYPE_FIELD (p) >= rule_node) {
 		  s = 0;
 		} else {
 		  s = shift_amount (p);
@@ -414,7 +414,7 @@ hpack (pointer p, scaled w, small_number m) {
 		   */
 		  while (link (q) != p)
 			q = link (q);
-		  if (type (p) == adjust_node) {
+		  if (TYPE_FIELD (p) == adjust_node) {
 			p = hpack_adjust_node(p);
 			free_node (link (q), small_node_size);
 		  } else {
@@ -468,8 +468,8 @@ hpack (pointer p, scaled w, small_number m) {
 			  pop_LR;
 			} else  {
 			  incr (LR_problems);
-			  type (p) = kern_node;
-			  subtype (p) = explicit;
+			  TYPE_FIELD (p) = kern_node;
+			  subtype (p) = EXPLICIT_CODE;
 			}
 		  } else {
 			push_LR (p);
@@ -507,7 +507,7 @@ hpack (pointer p, scaled w, small_number m) {
 			font_shrink = font_shrink + k;
 		  };
 		} else if ((m == subst_ex_font) && (subtype (p) == substituted)) {
-		  if (type (link (p)) == ligature_node) {
+		  if (TYPE_FIELD (link (p)) == ligature_node) {
 			width (p) = get_kern (font (prev_char_p), character (prev_char_p), character (lig_char (link (p))));
 		  } else {
 			width (p) =get_kern (font (prev_char_p), character (prev_char_p),  character (link (p))); 
@@ -684,7 +684,7 @@ hpack (pointer p, scaled w, small_number m) {
   if (TeXXeT_en) {
 	/* begin expansion of Check for LR anomalies at the end of |hpack| */
 	/* module 1660 */
-	if (info (LR_ptr) != before) {
+	if (info (LR_ptr) != BEFORE_CODE) {
 	  while (link (q) != null)
 		q = link (q);
 	  do {
@@ -693,7 +693,7 @@ hpack (pointer p, scaled w, small_number m) {
 		link (temp_ptr) = q;
 		LR_problems = LR_problems + 10000;
 		pop_LR;
-	  } while (info (LR_ptr) != before);
+	  } while (info (LR_ptr) != BEFORE_CODE);
 	};
 	if (LR_problems > 0) {
 	  /* Report LR problems */
@@ -733,7 +733,7 @@ vpackage (pointer p, scaled h, small_number m, scaled l) {
   glue_ord o; /* order of infinity */ 
   last_badness = 0;
   r = get_node (box_node_size);
-  type (r) = vlist_node;
+  TYPE_FIELD (r) = vlist_node;
   subtype (r) = min_quarterword;
   shift_amount (r) = 0;
   list_ptr (r) = p;
@@ -747,7 +747,7 @@ vpackage (pointer p, scaled h, small_number m, scaled l) {
 	if (is_char_node (p)) {
 	  confusion ("vpack");
 	} else
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 	  case rule_node:
@@ -756,7 +756,7 @@ vpackage (pointer p, scaled h, small_number m, scaled l) {
 		/* module 814 */
 		x = x + d + height (p);
 		d = depth (p);
-		if (type (p) >= rule_node) {
+		if (TYPE_FIELD (p) >= rule_node) {
 		  s = 0;
 		} else {
 		  s = shift_amount (p);

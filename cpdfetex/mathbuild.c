@@ -59,7 +59,7 @@ insert_dollar_sign (void) {
  * The routines that \TeX\ uses to create mlists are similar to those we have
  * just seen for the generation of hlists and vlists. But it is necessary to
  * make ``noads'' as well as nodes, so the reader should review the
- * discussion of math MODE_FIELD data structures before trying to make sense out of
+ * discussion of math MODE_FIELD data structures BEFORE_CODE trying to make sense out of
  * the following program.
  * 
  * Here is a little routine that needs to be done whenever a subformula
@@ -110,12 +110,12 @@ init_math (void) {
 	j = null;
 	w = -max_dimen;
 	if (head == tail) {	/* `\.{\\noindent\$\$}' or `\.{\$\${ }\$\$}' */
-	  /* begin expansion of Prepare for display after an empty paragraph */
+	  /* begin expansion of Prepare for display after an EMPTY_CODE paragraph */
 	  /* module 1677 */
 	  pop_nest();
 	  /* Set the value of |x|... */
 	  set_the_value_of_x;
-	  /* end expansion of Prepare for display after an empty paragraph */
+	  /* end expansion of Prepare for display after an EMPTY_CODE paragraph */
 	} else {
 	  line_break (true);
 	  /* begin expansion of Calculate the natural width, |w|, by which the characters 
@@ -123,7 +123,7 @@ init_math (void) {
 		 set |w:=max_dimen| if the non-blank information on that line is affected
 		 by stretching or shrinking */
 	  /* module 1291 */
-	  /* begin expansion of Prepare for display after a non-empty paragraph */
+	  /* begin expansion of Prepare for display after a non-EMPTY_CODE paragraph */
 	  /* module 1679 */
 	  /* When the final line ends with R-text, the value |w| refers to the line
 	   * reflected with respect to the left edge of the enclosing vertical list.
@@ -172,7 +172,7 @@ init_math (void) {
 	  if (TeXXeT_en)
 		/* Initialize the LR stack */
 		initialize_LR_stack;
-	  /* end expansion of Prepare for display after a non-empty paragraph */
+	  /* end expansion of Prepare for display after a non-EMPTY_CODE paragraph */
 	  while (p != null) {
 		/* begin expansion of Let |d| be the natural width of node |p|; if
 		   the node is ``visible,'' |goto found|; if the node is glue that stretches 
@@ -184,7 +184,7 @@ init_math (void) {
 		  d = char_width (f, char_info (f, character (p)));
 		  goto FOUND;
 		};
-		switch (type (p)) {
+		switch (TYPE_FIELD (p)) {
 		case hlist_node:
 		case vlist_node:
 		case rule_node:
@@ -472,9 +472,9 @@ set_math_char (int c) {
 	if (c >= var_code) {
 	  if (fam_in_range)
 		fam (nucleus (p)) = cur_fam;
-	  type (p) = ord_noad;
+	  TYPE_FIELD (p) = ord_noad;
 	} else {
-	  type (p) = ord_noad + (c / 4096);
+	  TYPE_FIELD (p) = ord_noad + (c / 4096);
 	}
 	link (tail) = p;
 	tail = p;
@@ -485,7 +485,7 @@ set_math_char (int c) {
 void 
 math_limit_switch (void) {
   if (head != tail)
-	if (type (tail) == op_noad) {
+	if (TYPE_FIELD (tail) == op_noad) {
 	  subtype (tail) = cur_chr;
 	  return;
 	};
@@ -547,7 +547,7 @@ scan_delimiter (pointer p, boolean r) {
 void 
 math_radical (void) {
   tail_append (get_node (radical_noad_size));
-  type (tail) = radical_noad;
+  TYPE_FIELD (tail) = radical_noad;
   subtype (tail) = normal;
   mem[nucleus (tail)].hh = empty_field;
   mem[subscr (tail)].hh = empty_field;
@@ -572,7 +572,7 @@ math_ac (void) {
 	/* end expansion of Complain that the user should have said \.{\\mathaccent} */
   };
   tail_append (get_node (accent_noad_size));
-  type (tail) = accent_noad;
+  TYPE_FIELD (tail) = accent_noad;
   subtype (tail) = normal;
   mem[nucleus (tail)].hh = empty_field;
   mem[subscr (tail)].hh = empty_field;
@@ -627,7 +627,7 @@ fin_mlist (pointer p) {
 	  q = incompleat_noad;
 	} else {
 	  q = info (numerator (incompleat_noad));
-	  if ((type (q) != left_noad) || (delim_ptr == null))
+	  if ((TYPE_FIELD (q) != left_noad) || (delim_ptr == null))
 		confusion ("right");
 	  info (numerator (incompleat_noad)) = link (delim_ptr);
 	  link (delim_ptr) = incompleat_noad;
@@ -670,21 +670,21 @@ build_choices (void) {
 /* module 1321 */
 void 
 sub_sup (void) {
-  small_number t; /* type of previous sub/superscript */ 
+  small_number t; /* TYPE_FIELD of previous sub/superscript */ 
   pointer p; /* field to be filled by |scan_math| */ 
-  t = empty;
+  t = EMPTY_CODE;
   p = null;
   if (tail != head)
 	if (scripts_allowed (tail)) {
 	  p = supscr (tail) + cur_cmd - sup_mark; /* |supscr| or |subscr| */ 
 	  t = math_type (p);
 	};
-  if ((p == null) || (t != empty)) {
+  if ((p == null) || (t != EMPTY_CODE)) {
 	/* begin expansion of Insert a dummy noad to be sub/superscripted */
 	/* module 1322 */
 	tail_append (new_noad());
 	p = supscr (tail) + cur_cmd - sup_mark; /* |supscr| or |subscr| */ 
-	if (t != empty) {
+	if (t != EMPTY_CODE) {
 	  if (cur_cmd == sup_mark) {
 		print_err ("Double superscript");
 		help1  ("I treat `x^1^2' essentially like `x^1{}^2'.");
@@ -703,7 +703,7 @@ sub_sup (void) {
 /* module 1326 */
 void 
 math_fraction (void) {
-  small_number c; /* the type of generalized fraction we are scanning */ 
+  small_number c; /* the TYPE_FIELD of generalized fraction we are scanning */ 
   c = cur_chr;
   if (incompleat_noad != null) {
 	/* begin expansion of Ignore the fraction operation and complain about this ambiguous case */
@@ -722,7 +722,7 @@ math_fraction (void) {
 	/* end expansion of Ignore the fraction operation and complain about this ambiguous case */
   }  else {
 	incompleat_noad = get_node (fraction_noad_size);
-	type (incompleat_noad) = fraction_noad;
+	TYPE_FIELD (incompleat_noad) = fraction_noad;
 	subtype (incompleat_noad) = normal;
 	math_type (numerator (incompleat_noad)) = sub_mlist;
 	info (numerator (incompleat_noad)) = link (head);
@@ -780,10 +780,10 @@ math_left_right (void) {
 	/* end expansion of Try to recover from mismatched \.{\\right} */
   } else {
 	p = new_noad();
-	type (p) = t;
+	TYPE_FIELD (p) = t;
 	scan_delimiter (delimiter (p), false);
 	if (t == middle_noad) {
-	  type (p) = right_noad;
+	  TYPE_FIELD (p) = right_noad;
 	  subtype (p) = middle_noad;
 	};
 	if (t == left_noad) {
@@ -799,7 +799,7 @@ math_left_right (void) {
 	  delim_ptr = p;
 	}  else  {
 	  tail_append (new_noad());
-	  type (tail) = inner_noad;
+	  TYPE_FIELD (tail) = inner_noad;
 	  math_type (nucleus (tail)) = sub_mlist;
 	  info (nucleus (tail)) = q;
 	};
@@ -854,7 +854,7 @@ after_math (void) {
   scaled q; /* width of equation number plus space to separate from equation */
   scaled d; /* displacement of equation in the line */ 
   scaled s; /* move the line right this much */ 
-  small_number g1, g2; /* glue parameter codes for before and after */ 
+  small_number g1, g2; /* glue parameter codes for BEFORE_CODE and after */ 
   pointer r; /* kern node used to position the display */ 
   pointer t; /* tail of adjustment list */ 
   pointer pre_t; /* tail of pre-adjustment list */
@@ -905,7 +905,7 @@ after_math (void) {
 	 * `\.{\$\$...\$\$}', since `\.{\\abovedisplayskip}' inside a display affects the
 	 * space above that display.
 	 */
-	tail_append (new_math (math_surround, before));
+	tail_append (new_math (math_surround, BEFORE_CODE));
 	cur_mlist = p;
 	cur_style = text_style;
 	mlist_penalties = (MODE_FIELD > 0);
@@ -962,7 +962,7 @@ after_math (void) {
 		 */
 		if ((e != 0) && ((w - total_shrink[normal] + q <= z)
 						 || (total_shrink[fil] != 0)
-						 || (total_shrink[fill] != 0)
+						 || (total_shrink[FILL_CODE] != 0)
 						 || (total_shrink[filll] != 0))) {
 		  free_node (b, box_node_size);
 		  b = hpack (p, z - q, exactly);
@@ -993,13 +993,13 @@ after_math (void) {
 		d = half (z - w - e);
 		if (p != null)
 		  if (!is_char_node (p))
-			if (type (p) == glue_node)
+			if (TYPE_FIELD (p) == glue_node)
 			  d = 0;
 	  };
 	  /* end expansion of Determine the displacement, |d|, of the left edge of ...*/
 	  /* begin expansion of Append the glue or equation number preceding the display */
 	  /* module 1348 */
-	  /* If the equation number is set on a line by itself, either before or
+	  /* If the equation number is set on a line by itself, either BEFORE_CODE or
 	   * after the formula, we append an infinite penalty so that no page break will
 	   * separate the display from its number; and we use the same size and
 	   * displacement for all three potential lines of the display, even though
@@ -1013,7 +1013,7 @@ after_math (void) {
 		g1 = above_display_short_skip_code;
 		g2 = below_display_short_skip_code;
 	  };
-	  if (l && (e == 0)) {	/* it follows that |type(a)=hlist_node| */
+	  if (l && (e == 0)) {	/* it follows that |TYPE_FIELD(a)=hlist_node| */
 		app_display (j, a, 0);
 		tail_append (new_penalty (inf_penalty));
 	  }  else {
@@ -1084,7 +1084,7 @@ just_copy (pointer p, pointer h, pointer t) {
 	if (is_char_node (p)) {
 	  r = get_avail();
 	} else {
-	  switch (type (p)) {
+	  switch (TYPE_FIELD (p)) {
 	  case hlist_node:
 	  case vlist_node:
 		r = get_node (box_node_size);
@@ -1167,18 +1167,18 @@ just_reverse (pointer p) {
       p = q;
     };
     q = link (p);
-    if (type (p) == math_node) {
+    if (TYPE_FIELD (p) == math_node) {
 	  /* begin expansion of Adjust \(t)the LR stack for the |just_reverse| routine */
 	  /* module 1684 */
 	  if (end_LR (p))
 		if (info (LR_ptr) != end_LR_type (p)) {
-		  type (p) = kern_node;
+		  TYPE_FIELD (p) = kern_node;
 		  incr (LR_problems);
 		} else {
 		  pop_LR;
 		  if (n > min_halfword) {
 			decr (n);
-			decr (subtype (p)); /* change |after| into |before| */ 
+			decr (subtype (p)); /* change |after| into |BEFORE_CODE| */ 
 		  } else {
 			if (m > min_halfword) {
 			  decr (m);
@@ -1186,15 +1186,15 @@ just_reverse (pointer p) {
 			  do_something;
 			  goto FOUND;
 			}
-			type (p) = kern_node;
+			TYPE_FIELD (p) = kern_node;
 		  };
 		}  else {
 		  push_LR (p);
 		  if ((n > min_halfword) || (LR_dir (p) != cur_dir)) {
 			incr (n);
-			incr (subtype (p)); /* change |before| into |after| */ 
+			incr (subtype (p)); /* change |BEFORE_CODE| into |after| */ 
 		  }else {
-			type (p) = kern_node;
+			TYPE_FIELD (p) = kern_node;
 			incr (m);
 		  };
 		}
@@ -1249,7 +1249,7 @@ app_display (pointer j, pointer b, scaled d) {
 	/* module 1690 */
 	/* Here we construct the hlist for the display, starting with node |p|
 	 * and ending with node |q|. We also set |d| and |e| to the amount of
-	 * kerning to be added before and after the hlist (adjusted for the
+	 * kerning to be added BEFORE_CODE and after the hlist (adjusted for the
 	 * prototype box).
 	 */
 	if (x > 0) {
@@ -1296,7 +1296,7 @@ app_display (pointer j, pointer b, scaled d) {
 	/* In the presence of a prototype box we use its shift amount and width
 	 * to adjust the values of kerning and add these values to the glue nodes
 	 * inserted to cancel the \.{\\leftskip} and \.{\\rightskip}. If there is
-	 * no prototype box (because the display is preceded by an empty
+	 * no prototype box (because the display is preceded by an EMPTY_CODE
 	 * paragraph), or if the skip parameters are zero, we just add kerns.
 	 * 
 	 * The |cancel_glue| macro creates and links a glue node that is, together
@@ -1311,7 +1311,7 @@ app_display (pointer j, pointer b, scaled d) {
 	  t = link (r);
 	};
 	u = new_math (0, end_M_code);
-	if (type (t) == glue_node) {	/* |t| is \.{\\rightskip} glue */
+	if (TYPE_FIELD (t) == glue_node) {	/* |t| is \.{\\rightskip} glue */
 	  cancel_glue (right_skip_code,q,u,t,e);
 	  link (u) = t;
 	}  else {
@@ -1320,7 +1320,7 @@ app_display (pointer j, pointer b, scaled d) {
 	  link (q) = t;
 	};
 	u = new_math (0, begin_M_code);
-	if (type (r) == glue_node)	{ /* |r| is \.{\\leftskip} glue */
+	if (TYPE_FIELD (r) == glue_node)	{ /* |r| is \.{\\leftskip} glue */
 	  cancel_glue (left_skip_code,u,p,r,d);
 	  link (r) = u;
 	} else {
