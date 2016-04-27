@@ -47,7 +47,7 @@ EXTERN unsigned int cur_boundary; /* where the current level begins */
   if (save_ptr > max_save_stack)  {                                             \
     max_save_stack = save_ptr;                                                  \
     if (max_save_stack > save_size - 7) {								        \
-	  save_stack = xrealloc_array(save_stack,sizeof(memory_word)*save_size*2);  \
+	  save_stack = (memory_word *)xrealloc_array(save_stack,sizeof(memory_word)*save_size*2);  \
 	  if(save_stack==NULL) {                                                    \
         overflow ( "save size" , save_size );                                   \
       } else {															        \

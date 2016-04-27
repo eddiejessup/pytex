@@ -90,7 +90,7 @@ push_nest (void) { /* enter a new semantic level, save the old */
   if (nest_ptr > max_nest_stack) {
     max_nest_stack = nest_ptr;
     if (nest_ptr == (unsigned)nest_size) {
-	  nest = xrealloc_array(nest,sizeof(list_state_record)*nest_size*2); \
+	  nest = (list_state_record *)xrealloc_array(nest,sizeof(list_state_record)*nest_size*2); \
 	  if (nest == NULL) {
 		overflow ("semantic nest size", nest_size);
 	  } else {
