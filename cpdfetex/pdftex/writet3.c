@@ -188,7 +188,7 @@ static boolean writepk(internal_font_number f)
     integer dpi;
     int e;
     dpi = kpse_magstep_fix(
-             round(fixed_pk_resolution*(((float)pdffontsize[f])/font_dsize[f])),
+             zround(fixed_pk_resolution*(((float)pdffontsize[f])/font_dsize[f])),
              fixed_pk_resolution, NULL);
     if ((e = get_expand_factor(f)) != 0)
         cur_file_name = mk_exname(mk_basename(makecstring(font_name[f])), e);
@@ -217,7 +217,7 @@ static boolean writepk(internal_font_number f)
         t3_char_widths[cd.charcode] = 
             pk_char_width(f, get_char_width(f, cd.charcode));
         if (cd.cwidth < 1 || cd.cheight < 1) {
-            cd.xescape = cd.cwidth = round(t3_char_widths[cd.charcode]/100.0);
+            cd.xescape = cd.cwidth = zround(t3_char_widths[cd.charcode]/100.0);
             cd.cheight = 1;
             cd.xoff = 0;
             cd.yoff = 0;

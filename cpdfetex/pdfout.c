@@ -193,7 +193,7 @@ pdf_hlist_out (void) { /* output an |hlist_node| box */
 		  base_height = char_height (f,height_depth (ib_c));
 		  accent_width = char_width (f, ia_c);
 		  accent_height = char_height (f,height_depth (ia_c)); /* compute necessary horizontal shift (don't forget slant) */
-		  delta =round ((base_width -accent_width) / FLOAT_CONSTANT (2) + base_height* base_slant - base_x_height * accent_slant);
+		  delta =zround ((base_width -accent_width) / FLOAT_CONSTANT (2) + base_height* base_slant - base_x_height * accent_slant);
 		  /* 1. For centering/horizontal shifting insert a kern node. */
 		  cur_h = cur_h + delta;
 		  /* 2. Then insert the accent character possibly shifted up or down. */

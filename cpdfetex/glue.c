@@ -290,7 +290,7 @@ CONTINUE:
  DONE:
   if (s != 0) {
 	vet_glue (zfloat (glue_set (this_box)) * s);
-	s = round (glue_temp);
+	s = zround (glue_temp);
 	if (type (p) == kern_node)
 	  width (p) = width (p) + s;
   };

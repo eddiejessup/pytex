@@ -44,9 +44,9 @@ void read_png_info(integer img)
     img_height(img) =  png_info(img)->height;
     if (png_info(img)->valid & PNG_INFO_pHYs) {
         img_xres(img) = 
-            round(0.0254*png_get_x_pixels_per_meter(png_ptr(img), png_info(img)));
+            zround(0.0254*png_get_x_pixels_per_meter(png_ptr(img), png_info(img)));
         img_yres(img) =
-            round(0.0254*png_get_y_pixels_per_meter(png_ptr(img), png_info(img)));
+            zround(0.0254*png_get_y_pixels_per_meter(png_ptr(img), png_info(img)));
     }
     switch (png_info(img)->color_type) {
     case PNG_COLOR_TYPE_PALETTE:

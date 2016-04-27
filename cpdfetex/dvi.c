@@ -1241,7 +1241,7 @@ hlist_out (void) {
 			accent_width = char_width (f, ia_c);
 			accent_height = char_height (f, height_depth (ia_c)); 
 			/* compute necessary horizontal shift (don't forget slant) */
-			delta = round ((base_width - accent_width) / FLOAT_CONSTANT (2)	 + base_height
+			delta = zround ((base_width - accent_width) / FLOAT_CONSTANT (2)	 + base_height
 						   * base_slant - base_x_height * accent_slant);
 			dvi_h = cur_h;
 			/* update |dvi_h|, similar to the last statement in module 620 */

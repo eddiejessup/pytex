@@ -220,7 +220,7 @@ show_node_list (int p) { /* prints a node list symbolically */
 			    print_glue (20000 * unity, glue_order (p), "");
 			  } else {
 			    //print_glue (unity * g, glue_order (p), "");
-			    print_glue (round(unity * g), glue_order (p), "");
+			    print_glue (zround(unity * g), glue_order (p), "");
 			  }
 			  /* end expansion of Display the value of |glue_set(p)| */
 			};

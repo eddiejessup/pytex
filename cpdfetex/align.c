@@ -918,10 +918,10 @@ fin_align (void) {
 			t = t + width (v);
 			if (glue_sign (p) == stretching) {
 			  if (stretch_order (v) == glue_order (p))
-				t =t + round (zfloat (glue_set (p)) * stretch (v));
+				t =t + zround (zfloat (glue_set (p)) * stretch (v));
 			} else if (glue_sign (p) == shrinking) {
 			  if (shrink_order (v) == glue_order (p))
-				t = t -  round (zfloat (glue_set (p)) * shrink (v));
+				t = t -  zround (zfloat (glue_set (p)) * shrink (v));
 			};
 			s = link (s);
 			link (u) = new_null_box();

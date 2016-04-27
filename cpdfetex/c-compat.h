@@ -78,7 +78,6 @@ extern str_number maketexstring (const char*);
 
 
 #define maxint 2147483647
-#define round(x)        zround ((double) (x))
 #define intcast(x) ((integer) (x))
 #define stringcast(x) ((string) (x))
 #define z_fabs(x) ((x) >= 0.0 ? (x) : -(x))

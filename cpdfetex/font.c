@@ -385,7 +385,7 @@ make_accent (void) {
 		p = hpack (p, 0, additional);
 		shift_amount (p) = x - h;
 	  };
-	  delta = round ((w - a) / FLOAT_CONSTANT (2) + h * t - x * s);
+	  delta = zround ((w - a) / FLOAT_CONSTANT (2) + h * t - x * s);
 	  r = new_kern (delta);
 	  subtype (r) = acc_kern;
 	  link (tail) = r;

@@ -765,7 +765,7 @@ static void t1_modify_italic(void)
     strcpy(strend(t1_buf), r);
     strcpy(t1_line, t1_buf);
     t1_line_ptr = eol(t1_line);
-    font_keys[ITALIC_ANGLE_CODE].value.num = round(a);
+    font_keys[ITALIC_ANGLE_CODE].value.num = zround(a);
     font_keys[ITALIC_ANGLE_CODE].valid = true;
 }
 
