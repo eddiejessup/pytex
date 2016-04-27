@@ -22,9 +22,7 @@ $Id: config.c,v 1.2 2004/05/11 14:30:32 taco Exp $
 
 #include "ptexlib.h"
 
-extern "C" {
 #include "kpathsea/proginit.h"
-}
 
 static const char perforce_id[] = 
     "$Id: config.c,v 1.2 2004/05/11 14:30:32 taco Exp $";
