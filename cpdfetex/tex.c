@@ -1390,7 +1390,7 @@ void allocate_memory_for_arrays() {
   eof_seen = xmalloc_array (boolean, max_in_open);
   grp_stack = xmalloc_array (save_pointer, max_in_open);
   if_stack = xmalloc_array (pointer, max_in_open);
-  source_filename_stack = xmalloc_array (str_number, max_in_open);
+  source_filename_stack.resize(max_in_open);
   full_source_filename_stack = xmalloc_array (str_number, max_in_open);
   param_stack = xmalloc_array (halfword, param_size);
   dvi_buf = xmalloc_array (eight_bits, dvi_buf_size);

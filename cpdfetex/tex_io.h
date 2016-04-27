@@ -89,7 +89,7 @@ EXTERN str_number   make_full_name_string(void);
 EXTERN void begin_file_reading (void);
 EXTERN void end_file_reading (void);
 
-EXTERN str_number *source_filename_stack;
+EXTERN std::vector<str_number> source_filename_stack;
 EXTERN str_number *full_source_filename_stack;
 
 /* module 519 */

@@ -1,4 +1,6 @@
 from libc.stdio cimport FILE
+from libcpp.vector cimport vector
+
 
 ctypedef long int integer
 ctypedef int boolean
@@ -139,7 +141,7 @@ cdef extern from "tex_io.h":
     void open_log_file()
     boolean input_line(FILE *f)
     void close_files_and_terminate()
-    str_number *source_filename_stack
+    vector[str_number] source_filename_stack
     str_number *full_source_filename_stack
     ASCII_code *name_of_file
     unsigned int name_length

@@ -201,7 +201,7 @@ term_input (void) { /* gets a line from the terminal */
 };
 
 /* module 304 */
-str_number *source_filename_stack;
+std::vector<str_number> source_filename_stack;
 str_number *full_source_filename_stack;
 
 /* module 328 */

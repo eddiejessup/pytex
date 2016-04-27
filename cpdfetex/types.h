@@ -1,6 +1,9 @@
 #ifndef CPDFETEX_TYPES_H
 #define CPDFETEX_TYPES_H
 
+#include <vector>
+#include <string>
+
 typedef long int integer;
 typedef double glue_ratio;
 typedef double real;
