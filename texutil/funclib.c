@@ -37,7 +37,7 @@ void safe_free(void *a) {
 }
 
 void *safe_strdup (void *orig) {
-  void *test = strdup(orig);
+  void *test = strdup((const char *)orig);
   if (test == NULL)
     exit(1);
 #if DEBUGMEM
@@ -95,7 +95,7 @@ char *checked_path (char *path) {
 
 char *unix_path (char *path) {
   if (path ==NULL)
-	return safe_strdup("");
+	return (char *)safe_strdup((void *)"");
   char *ret = path;
   while (*ret) {
     if (*ret == '/' || *ret == '\\')
@@ -133,7 +133,7 @@ int globfiles (char *Input,string **Files, int options) {
   char *file;
   int NOfFiles = 0;
   string *MyFiles;
-  char *globs = safe_strdup(Input);
+  char *globs = (char *)safe_strdup(Input);
   char *globpointer = globs;
   if (strchr(globs,' ') != NULL) {
     char *nextglob = next_word(&globs," ");
@@ -146,13 +146,13 @@ int globfiles (char *Input,string **Files, int options) {
   }
   /* now finish */
   if (pglob.gl_pathc) {
-    MyFiles = safe_malloc((pglob.gl_pathc+1)*sizeof(char *));
+    MyFiles = (string *)safe_malloc((pglob.gl_pathc+1)*sizeof(char *));
     int k = 0;
     while (pglob.gl_pathv[k]) {
       file = pglob.gl_pathv[k];
 	  if (options & GLOB_DIRS) {
 		if(file_exists(file) || dir_exists(file)) {
-		  MyFiles[NOfFiles] = safe_strdup(file);
+		  MyFiles[NOfFiles] = (string)safe_strdup(file);
 		  NOfFiles++;
 		}
 	  } else {
@@ -161,7 +161,7 @@ int globfiles (char *Input,string **Files, int options) {
 		  lastslash = NULL;
 		if (!lastslash) {
 		  if(file_exists(file)) {
-			MyFiles[NOfFiles] = safe_strdup(file);
+			MyFiles[NOfFiles] = (string)safe_strdup(file);
 			NOfFiles++;
 		  }
 		}
@@ -169,7 +169,7 @@ int globfiles (char *Input,string **Files, int options) {
 	  k++;
 	}
   } else {
-    MyFiles = safe_malloc(sizeof(char *));
+    MyFiles = (string *)safe_malloc(sizeof(char *));
   }
   MyFiles[NOfFiles] = NULL;
   *Files = MyFiles;
@@ -194,10 +194,10 @@ char *discover_path (char *kpse_type_string) {
 	kpse_type_id=kpse_fmt_format;
   //
   if (!kpse_format_info[kpse_type_id].type) /* needed if arg was numeric */
-	kpse_init_format (kpse_type_id);
+	kpse_init_format ((kpse_file_format_type)kpse_type_id);
   ret = (char *)kpse_format_info[kpse_type_id].path;
   if (!ret)
-	ret = safe_strdup("");
+	ret = (char *)safe_strdup((void *)"");
   return ret;
 #else
   char *cmdline = safe_malloc((strlen(kpse_type_string)+14));
@@ -215,9 +215,9 @@ char *discover_file (char *Filename, char *kpse_type_string) {
 	kpse_type_id=kpse_web2c_format;
   if (STREQ(kpse_type_string,"other text files"))
 	kpse_type_id=kpse_program_text_format;
-  char *ret = kpse_find_file(Filename,kpse_type_id,true);
+  char *ret = kpse_find_file(Filename,(kpse_file_format_type)kpse_type_id,true);
   if (!ret)
-	ret = safe_strdup("");
+	ret = (char *)safe_strdup((void *)"");
   return ret;
 #else
   char *cmdline = safe_malloc((strlen(kpse_type_string)+strlen(Filename)+13+20));

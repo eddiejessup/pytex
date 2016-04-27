@@ -42,7 +42,7 @@ char *my_concat3 (char **d, const char *s, const char *t, const char *u) {
 
 
 char *strndup (const char *in,size_t num) {
-  char *out = safe_malloc(num*sizeof(char *)+1);
+  char *out = (char *)safe_malloc(num*sizeof(char *)+1);
   int k =0;
   for (k=0;(k<num && in[k]);k++) {
     out[k] = in[k];
@@ -71,7 +71,7 @@ char *strcasestr (const char *haystack, const char *needle) {
   if (res == NULL)
 	return res;
   int dif = res-a;
-  return (haystack+dif);
+  return (char *)(haystack+dif);
 }
 
 /* reads a line from a text file */
@@ -148,7 +148,7 @@ int my_strcasecmp (const void *s1, const void *s2) {
 char *Itoa (int in) {
   char ret[7];
   snprintf(ret,6,"%d",in);
-  return safe_strdup(ret);
+  return (char *)safe_strdup(ret);
 }
 
 char *backtick(const char *progname, char *options) {
@@ -159,10 +159,10 @@ char *backtick(const char *progname, char *options) {
   my_concat3(&cmdline,(char *)progname," ",options);
   if((PIPE=popen(cmdline,"r")) && readline(PIPE,&val)) {
     pclose(PIPE);
-    char *retval = safe_strdup(ret);
+    char *retval = (char *)safe_strdup(ret);
     return chomp(retval);
   }
-  return safe_strdup("");
+  return (char *)safe_strdup((void *)"");
 }
 
 
@@ -181,7 +181,7 @@ unsigned cksum (char *line) {
 
 
 Hash make_hash (void) {
-  Hash memblock = safe_malloc(sizeof(HashItem)*HASHSIZE);
+  Hash memblock = (Hash)safe_malloc(sizeof(HashItem)*HASHSIZE);
   int k;
   for (k=0;k<HASHSIZE;k++) {
     memblock[k] = NULL;
@@ -216,18 +216,18 @@ void *do_get_value (Hash hashtab, char *s) {
 char *hash_value (Hash hashtab, char *s) {
   char *ret = (char *)do_get_value(hashtab,s);
   if (ret == NULL)
-    return safe_strdup("");
+    return (char *)safe_strdup((void *)"");
   return ret ;
 }
 
 
 int keys (Hash hashtab,char * **thekeys) {
-  char * *mykeys = safe_malloc(sizeof(char *)*HASHSIZE);
+  char * *mykeys = (char **)safe_malloc(sizeof(char *)*HASHSIZE);
   int k;
   int keycount = 0;
   for (k=0;k<HASHSIZE;k++) {
     if (hashtab[k] && hashtab[k]->name != NULL)
-      mykeys[keycount++] = safe_strdup(hashtab[k]->name);
+      mykeys[keycount++] = (char *)safe_strdup(hashtab[k]->name);
   }
   *thekeys=mykeys;
   return keycount;
@@ -239,7 +239,7 @@ HashItem do_set_value (Hash hashtab, char *name, void *defn) {
   unsigned hashval;
   if ((np = get_item(hashtab,name)) == NULL) {
     np = (HashItem) safe_malloc(sizeof(*np));
-    np->name = safe_strdup(name);
+    np->name = (char *)safe_strdup(name);
     hashval = id_hash(name);
     np->next = hashtab[hashval];
     hashtab[hashval] = np;

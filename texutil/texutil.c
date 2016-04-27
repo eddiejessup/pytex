@@ -108,7 +108,7 @@ static const char *Program = "TeXUtil 8.2 - ConTeXt / PRAGMA ADE 1992-2004/C por
 
 #define EXTEND_ARRAY(a,b)				     \
     if (a##_size < b) {                                      \
-      a = safe_realloc(a,sizeof(char*)*(a##_size+a##_add));  \
+      a = (char **)safe_realloc(a,sizeof(char*)*(a##_size+a##_add));  \
       a##_size = a##_size+a##_add;                           \
     }
 
@@ -259,7 +259,7 @@ void DoPurgeFiles (texutil TeXUtil,string *ARGV) {
   int k;
   int r;
   if (ARGV[0] == NULL || (!strlen(ARGV[0]))) {
-    pattern = safe_strdup("*.*") ;
+    pattern = (char *)safe_strdup((void *)"*.*") ;
     CheckInputFiles(pattern, &files);
   } else {
     my_concat(&pattern, ARGV[0], "*.* " );
@@ -300,7 +300,7 @@ void DoPurgeFiles (texutil TeXUtil,string *ARGV) {
   while(dontasksuffixes[k] != NULL) {
     r = 0;
     while(files[r] != NULL) {
-      char *tester = safe_strdup(files[r]);
+      char *tester = (char *)safe_strdup(files[r]);
       tester = lc (tester);
       char *temp = strstr(tester,dontasksuffixes[k]);
       if (temp != NULL && *(temp+strlen(temp)) == 0) {
@@ -315,7 +315,7 @@ void DoPurgeFiles (texutil TeXUtil,string *ARGV) {
   while(forsuresuffixes[k] != NULL) {
     r = 0;
     while(files[r] != NULL) {
-      char *tester = safe_strdup(files[r]);
+      char *tester = (char *)safe_strdup(files[r]);
       tester = lc(tester);
       char *tester2 = strrchr(tester,'.');
       if (tester2 != NULL && strstr(tester2,forsuresuffixes[k]) != NULL) {
@@ -328,7 +328,7 @@ void DoPurgeFiles (texutil TeXUtil,string *ARGV) {
   }
   r = 0;
   while(files[r] != NULL) {
-    char *tester = safe_strdup(files[r]);
+    char *tester = (char *)safe_strdup(files[r]);
     char *testerpointer = tester;
     if (strstr(tester,".")) {
       tester = strrchr(tester,'.');
@@ -345,7 +345,7 @@ void DoPurgeFiles (texutil TeXUtil,string *ARGV) {
   while(texnonesuffixes[k]  != NULL) {
     r = 0;
     while((files[r] != NULL) && strlen(files[r])) {
-      char *tester = safe_strdup(files[r]);
+      char *tester = (char *)safe_strdup(files[r]);
       tester = lc(tester);
       char *testerpointer = tester;
       char *temp = strrchr(tester,'.');
@@ -359,7 +359,7 @@ void DoPurgeFiles (texutil TeXUtil,string *ARGV) {
       }
       if (temp != NULL) {
 		*temp = 0;
-		char *tempname = safe_strdup(files[r]);
+		char *tempname = (char *)safe_strdup(files[r]);
 		*(tempname + strlen(tester)) = 0;
 		char *testa=NULL;
 		my_concat(&testa,tempname,".tex");
@@ -410,7 +410,7 @@ char *SetOutputFile (texutil TeXUtil,char *proposeda) {
   char *OutFilNam;
   char *OutFilSuf="";
   char *FilSuf = NULL;
-  char *proposed = safe_strdup(proposeda);
+  char *proposed = (char *)safe_strdup(proposeda);
   char *proposedpointer = proposed;
   if (strchr(proposed,'.') != NULL) {
     OutFilNam = next_word(&proposed,".");
@@ -458,7 +458,7 @@ void HandleEditorCues (texutil TeXUtil) {
   } else {
     NOfSuppliedFiles = CheckInputFiles (InputFile,&UserSuppliedFiles) ;
     if (NOfSuppliedFiles)
-      inputline = safe_malloc(BUFSIZE);
+      inputline = (char *)safe_malloc(BUFSIZE);
     for (k=0; k<NOfSuppliedFiles; k++) {
       FileName = UserSuppliedFiles[k];
       FileSuffix = SplitFileName (&FileName) ;
@@ -573,7 +573,7 @@ void HandleSetups (texutil TeXUtil) {
     NOfSetups = 0 ;
     NOfSuppliedFiles = CheckInputFiles (InputFile,&UserSuppliedFiles) ;
     if (NOfSuppliedFiles)
-      inputline = safe_malloc(BUFSIZE);
+      inputline = (char *)safe_malloc(BUFSIZE);
     for (k=0; k<NOfSuppliedFiles; k++) {
       FileName = UserSuppliedFiles[k];
       FileSuffix = SplitFileName (&FileName) ;
@@ -646,7 +646,7 @@ void HandleSources (texutil TeXUtil)   {
   } else {
     NOfSuppliedFiles = CheckInputFiles (InputFile,&UserSuppliedFiles) ;
     if (NOfSuppliedFiles)
-      inputline = safe_malloc(BUFSIZE);
+      inputline = (char *)safe_malloc(BUFSIZE);
     for (k=0; k<NOfSuppliedFiles; k++) {
       FileName = UserSuppliedFiles[k];
       FileSuffix = SplitFileName (&FileName) ;
@@ -736,7 +736,7 @@ void HandleDocuments (texutil TeXUtil) {
   } else {
     NOfSuppliedFiles = CheckInputFiles (InputFile,&UserSuppliedFiles) ;
     if (NOfSuppliedFiles)
-      inputline = safe_malloc(BUFSIZE);
+      inputline = (char *)safe_malloc(BUFSIZE);
     for (k=0; k<NOfSuppliedFiles; k++) {
       FileName = UserSuppliedFiles[k];
       FileSuffix = SplitFileName(&FileName);
@@ -769,9 +769,9 @@ void HandleDocuments (texutil TeXUtil) {
 	InDocument     = 0 ;
 	InDefinition   = 0 ;
 	if (!strlen(ProcessType)) {
-	  FileType=safe_strdup(FileSuffix);
+	  FileType=(char *)safe_strdup(FileSuffix);
 	} else {
-	  FileType=safe_strdup(ProcessType);
+	  FileType=(char *)safe_strdup(ProcessType);
 	}
 	FileType = lc(FileType);
 	fprintf(STDOUT,"%s %s\n", MS[ID_FileType], FileType) ;
@@ -897,7 +897,7 @@ InitializeKeys (texutil TeXUtil,string *ARGV) {
   for (i=0;i<=255;i++) {
     Filter[i] = i ;
   }
-  char *line = safe_malloc(BUFSIZE);
+  char *line = (char *)safe_malloc(BUFSIZE);
   char *linepointer = line;
   readline(TEX,&line);
   line = chomp(line);
@@ -905,7 +905,7 @@ InitializeKeys (texutil TeXUtil,string *ARGV) {
   if (line && *line == '%') {
     if((line=strstr(line,"translation"))) {
       if((line=strstr(line,"="))) {
-	char *Translation = safe_strdup(++line);
+	char *Translation = (char *)safe_strdup(++line);
 	char *rover = Translation;
 	while ((*rover >= 'a' && *rover <= 'z') ||
 	       (*rover >= 'A' && *rover <= 'Z') ||
@@ -925,7 +925,7 @@ InitializeKeys (texutil TeXUtil,string *ARGV) {
 	safe_fopen(ASC,Filter_file,"r");
 	if (ASC) {
 	  fprintf(STDOUT,"%s %s\n",MS[ID_LoadedFilter],Translation);
-	  char *tcxline = safe_malloc(BUFSIZE);
+	  char *tcxline = (char *)safe_malloc(BUFSIZE);
 	  int a,b;
 	  while (readline(ASC,&tcxline)) {
 	    if(sscanf(tcxline,"%d %d",&a,&b)==2)
@@ -1042,7 +1042,7 @@ void HandleExtra (texutil TeXUtil,char *RestOfLine) {
       return;
     *kick = 0;
     EXTEND_ARRAY(ExtraPrograms,NOfExtraPrograms);
-    ExtraPrograms[NOfExtraPrograms] = safe_strdup(RestOfLine);
+    ExtraPrograms[NOfExtraPrograms] = (char *)safe_strdup(RestOfLine);
     NOfExtraPrograms++;
   }
 }
@@ -1074,7 +1074,7 @@ void RunExtraPrograms (texutil TeXUtil) {
 
 
 #define ESCAPED_CHAR(a,b)                 \
-  NewKey = safe_malloc(strlen(a)*2);      \
+  NewKey = (char *)safe_malloc(strlen(a)*2);      \
   apointer = a;                           \
   rover= 0;                               \
   while (*a) {                            \
@@ -1096,7 +1096,7 @@ void RunExtraPrograms (texutil TeXUtil) {
 
 
 #define ESCAPED_IJ(a)                     \
-  NewKey = safe_malloc(strlen(a)*2);      \
+  NewKey = (char *)safe_malloc(strlen(a)*2);      \
   apointer = a;                           \
   rover= 0;                               \
   while (*a) {                            \
@@ -1133,7 +1133,7 @@ void RunExtraPrograms (texutil TeXUtil) {
 
 /*    inputstring =~ s/\\([\^\"\`\'\~\,])/$1/g ;*/
 #define DROP_ACCENT_BACKSLASHES(a)             \
-  NewKey = safe_malloc(strlen(a)*2);           \
+  NewKey = (char *)safe_malloc(strlen(a)*2);           \
   apointer = a;                                \
   rover= 0;                                    \
   PrevChar=0;                                  \
@@ -1158,7 +1158,7 @@ void RunExtraPrograms (texutil TeXUtil) {
 
 /*  inputstring =~ s/\\-|\|\|/\-/gio ; */
 #define MAKE_DASHES(a)                         \
-  NewKey = safe_malloc(strlen(a)+1);           \
+  NewKey = (char *)safe_malloc(strlen(a)+1);           \
   apointer = a;                                \
   rover= 0;                                    \
   while (*a) {                                 \
@@ -1182,7 +1182,7 @@ void RunExtraPrograms (texutil TeXUtil) {
 /*    copied =~ s/([\^\"\`\'\~\,])([a-zA-Z])/$ASCII{$1}/gi ;*/
 
 #define DROP_ACCENTED_CHARS(a)                 \
-  NewKey = safe_malloc(strlen(a)+1);           \
+  NewKey = (char *)safe_malloc(strlen(a)+1);           \
   apointer = a;                                \
   rover= 0;                                    \
   while (*a) {                                 \
@@ -1210,7 +1210,7 @@ void RunExtraPrograms (texutil TeXUtil) {
 
 /*    inputstring =~ s/([\^\"\`\'\~\,])([a-zA-Z])/$2/gio ;*/
 #define DROP_ACCENTS(a)                        \
-  NewKey = safe_malloc(strlen(a)+1);           \
+  NewKey = (char *)safe_malloc(strlen(a)+1);           \
   apointer = a;                                \
   rover= 0;                                    \
   while (*a) {                                 \
@@ -1238,17 +1238,17 @@ char *SanitizedString (texutil TeXUtil,char *original) {
   int rover;
   int PrevChar;
   if (SortN) {
-    copied = safe_strdup(inputstring);
+    copied = (char *)safe_strdup(inputstring);
     my_concat3(&inputstring,inputstring,"\\x00",copied); /* sneaking :-) */
   } else if (ProcessQuotes) {
     DROP_ACCENT_BACKSLASHES(inputstring);
-    copied = safe_strdup(inputstring);
+    copied = (char *)safe_strdup(inputstring);
     DROP_ACCENTED_CHARS(copied);
     DROP_ACCENTS(inputstring);
     my_concat3(&inputstring,inputstring,"\\x00",copied); /* sneaking :-) */
   }
   /* inputstring =~ s/\<\*(.*?)\>/\\$1 /go ; */
-  NewKey = safe_malloc(strlen(inputstring)+1);
+  NewKey = (char *)safe_malloc(strlen(inputstring)+1);
   apointer = inputstring;
   rover= 0;
   while (*inputstring) {
@@ -1274,7 +1274,7 @@ char *SanitizedString (texutil TeXUtil,char *original) {
   /* this one will be fixed below: inputstring =~ s/\\getXMLentity\s*\{(.*?)\}/$1/gio ;*/
 
   /*   inputstring =~ s/\<[a-zA-Z\/].*?\>//go ; */
-  NewKey = safe_malloc(strlen(inputstring)+1);
+  NewKey = (char *)safe_malloc(strlen(inputstring)+1);
   apointer = inputstring;
   rover= 0;
   while (*inputstring) {
@@ -1297,7 +1297,7 @@ char *SanitizedString (texutil TeXUtil,char *original) {
   inputstring = NewKey;
   MAKE_DASHES(inputstring);
   /* inputstring =~ s!\\[a-zA-Z]*| |\{|\}!!gio ; */
-  NewKey = safe_malloc(strlen(inputstring)+1);
+  NewKey = (char *)safe_malloc(strlen(inputstring)+1);
   apointer = inputstring;
   rover= 0;
   while (*inputstring) {
@@ -1414,7 +1414,7 @@ void HandleRegister (texutil TeXUtil, char *RestOfLine) {
       Key++;
     ESCAPED_CHAR(Key,'+');
   } else {
-    NewKey = safe_strdup(Key);
+    NewKey = (char *)safe_strdup(Key);
     Key = NewKey;
     ESCAPED_CHAR(Key,'&');
     ESCAPED_CHAR(Key,'+');
@@ -1446,7 +1446,7 @@ void HandleRegister (texutil TeXUtil, char *RestOfLine) {
   if (ProcessIJ) {
     ESCAPED_IJ(Key);
   }
-  char *LCKey = safe_strdup(Key);
+  char *LCKey = (char *)safe_strdup(Key);
   LCKey = lc(LCKey);
   int RegStatus=0;
   /* from %RegStat */
@@ -1460,11 +1460,11 @@ void HandleRegister (texutil TeXUtil, char *RestOfLine) {
     RegStatus = RegStat_s;
   }
   EXTEND_ARRAY(RegisterEntry,NOfEntries);
-  char *result = safe_malloc(BUFSIZE);
+  char *result = (char *)safe_malloc(BUFSIZE);
   snprintf(result,BUFSIZE,
 	   "%s__%s__%s__%s__%s__%i__%6i__%s__%s__%s__%s",
 	   Class,LCKey,Key,Entry,TextHow,RegStatus,RealPage,Location,PageStr,PageHow,SeeToo);
-  result = safe_realloc(result,strlen(result)+1);
+  result = (char *)safe_realloc(result,strlen(result)+1);
   RegisterEntry[NOfEntries++] = result;
   safe_free(Key);
 }
@@ -1510,8 +1510,8 @@ void FlushRegisters (texutil TeXUtil) {
   char *SavedEntry = "" ;
   int n;
   char *tempentry;
-  char *SavedLine = safe_malloc(BUFSIZE);
-  char *NextEntry = safe_malloc(BUFSIZE);
+  char *SavedLine = (char *)safe_malloc(BUFSIZE);
+  char *NextEntry = (char *)safe_malloc(BUFSIZE);
   int Copied = 0;
   char TestAlfa = 0;
   for (n=0 ; n<NOfEntries ; n++) {
@@ -1543,7 +1543,7 @@ void FlushRegisters (texutil TeXUtil) {
     if (TestAlfa != Alfa || (!strcmp(AlfaClass,Class)==0)) {
       Alfa = TestAlfa ;
       safe_free(AlfaClass);
-      AlfaClass = safe_strdup(Class);
+      AlfaClass = (char *)safe_strdup(Class);
       if (Alfa != ' ')  {
 	FlushSavedLine();
 	fprintf (TUO, "\\registerentry{%s}{%c}\n", Class,Alfa);
@@ -1672,9 +1672,9 @@ void HandleSynonym (texutil TeXUtil, char *RestOfLine)  {
     ++NOfBadSynonyms ;
   } else {
     EXTEND_ARRAY(SynonymEntry,NOfSynonyms);
-    char *entry = safe_malloc(BUFSIZE);
+    char *entry = (char *)safe_malloc(BUFSIZE);
     snprintf(entry,BUFSIZE,"%s__%s__%s__%s",Class,Key,Entry,Meaning);
-    entry = safe_realloc(entry,strlen(entry)+1);
+    entry = (char *)safe_realloc(entry,strlen(entry)+1);
     SynonymEntry[NOfSynonyms++] = entry;
   }
 }
@@ -1692,7 +1692,7 @@ void FlushSynonyms (texutil TeXUtil) {
   char *Meaning;
   for (n=0; n<NOfSynonyms; n++) {
     if ((n==0)||(!STREQ(SynonymEntry[n],SynonymEntry[n-1]))) {
-      tmpentry = safe_strdup(SynonymEntry[n]);
+      tmpentry = (char *)safe_strdup(SynonymEntry[n]);
       ztmpentry = tmpentry;
       Class="";
       Key="";
@@ -1739,12 +1739,12 @@ void HandleFile (texutil TeXUtil,char *RestOfLine) {
     File_opens[test]++;
   } else {
     if (Files_size < NOfFiles) {
-      Files = safe_realloc(Files,sizeof(char*)*(Files_size+Files_add));
-      File_opens = safe_realloc(File_opens,sizeof(int)*(Files_size+Files_add));
+      Files = (char **)safe_realloc(Files,sizeof(char*)*(Files_size+Files_add));
+      File_opens = (int *)safe_realloc(File_opens,sizeof(int)*(Files_size+Files_add));
       Files_size = Files_size+Files_add;
     }
     File_opens[NOfFiles] = 1;
-    Files[NOfFiles] = safe_strdup(RestOfLine);
+    Files[NOfFiles] = (char *)safe_strdup(RestOfLine);
     NOfFiles++;
   }
 }
@@ -1806,7 +1806,7 @@ void MergerHandleReferences (texutil TeXUtil,int ValidOutput,string *ARGV) {
       fprintf(STDOUT,"%s %s %s\n",MS[ID_Error], MS[ID_EmptyInputFile], InputFile) ;
     } else {
       fprintf(STDOUT,"%s %s.tui\n", MS[ID_InputFile], InputFile) ;
-      char *SomeLine = safe_malloc(BUFSIZE);
+      char *SomeLine = (char *)safe_malloc(BUFSIZE);
       while (readline(TUI,&SomeLine)) {
 	SomeLine = chomp (SomeLine);
 	if (SomeLine[0] == 'r' && SomeLine[1] == ' ')
@@ -1854,7 +1854,7 @@ void NormalHandleReferences (texutil TeXUtil, int ValidOutput) {
 	return;
       }
       fprintf (TUO,"%%\n%% %s / Commands\n%%\n",Program);
-      char *SomeLine = safe_malloc(BUFSIZE);
+      char *SomeLine = (char *)safe_malloc(BUFSIZE);
       char *RestOfLine=NULL;
       char FirstTag;
       while (readline(TUI,&SomeLine)) {
@@ -1926,11 +1926,11 @@ void HandleReferences (texutil TeXUtil, int ARGC,string *ARGV) {
     if (ProcessQuotes)
       fprintf(STDOUT,"%s %s\n",MS[ID_Option],MS[ID_ProcessingQuotes]);
     InitializeKeys(TeXUtil, ARGV) ;
-    ExtraPrograms = safe_malloc(sizeof(char*)*ExtraPrograms_size);
-    RegisterEntry = safe_malloc(sizeof(char *)*RegisterEntry_size);
-    SynonymEntry  = safe_malloc(sizeof(char *)*SynonymEntry_size);
-    Files         = safe_malloc(sizeof(char *)*Files_size);
-    File_opens    = safe_malloc(sizeof(int)*Files_size);
+    ExtraPrograms = (char **)safe_malloc(sizeof(char*)*ExtraPrograms_size);
+    RegisterEntry = (char **)safe_malloc(sizeof(char *)*RegisterEntry_size);
+    SynonymEntry  = (char **)safe_malloc(sizeof(char *)*SynonymEntry_size);
+    Files         = (char **)safe_malloc(sizeof(char *)*Files_size);
+    File_opens    = (int *)safe_malloc(sizeof(int)*Files_size);
     int ValidOutput = 1 ;
     if (ARGC>1)  {
       MergerHandleReferences (TeXUtil, ValidOutput,ARGV);
@@ -1941,7 +1941,7 @@ void HandleReferences (texutil TeXUtil, int ARGC,string *ARGV) {
 
 
 void SaveFigurePresets (texutil TeXUtil, char *FNam, char *FTyp, int FUni, double FXof, double FYof,
-		   double FWid, double FHei, char *FTit, char *FCre, int FSiz) {
+		   double FWid, double FHei, const char *FTit, const char *FCre, int FSiz) {
   char *line = NULL;
   if (ProcessVerbose) {
     OpenTerminal(TeXUtil);
@@ -1955,20 +1955,20 @@ void SaveFigurePresets (texutil TeXUtil, char *FNam, char *FTyp, int FUni, doubl
     }
     CloseTerminal(TeXUtil);
   } else {
-    line = safe_malloc(BUFSIZE);
+    line = (char *)safe_malloc(BUFSIZE);
     char *FCreString = NULL;
     if (strlen(FCre))
       my_concat3(&FCreString,",c={",FCre,"}");
     char *FTitString = NULL;
     if (strlen(FTit))
       my_concat3(&FTitString,",t={",FTit,"}");
-    char *WHstring = safe_malloc(30);
+    char *WHstring = (char *)safe_malloc(30);
     if (FUni) {
       snprintf (WHstring,30,"w=%5.3fcm,h=%5.3fcm", FWid, FHei);
     } else {
       snprintf (WHstring,30,"w=%dbp,h=%dbp", (int)FWid, (int)FHei);
     }
-    char *Offstring = safe_malloc(30);
+    char *Offstring = (char *)safe_malloc(30);
     if ((FXof!=0.0)||(FYof!=0.0)) {
       if (FUni) {
 	snprintf (Offstring,30,",x=%1.3fcm,y=%1.3fcm", FXof, FYof);
@@ -1994,7 +1994,7 @@ void ConvertEpsToEps (texutil TeXUtil, char *SName, int PDFReady,
 		      double LLX, double LLY, double URX, double URY) {
   char *FileName ;
   char *FileSuffix; /* not used */
-  FileName = safe_strdup(SName);
+  FileName = (char *)safe_strdup(SName);
   FileSuffix = SplitFileName (&FileName) ;
   FILE *EPS;
   FILE *TMP;
@@ -2019,7 +2019,7 @@ void ConvertEpsToEps (texutil TeXUtil, char *SName, int PDFReady,
   double EpsHeight  = URY - LLY ;
   double EpsXOffset =   0 - LLX ;
   double EpsYOffset =   0 - LLY ;
-  char *inputline = safe_malloc(BUFSIZE);
+  char *inputline = (char *)safe_malloc(BUFSIZE);
   while (readline(TMP,&inputline))  {
     if (strstr(inputline,"%!PS")!= NULL){
       inputline = strstr(inputline,"%!PS");
@@ -2091,7 +2091,7 @@ void HandleEpsFigure (texutil TeXUtil,char *SuppliedFileName) {
   char *FileSuffix;
   char *EpsFileName;
   if (file_exists(SuppliedFileName)) {
-    FileName = safe_strdup(SuppliedFileName);
+    FileName = (char *)safe_strdup(SuppliedFileName);
     char *filenamepointer  = FileName;
     FileSuffix = SplitFileName (&FileName) ;
     if (FileSuffix && strlen(FileSuffix)) {
@@ -2133,7 +2133,7 @@ void HandleEpsFigure (texutil TeXUtil,char *SuppliedFileName) {
       int PDFReady = 0 ;
       int MPSFound = 0 ;
       int BBoxFound = 0 ;
-      char *inputline = safe_malloc(BUFSIZE);
+      char *inputline = (char *)safe_malloc(BUFSIZE);
       char *SomeLine;
       char *EpsBBox=NULL;
     RESTART:
@@ -2146,11 +2146,11 @@ void HandleEpsFigure (texutil TeXUtil,char *SuppliedFileName) {
 	}
 	if (BBoxFound<2) {
 	  if (strncasecmp(SomeLine,"%%BoundingBox:",strlen("%%BoundingBox:"))==0) {
-	    EpsBBox = safe_strdup(SomeLine+strlen("%%BoundingBox:")) ; BBoxFound = 1 ; goto RESTART ;
+	    EpsBBox = (char *)safe_strdup(SomeLine+strlen("%%BoundingBox:")) ; BBoxFound = 1 ; goto RESTART ;
 	  } else if (strncasecmp(SomeLine,"%%HiResBoundingBox:",strlen("%%HiResBoundingBox:"))==0) {
-	    EpsBBox = safe_strdup(SomeLine+strlen("%%HiResBoundingBox:")) ; BBoxFound = 2 ; goto RESTART ;
+	    EpsBBox = (char *)safe_strdup(SomeLine+strlen("%%HiResBoundingBox:")) ; BBoxFound = 2 ; goto RESTART ;
 	  } else if (strncasecmp(SomeLine,"%%ExactBoundingBox:",strlen("%%ExactBoundingBox:"))==0) {
-	    EpsBBox = safe_strdup(SomeLine+strlen("%%ExactBoundingBox:")) ; BBoxFound = 3 ; goto RESTART ;
+	    EpsBBox = (char *)safe_strdup(SomeLine+strlen("%%ExactBoundingBox:")) ; BBoxFound = 3 ; goto RESTART ;
 	  }
 	}
 	if (strncasecmp(SomeLine,"%%PDFready:",strlen("%%PDFready:"))==0) {
@@ -2159,7 +2159,7 @@ void HandleEpsFigure (texutil TeXUtil,char *SuppliedFileName) {
 	  SomeLine += strlen("%%Creator:");
 	  while (isspace(*SomeLine))
 	    SomeLine++;
-	  EpsCreator = safe_strdup(SomeLine);
+	  EpsCreator = (char *)safe_strdup(SomeLine);
 	  if (strncasecmp(EpsCreator,"MetaPost",strlen("MetaPost"))==0) {
 	    MPSFound = 1 ;
 	  }
@@ -2167,7 +2167,7 @@ void HandleEpsFigure (texutil TeXUtil,char *SuppliedFileName) {
 	  SomeLine += strlen("%%Title:");
 	  while (isspace(*SomeLine))
 	    SomeLine++;
-	  EpsTitle = safe_strdup(SomeLine);
+	  EpsTitle = (char *)safe_strdup(SomeLine);
 	}
       }
     END:
@@ -2178,7 +2178,7 @@ void HandleEpsFigure (texutil TeXUtil,char *SuppliedFileName) {
 	double URY=0.0;
 	double LLX=0.0;
 	double LLY=0.0;
-	char *value=safe_malloc(strlen(EpsBBox));
+	char *value=(char *)safe_malloc(strlen(EpsBBox));
 	char *BBoxpointer = EpsBBox;
 	char *rover = value;
 	SET_CORNER(EpsBBox,LLX);
@@ -2223,7 +2223,7 @@ void HandlePdfFigure (texutil TeXUtil,char *SuppliedFileName) {
   char *MediaBox =NULL;
   int PageFound = 0 ;
   int PagesFound = 0 ;
-  FileName = safe_strdup(SuppliedFileName);
+  FileName = (char *)safe_strdup(SuppliedFileName);
   char *filenamepointer = FileName;
   FileSuffix = SplitFileName (&FileName) ;
   if (FileSuffix == NULL || strcasecmp(FileSuffix,"pdf")!= 0) {
@@ -2245,7 +2245,7 @@ void HandlePdfFigure (texutil TeXUtil,char *SuppliedFileName) {
     safe_fclose (PDF) ;
     return;
   }
-  char *inputline = safe_malloc(BUFSIZE);
+  char *inputline = (char *)safe_malloc(BUFSIZE);
   char *SomeLine;
   char *test;
   while (readline(PDF,&inputline)) {
@@ -2265,7 +2265,7 @@ void HandlePdfFigure (texutil TeXUtil,char *SuppliedFileName) {
       }
     }
     if ((PageFound||PagesFound) && (strstr(SomeLine,"/MediaBox")!=NULL)) {
-      MediaBox = safe_strdup((strstr(SomeLine,"/MediaBox")+strlen("/MediaBox")));
+      MediaBox = (char *)safe_strdup((strstr(SomeLine,"/MediaBox")+strlen("/MediaBox")));
       MediaBoxFound = 1 ;
       if (PagesFound) {
 	goto END;
@@ -2282,7 +2282,7 @@ void HandlePdfFigure (texutil TeXUtil,char *SuppliedFileName) {
     double URY=0.0;
     double LLX=0.0;
     double LLY=0.0;
-    char *value=safe_malloc(strlen(MediaBox));
+    char *value=(char *)safe_malloc(strlen(MediaBox));
     char *mediaboxpointer = MediaBox;
     char *rover = value;
     while (isspace(*MediaBox))
@@ -2345,7 +2345,7 @@ int TifGetLong(FILE *TIF,int TifLittleEndian) {
   if (!TifValues) {                 \
     a = NULL ;                      \
   } else {                          \
-    S = safe_malloc (TifValues+1);  \
+    S = (char *)safe_malloc (TifValues+1);  \
     fread (S, 1, TifValues, TIF) ;  \
     S[TifValues] = 0;               \
     a = S ;                         \
@@ -2435,7 +2435,7 @@ void HandleTifFigure  (texutil TeXUtil,char *SuppliedFileName) {
   int TifVRes = 1 ;
   unsigned long TifSize = 0;
   double TifMult;
-  FileName = safe_strdup(SuppliedFileName);
+  FileName = (char *)safe_strdup(SuppliedFileName);
   char *filenamepointer = FileName;
   FileSuffix = SplitFileName (&FileName) ;
   if (FileSuffix==NULL || strcasecmp(FileSuffix,"tif")!=0) {
@@ -2555,7 +2555,7 @@ void HandlePngFigure (texutil TeXUtil,char *SuppliedFileName) {
   int PngVRes = 1 ;
   int PngHRes = 1 ;
   long int PngSize = 0;
-  FileName = safe_strdup(SuppliedFileName);
+  FileName = (char *)safe_strdup(SuppliedFileName);
   char *filenamepointer = FileName;
   FileSuffix = SplitFileName (&FileName) ;
   if (FileSuffix == NULL || strcasecmp(FileSuffix,"png") != 0) {
@@ -2586,11 +2586,11 @@ void HandlePngFigure (texutil TeXUtil,char *SuppliedFileName) {
     return ;
   }
   PngNextChunk = 8 ;
-  PngTitle = safe_malloc(80);
+  PngTitle = (char *)safe_malloc(80);
   *PngTitle = 0;
-  PngAuthor = safe_malloc(80);
+  PngAuthor = (char *)safe_malloc(80);
   *PngAuthor = 0;
-  PngCreator = safe_malloc(80);
+  PngCreator = (char *)safe_malloc(80);
   *PngCreator = 0;
   while (1) {
     PngGetChunk(PngSize,PNG);
@@ -2631,7 +2631,7 @@ HandleJpgFigure (texutil TeXUtil, char *SuppliedFileName) {
   unsigned int JpgPos = 0;
   unsigned int JpgSoi = 0;
   unsigned int JpgApp = 0;
-  FileName = safe_strdup(SuppliedFileName);
+  FileName = (char *)safe_strdup(SuppliedFileName);
   char *filenamepointer = FileName;
   FileSuffix = SplitFileName (&FileName) ;
   if (FileSuffix == NULL || strcasecmp(FileSuffix,"jpg") != 0) {
@@ -2787,7 +2787,7 @@ void HandleFigures (texutil TeXUtil, int ARGC,string *ARGV)  {
     }
   }
   //InitializeFigures(TeXUtil) ;
-  Figures = safe_malloc(sizeof (char *)*Figures_size);
+  Figures = (char **)safe_malloc(sizeof (char *)*Figures_size);
   DoHandleFigures (TeXUtil, "eps", HandleEpsFigure) ;
   DoHandleFigures (TeXUtil, "pdf", HandlePdfFigure) ;
   DoHandleFigures (TeXUtil, "tif", HandleTifFigure) ;
@@ -3283,7 +3283,7 @@ void DoFilterPages (texutil TeXUtil, char *filename) {
   char *old = NULL;
   int n=0;
   int p=0;
-  char *inputline= safe_malloc(BUFSIZE);
+  char *inputline= (char *)safe_malloc(BUFSIZE);
   safe_fopen(PDF,pdfname,"rb");
   safe_fopen(TUO,tuoname,"a");
   if (PDF && TUO) {
@@ -3297,10 +3297,10 @@ void DoFilterPages (texutil TeXUtil, char *filename) {
 	/* throw an unneeded line away: */
 	readline(PDF,&inputline);
 	safe_free (old);
-	old = safe_strdup(inputline);
+	old = (char *)safe_strdup(inputline);
       } else {
 	safe_free (old);
-	old = safe_strdup(inputline);
+	old = (char *)safe_strdup(inputline);
       }
     }
     safe_free (old);
@@ -3363,7 +3363,7 @@ void HandleLogFile (texutil TeXUtil) {
     int NOfSuppliedFiles = CheckInputFiles (InputFile,&UserSuppliedFiles) ;
     safe_fopen (ALL,OutputFile, "w") ;
     if (NOfSuppliedFiles)
-      inputline = safe_malloc(BUFSIZE);
+      inputline = (char *)safe_malloc(BUFSIZE);
     for (k=0; k<NOfSuppliedFiles; k++) {
       FileName = UserSuppliedFiles[k];
       FileSuffix = SplitFileName (&FileName) ;
@@ -3385,7 +3385,7 @@ void HandleLogFile (texutil TeXUtil) {
 	      ((ProcessHBox && (strstr(SomeLine,"Overfull \\hbox")!= NULL)) ||
 	       (ProcessVBox && (strstr(SomeLine,"Overfull \\vbox")!= NULL)))) {
 	    ++NOfBoxes ;
-	    char *SomePointsP = safe_strdup (SomeLine);
+	    char *SomePointsP = (char *)safe_strdup (SomeLine);
 	    SomePoints = strstr(SomePointsP,"Overfull ")+strlen("Overfull \\vbox")+2 ; /* " (" */
 	    char *temp;
 	    temp = strstr(SomePoints,"pt");
@@ -3402,7 +3402,7 @@ void HandleLogFile (texutil TeXUtil) {
 	  }
 
 	  if (ProcessUnknown) {
-	    char *someline = safe_strdup(SomeLine);
+	    char *someline = (char *)safe_strdup(SomeLine);
 	    someline = lc(someline);
 	    if(  (strstr(someline,"onbekende verwijzing") != NULL) ||
 		 (strstr(someline,"unbekannte referenz")  != NULL) ||
@@ -3521,7 +3521,7 @@ void DoAnalyzeFile (texutil TeXUtil, char *filename) {
   int Named = 0 ;
   int Script = 0 ;
   int Cross = 0 ;
-  inputline = safe_malloc(BUFSIZE);
+  inputline = (char *)safe_malloc(BUFSIZE);
   while (readline(PDF,&inputline)) {
     Object += find_objects(inputline);
     Annot  += find_words("/Type","/Annot"       ,inputline);
@@ -3561,8 +3561,8 @@ void GenerateSciteApi (texutil TeXUtil, char *filename) {
   safe_fopen(XML,xmlfile,"r");
   safe_free(xmlfile);
   if (XML) {
-    inputline = safe_malloc(BUFSIZE);
-    Collection = safe_malloc(sizeof(char *)*Collection_size);
+    inputline = (char *)safe_malloc(BUFSIZE);
+    Collection = (char **)safe_malloc(sizeof(char *)*Collection_size);
     while (readline(XML,&inputline)) {
       inputline = chomp (inputline);
       EXTEND_ARRAY(Collection,iNOfCommands);
@@ -3577,7 +3577,7 @@ void GenerateSciteApi (texutil TeXUtil, char *filename) {
 	  char *temp = strstr(tempb,"\"");
 	  if (temp != NULL) {
 	    *temp = 0;
-	    char *cmdname = safe_strdup(tempb);
+	    char *cmdname = (char *)safe_strdup(tempb);
 	    temp++;
 	    while (isspace(*temp))
 	      temp++;
@@ -3709,7 +3709,7 @@ texutil texutil_new (void) {
 					     NULL,10,10,0,NULL,100,100,NULL,100,100,NULL,NULL,10,10,0,
 					     NULL,100,100,0,0,0,0,0,0,0,0,0,0,{NULL}};
 
-  texutil TeXUtil = malloc (sizeof(struct texutilstruct));
+  texutil TeXUtil = (texutil)malloc (sizeof(struct texutilstruct));
   memcpy(TeXUtil,&dummy,sizeof(struct texutilstruct));
   STDOUT  = stdout;
   return TeXUtil;

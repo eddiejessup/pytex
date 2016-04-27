@@ -28,10 +28,10 @@ sources = texutil.c perlemu.c funclib.c
 objects = $(sources:%.c=%.o)
 
 texutil: texutil_main.o texutil.a Makefile
-	$(CC) $(CFLAGS) -o texutil texutil_main.o texutil.a $(LIBFLAGS)
+	$(CXX) $(CFLAGS) -o texutil texutil_main.o texutil.a $(LIBFLAGS)
 
 texexec: texexec_main.o texexec.o texutil.a Makefile
-	$(CC) $(CFLAGS)  -o texexec texexec_main.o texexec.o texutil.a $(LIBFLAGS) 
+	$(CXX) $(CFLAGS)  -o texexec texexec_main.o texexec.o texutil.a $(LIBFLAGS) 
 
 texutil.a:  $(objects) Makefile
 	rm -f *~
@@ -39,10 +39,10 @@ texutil.a:  $(objects) Makefile
 	$(RANLIB) texutil.a
 
 texutil.exe: texutil_main.o texutil_32.a Makefile
-	$(CC) $(CFLAGS) -o texutil texutil_main.o texutil_32.a glob/libglob.a  $(LIBFLAGS)
+	$(CXX) $(CFLAGS) -o texutil texutil_main.o texutil_32.a glob/libglob.a  $(LIBFLAGS)
 
 texexec.exe: texexec_main.o texexec.o texutil_32.a Makefile
-	$(CC) $(CFLAGS)  -o texexec texexec_main.o texexec.o texutil_32.a glob/libglob.a  $(LIBFLAGS) 
+	$(CXX) $(CFLAGS)  -o texexec texexec_main.o texexec.o texutil_32.a glob/libglob.a  $(LIBFLAGS) 
 
 texutil_32.a:  $(objects) Makefile glob/libglob.a
 	rm -f *~
@@ -52,7 +52,7 @@ texutil_32.a:  $(objects) Makefile glob/libglob.a
 
 
 $(objects) texutil_main.o texexec.o texexec_main.o: %.o:%.c
-	$(CC) $(CFLAGS) $(KFLAGS) -c $< -o $@
+	$(CXX) $(CFLAGS) $(KFLAGS) -c $< -o $@
 
 .PHONY: clean
 
