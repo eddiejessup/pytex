@@ -21,6 +21,7 @@ $Id: writefont.c,v 1.2 2004/05/11 14:30:32 taco Exp $
 */
 
 #include "ptexlib.h"
+#include <math.h>       /* atan */
 
 static const char perforce_id[] = 
     "$Id: writefont.c,v 1.2 2004/05/11 14:30:32 taco Exp $";

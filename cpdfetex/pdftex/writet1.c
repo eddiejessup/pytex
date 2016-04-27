@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 $Id: writet1.c,v 1.2 2004/05/11 14:30:32 taco Exp $
 */
 
+#include <math.h>       /* atan */
+
 static const char perforce_id[] = 
     "$Id: writet1.c,v 1.2 2004/05/11 14:30:32 taco Exp $";
 
