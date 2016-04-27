@@ -21,9 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <kpathsea/c-pathch.h>
 #include <kpathsea/tilde.h>
 
-#ifdef HAVE_PWD_H
 #include <pwd.h>
-#endif
+#include <unistd.h>
 
 
 /* If NAME has a leading ~ or ~user, Unix-style, expand it to the user's
@@ -69,38 +68,9 @@ kpse_tilde_expand P1C(const_string, name)
   
   /* If `~user' or `~user/', look up user in the passwd database (but
      OS/2 doesn't have this concept.  */
-  } else
-#ifdef HAVE_PWD_H
-    {
-      struct passwd *p;
-      string user;
-      unsigned c = 2;
-      while (!IS_DIR_SEP (name[c]) && name[c] != 0) /* find user name */
-        c++;
-      
-      user = (string) xmalloc (c);
-      strncpy (user, name + 1, c - 1);
-      user[c - 1] = 0;
-      
-      /* We only need the cast here for (deficient) systems
-         which do not declare `getpwnam' in <pwd.h>.  */
-      p = (struct passwd *) getpwnam (user);
-      free (user);
-
-      /* If no such user, just use `.'.  */
-      home = p ? p->pw_dir : ".";
-      if (IS_DIR_SEP (*home) && IS_DIR_SEP (home[1])) { /* handle leading // */
-        home++;
-      }
-      if (IS_DIR_SEP (home[strlen (home) - 1]) && name[c] != 0)
-        c++; /* If HOME ends in /, omit the / after ~user. */
-
-      expansion = name[c] == 0 ? xstrdup (home) : concat (home, name + c);
-    }
-#else /* not HAVE_PWD_H */
+  } else {
     expansion = name;
-#endif /* not HAVE_PWD_H */
-
+  }
   /* We may return the same thing as the original, and then we might not
      be returning a malloc-ed string.  Callers beware.  Sorry.  */
   return (string) expansion;
