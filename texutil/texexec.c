@@ -577,11 +577,11 @@ string *make_paths (char *envpath) {
   int k=0;
   char *test = ":";
   if (envpath == NULL) {
-	origpath = safe_strdup("");
+	origpath = (char *)safe_strdup((void *)"");
   } else {
-	origpath = safe_strdup(envpath);
+	origpath = (char *)safe_strdup(envpath);
   }
-  string *p_array = safe_malloc(strlen(envpath)+1);
+  string *p_array = (string *)safe_malloc(strlen(envpath)+1);
   if (strchr(envpath,';') != NULL)
 	test = ";";
   while ((val = next_word(&origpath,test))!=NULL) {
@@ -703,10 +703,10 @@ void read_ini_file (Hash Done, char *IniPath, int Verbose){
   char *three=NULL;
   safe_fopen(INI,IniPath,"r");
   if (INI) {
-    zline = malloc(sizeof(char *)*BUFSIZE);
+    zline = (char *)malloc(sizeof(char *)*BUFSIZE);
     if (Verbose) { fprintf(stdout,"               reading : %s\n",IniPath); }
     while (readline(INI,&zline)) {
-      line = safe_strdup(zline);
+      line = (char *)safe_strdup(zline);
       if (!(isspace(line[0])||isalpha(line[0]))) { 
 	/* ignore all lines that do not start with whitespace or alphabetic*/
       } else {
@@ -789,7 +789,7 @@ void read_ini_file (Hash Done, char *IniPath, int Verbose){
 
 char *IniValue (Hash Done, char *Key, char *Default) {
   char *ret = Default;
-  if (get_item(Done, Key)) { ret = safe_strdup(hash_value(Done,Key)); }
+  if (get_item(Done, Key)) { ret = (char *)safe_strdup(hash_value(Done,Key)); }
   if (Verbose) { fprintf(stdout, "          used setting : %s = %s\n", Key, ret); }
   return ret;
 }
@@ -851,24 +851,24 @@ void print_opt (char *k, struct helpopt *opt) {
   numkeys = keys((Hash)opt->subs,&the_keys);
   for (i=0;i<numkeys;i++) {
     char *k = the_keys[i];
-    print_subopt( k, do_get_value((Hash)opt->subs,k) );
+    print_subopt(k, (helpopt *)do_get_value((Hash)opt->subs,k) );
   }
 }
 
 void show_help_info (int numhelp,string *help) {
   int k;
   for (k=0;k<numhelp;k++) {
-    print_opt( help[k], do_get_value(Help,help[k]));
+    print_opt( help[k], (helpopt *)do_get_value(Help,help[k]));
   }
 }
 
 struct helpopt *read_options (char *v) {
   recurse++;
   v = chomp(v);
-  struct helpopt *opt = malloc(sizeof(struct helpopt));
+  struct helpopt *opt = (helpopt *)malloc(sizeof(struct helpopt));
   opt->subs = make_hash();
   opt->vals = make_hash();
-  opt->desc = safe_strdup(v);
+  opt->desc = (char *)safe_strdup(v);
   char *line;
   while (((line = opts[optsk++])!=NULL)&&line[0]!='.') {
     if (line[0] == '-') { 
@@ -916,7 +916,7 @@ void read_all_options (void) {
 
 
 char *QuotePath (char *oirg ){
-  char *path = safe_strdup(oirg);
+  char *path = (char *)safe_strdup(oirg);
   char *ret=NULL;
   char *e;
   while ((e = next_word(&path,","))) {
@@ -963,7 +963,7 @@ char *F_MPJobName (char *JobName, char *MPfile) {
   } else if (file_exists(mpfile) && file_size(mpfile)  > 100 ) {
     MPJobName = mpfile;
   } else { 
-    MPJobName = safe_strdup("");
+    MPJobName = (char *)safe_strdup((void *)"");
   }
   return MPJobName;
 }
@@ -988,7 +988,7 @@ void RunPerlScript ( char *ScriptName, char *Options ) {
 	   my_concat3(&mytest,own_quote,mytest,own_quote);
 	 my_concat3(&cmd,mytest," ",Options);
        } else {
-	 cmd = safe_strdup("");
+	 cmd = (char *)safe_strdup((void *)"");
        }
      }
    } else {
@@ -1016,7 +1016,7 @@ void  CheckOutputFormat (void) {
   char *b = NULL;
   if (!STREQ(OutputFormat,"standard")) {
     char *F;
-    char *zOutputFormat = safe_strdup(OutputFormat);
+    char *zOutputFormat = (char *)safe_strdup(OutputFormat);
     while((F = words(&zOutputFormat,","))) {
       if (get_item(OutputFormats, lc (F ))) {
 	char *OF = hash_value(OutputFormats, lc (F));
@@ -1089,7 +1089,7 @@ void MakeOptionFile (int FinalRun, int FastDisabled, char *JobName, char *JobSuf
     if      (strcasestr(PaperFormat,"a4a3"))  { fprintf (OPT, "\\setuppapersize[A4][A3]\n"); }
     else if (strcasestr(PaperFormat,"a5a4"))  { fprintf (OPT, "\\setuppapersize[A5][A4]\n"); }
     else if (!STREQ(PaperFormat,"standard")) {
-      char *zPaperFormat = safe_strdup(PaperFormat);
+      char *zPaperFormat = (char *)safe_strdup(PaperFormat);
       char *runner = zPaperFormat;
       while (*runner) {
 	if (*runner == 'x' || *runner == 'X') 
@@ -1169,21 +1169,21 @@ void MakeOptionFile (int FinalRun, int FastDisabled, char *JobName, char *JobSuf
   fprintf(OPT, "\\protect\n");
   if (strlen(Filters)) {
     char *F;
-    char *zFilters = safe_strdup(Filters);
+    char *zFilters = (char *)safe_strdup(Filters);
     while ((F = words(&zFilters,","))) {
       fprintf(OPT,"\\useXMLfilter[%s]\n",F);
     }
   }
   if (strlen(Modules)) {
     char *M;
-    char *zModules = safe_strdup(Modules);
+    char *zModules = (char *)safe_strdup(Modules);
     while ((M = words(&zModules,","))) {
       fprintf(OPT,"\\usemodule[%s]\n",M);
     }
   }
   if (strlen(Environments)) {
     char *E;
-    char *zEnv = safe_strdup(Environments);
+    char *zEnv = (char *)safe_strdup(Environments);
     while ((E = words(&zEnv,","))) {
       fprintf(OPT,"\\environment %s\n",E);
     }
@@ -1221,7 +1221,7 @@ void MakeUserFile (void) {
     AllLanguages = MainLanguage;
     if (!STREQ(MainLanguage,"standard")) {
       char *lang;
-      char *MainLang = safe_strdup(MainLanguage);
+      char *MainLang = (char *)safe_strdup(MainLanguage);
       while ((lang = words(&MainLang,","))) {
 	fprintf (USR,"\\installlanguage[\\s!%s][\\c!status=\\v!start]\n",lang);
       }
@@ -1281,7 +1281,7 @@ if (loc != NULL) {                    \
     while ((c = *end) && value) {     \
       end++;                          \
     }                                 \
-    var = safe_strdup(loc);           \
+    var = (char *)safe_strdup(loc);           \
     var[(end-loc)] = 0;               \
   }                                   \
 }}
@@ -1291,7 +1291,7 @@ void ScanPreamble (char *FileName, char **ConTeXtVersion, char **ConTeXtModes) {
   char *line;
   safe_fopen(TEX, FileName ,"r");
   if (TEX) {
-    line = malloc(sizeof(char *)*BUFSIZE);
+    line = (char *)malloc(sizeof(char *)*BUFSIZE);
     char *zline = line;
     while (readline(TEX,&line)) {
       line = chomp(line);
@@ -1331,7 +1331,7 @@ void ScanContent (char *ConTeXtInput) {
   char *line;
   safe_fopen(TEX, ConTeXtInput,"r" );
   if (TEX) {
-    line = malloc(sizeof(char *)*BUFSIZE);
+    line = (char *)malloc(sizeof(char *)*BUFSIZE);
     while (readline(TEX,&line)) {
       if (MATCH("\\starttekst")||
 	  MATCH("\\stoptekst")||
@@ -1459,7 +1459,7 @@ void PushResult (char *File){
   char *file = NULL;
   if (strrchr(File,'.'))
     *(strrchr(File,'.'))=0;
-  char *MyResult = safe_strdup(Result);
+  char *MyResult = (char *)safe_strdup(Result);
   if (strrchr(MyResult,'.'))
     *(strrchr(MyResult,'.'))=0;
   if (strlen(MyResult) && (!STREQ(MyResult,File))) {
@@ -1491,7 +1491,7 @@ void PopResult (char *File){
   char *result = NULL;
   if (strrchr(File,'.'))
     *(strrchr(File,'.'))=0;
-  char *MyResult = safe_strdup(Result);
+  char *MyResult = (char *)safe_strdup(Result);
   if (strrchr(MyResult,'.'))
     *(strrchr(MyResult,'.'))=0;
   if (strlen(MyResult) && (!STREQ(MyResult,File))) {
@@ -1579,7 +1579,7 @@ int RunTeXMP (char *JobName, char *MPfile) {
     FILE *MP;
     safe_fopen(MP,MPJobName,"r");
     if (MP) {
-      char *line = malloc(sizeof(char *)*BUFSIZE);
+      char *line = (char *)malloc(sizeof(char *)*BUFSIZE);
       readline(MP,&line);
       line = chomp(line);
       char c;
@@ -1598,7 +1598,7 @@ int RunTeXMP (char *JobName, char *MPfile) {
 	    fprintf(stdout, "   generating graphics : metaposting %s\n",MPJobName);
 	    char *ForceMpy = " ";
 	    if (MpyForce) { ForceMpy = "--mpyforce "; }
-	    char *ForceTCX = safe_strdup(" ");
+	    char *ForceTCX = (char *)safe_strdup((void *)" ");
 	    if (strlen(TeXTranslation)) {
 	      my_concat3(&ForceTCX,"--translate=",TeXTranslation," ");
 	    }
@@ -1632,7 +1632,7 @@ unsigned CheckChanges (char *JobName) {
   FILE *MP;
   safe_fopen(MP,MPJobName,"r");
   if (MP) {
-    char *line = safe_malloc(sizeof(char *)*BUFSIZE);
+    char *line = (char *)safe_malloc(sizeof(char *)*BUFSIZE);
     while (readline(MP,&line)) {
       if (strcasestr(line,"random")==NULL) {
 	checksum += (cksum(line) % 65535);
@@ -1644,7 +1644,7 @@ unsigned CheckChanges (char *JobName) {
   MPJobName = F_MPJobName( JobName, "mprun" );
   safe_fopen(MP,MPJobName,"r");
   if (MP) {
-    char *line = safe_malloc(sizeof(char *)*BUFSIZE);
+    char *line = (char *)safe_malloc(sizeof(char *)*BUFSIZE);
     while (readline(MP,&line)) {
       if (strcasestr(line,"random")==NULL) {
 	checksum += (cksum(line) % 65535);
@@ -1676,7 +1676,7 @@ void RunConTeXtFile (char *JobName, char *JobSuffix ) {
   int DummyFile = 0;
   JobName = unix_path(JobName);
   RunPath = unix_path(RunPath);
-  char *OriSuffix = safe_strdup(JobSuffix);
+  char *OriSuffix = (char *)safe_strdup(JobSuffix);
   if ((dosish) && (PdfClose)) {
     char *cmdline = NULL;
     char *pdffile = NULL;
@@ -1756,7 +1756,7 @@ void RunConTeXtFile (char *JobName, char *JobSuffix ) {
     if (strlen(TeXTranslation)) {
       fprintf(stdout, "           translation : %s\n",TeXTranslation);
     }
-    char *Options = safe_strdup("");
+    char *Options = (char *)safe_strdup((void *)"");
     if (Random)            { my_concat(&Options,Options," random");     }
     if (FastMode)          { my_concat(&Options,Options," fast");       }
     if (FinalMode)         { my_concat(&Options,Options," final");      }
@@ -1898,7 +1898,7 @@ void DoRunModule ( char *FileName, char *FileSuffix ) {
   FILE *TED;
   safe_fopen( TED, texfile,"r");
   if (TED) {
-    char *firstline = malloc(sizeof(char *)*BUFSIZE);
+    char *firstline = (char *)malloc(sizeof(char *)*BUFSIZE);
     readline(TED,&firstline);
     safe_fclose(TED);
     if (strstr(firstline,"/interface=en")!=NULL) { fprintf( MOD,"%s",firstline); }
@@ -1934,7 +1934,7 @@ void RunModule (int Filenamecount,string *Filenames){
   if (!(file_exists(Filenames[0] ))) {
     char *Name = Filenames[0];
     char *Suffixes[4] ={".tex" , ".mp" , ".pl" , ".pm"};
-    Filenames = safe_realloc(Filenames,sizeof(char *)*4);
+    Filenames = (string *)safe_realloc(Filenames,sizeof(char *)*4);
     Filenamecount=0;
     for (k =0; k<4; k++) {
       char *file=NULL;
@@ -1998,7 +1998,7 @@ void RunFigures (int Filecount, string*Files){
 }
 
 char *CleanTeXFileName (char *str){
-  char *ret=malloc(strlen(str)*8);
+  char *ret=(char *)malloc(strlen(str)*8);
   char *zret = ret;
   int k=0;
   while(str[k]) {
@@ -2132,7 +2132,7 @@ void RunSelect (char *FileName){
   if (SEL) {
     fprintf(SEL, "%% format=english\n");
     if (!STREQ(PaperFormat,"standard")) {
-      char *zPaperFormat = safe_strdup(PaperFormat);
+      char *zPaperFormat = (char *)safe_strdup(PaperFormat);
       char *runner = zPaperFormat;
       while (*runner) {
 	if (*runner == 'x' || *runner == 'X') 
@@ -2210,7 +2210,7 @@ void RunCopy (char *FileName){
     fprintf(COP, "\\starttext\n");
     fprintf(COP, "\\copypages\n");
     fprintf(COP, "  [%s]\n",FileName);
-    fprintf(COP, "  [scale=%d,\n",(int)PageScale);
+    fprintf(COP, "  [scale=%d,\n",(long)PageScale);
     if (Markings) {
       fprintf(COP, "   marking=on,\n");
       fprintf(stdout, "           cutmarkings : on\n");
@@ -2225,7 +2225,7 @@ void RunCopy (char *FileName){
 
 void RunCombine (int Filecount, string *Files){
   char *CombineFile = "texexec";
-  char *zCombination = safe_strdup(Combination);
+  char *zCombination = (char *)safe_strdup(Combination);
   char *runner = zCombination;
   while (*runner) {
     if (*runner == 'x' || *runner == 'X') 
@@ -2245,7 +2245,7 @@ void RunCombine (int Filecount, string *Files){
   if(COM) {
     fprintf(COM, "%% format=english\n");
     if (!STREQ(PaperFormat,"standard")) {
-      char *zPaperFormat = safe_strdup(PaperFormat);
+      char *zPaperFormat = (char *)safe_strdup(PaperFormat);
       runner = zPaperFormat;
       while (*runner) {
 	if (*runner == 'x' || *runner == 'X') 
@@ -2307,7 +2307,7 @@ char *LocatedFormatPath (char *FormatPath) {
       runner = strchr(FormatPath,';');
       *runner = 0;
       FormatPath = unix_path(FormatPath);
-      char *newpath = safe_malloc(strlen(FormatPath));
+      char *newpath = (char *)safe_malloc(strlen(FormatPath));
       runner = FormatPath;
       int k=0;
       while (*runner) {
@@ -2416,7 +2416,7 @@ void RunFormats (int ARGC, string *ARGV, char *fmtutil){
   int ConTeXtFormatSize;
   if (ARGC) { ConTeXtFormats = ARGV; ConTeXtFormatSize = ARGC;}
   else if (strlen(UsedInterfaces)) {
-    ConTeXtFormats = malloc(sizeof(char *)*((strlen(UsedInterfaces)/2)+1));
+    ConTeXtFormats = (string *)malloc(sizeof(char *)*((strlen(UsedInterfaces)/2)+1));
     int k=0;
     char *f;
     while ((f = words(&UsedInterfaces,", "))) {
@@ -2428,7 +2428,7 @@ void RunFormats (int ARGC, string *ARGV, char *fmtutil){
     ConTeXtFormatSize =  ConTeXtFormatsSSize;
   }
   if (strlen(Format)) { 
-    ConTeXtFormats = malloc(sizeof(char *));
+    ConTeXtFormats = (string *)malloc(sizeof(char *));
     ConTeXtFormatSize = 1;
     ConTeXtFormats[0] = Format; 
     ConTeXtFormatsPrefix = ""; 
@@ -2478,7 +2478,7 @@ void RunFormats (int ARGC, string *ARGV, char *fmtutil){
 void RunFiles (int ARGC,string *ARGV) {
   char *pdffile = NULL;
   if (PdfArrange) {
-    string *arrangedfiles=malloc(sizeof(char*)*ARGC);
+    string *arrangedfiles=(string *)malloc(sizeof(char*)*ARGC);
     int arrangedfilessize=0;
     int i=0;
     for (i=0;i<ARGC;i++) {
@@ -2513,7 +2513,7 @@ void RunFiles (int ARGC,string *ARGV) {
     char *JobSuffix = "tex";
     int i=0;
     for (i=0;i<ARGC;i++) {
-      char *JobName = safe_strdup(ARGV[i]);
+      char *JobName = (char *)safe_strdup(ARGV[i]);
       if (strrchr(JobName,'.')!=NULL && 
 	  strrchr(JobName,'.')<(JobName+strlen(JobName))) {
 	JobSuffix = strrchr(JobName,'.');
@@ -2554,7 +2554,7 @@ int checkMPgraphics (char *MpName) {
     safe_fopen(MPO,file,"r");
     if (!MPO)
       return 0;
-    char *buf = safe_malloc(file_size(file)+1);
+    char *buf = (char *)safe_malloc(file_size(file)+1);
     if(fread(&buf,1,file_size(file),MPO)) {
       mpochecksum = (cksum(buf) % 65535);
       safe_free(buf);
@@ -2597,7 +2597,7 @@ int checkMPlabels (char *MpName, Hash mpbetex) {
   if (!MP)
     return 0;
   int n = 0;
-  char *line = malloc(sizeof(char *)*BUFSIZE);
+  char *line = (char *)malloc(sizeof(char *)*BUFSIZE);
   while (readline(MP,&line)) {
     if ((strlen(line)>13) && strstr(line,"% figure ")==line) {
       line +=9;
@@ -2614,7 +2614,7 @@ int checkMPlabels (char *MpName, Hash mpbetex) {
 	my_concat (&back,hash_value(mpbetex,Itoa(num)),line);
 	set_value(mpbetex,Itoa(num),back);
       } else {
-	set_value(mpbetex,Itoa(num),safe_strdup(line));
+	set_value(mpbetex,Itoa(num),(char *)safe_strdup(line));
       }
       ++n ;
     }
@@ -2639,7 +2639,7 @@ void doRunMP (char *MpName, int MergeBE, Hash mpbetex){
     safe_fopen(MP,MpFile,"r");
     if (MP) {
       char *MPdata=NULL;
-      char *line = malloc(sizeof(char *)*BUFSIZE);
+      char *line = (char *)malloc(sizeof(char *)*BUFSIZE);
       while (readline(MP,&line)) {
 	if ((strlen(line) && line[0] == '%')) 
 	  my_concat(&MPdata,MPdata,line);
@@ -2655,7 +2655,7 @@ void doRunMP (char *MpName, int MergeBE, Hash mpbetex){
       if (!file_exists(MpFile)) {
 	safe_fopen(MP,MpFile,"w");
 	int inlabel = 0;
-	char *Newdata=malloc(strlen(MPdata)*2);
+	char *Newdata=(char *)malloc(strlen(MPdata)*2);
 	int k;
 	int end =strlen(MPdata);
 	int n = 0;
@@ -2687,7 +2687,7 @@ void doRunMP (char *MpName, int MergeBE, Hash mpbetex){
 	}
 	Newdata[n] = 0;
 	safe_free(MPdata);
-	MPdata = safe_strdup(Newdata);
+	MPdata = (char *)safe_strdup(Newdata);
 	safe_free(Newdata);
 	int zeroseen = 0;
 	if (MergeBE) {
@@ -2747,7 +2747,7 @@ void doRunMP (char *MpName, int MergeBE, Hash mpbetex){
 	char *own_quote = "";
 	if (MpToTeXExecutable[0] != '"' && (strchr(MpToTeXExecutable,' ')!=NULL))
 	  own_quote= "\"";
-	char *exe= safe_strdup(MpToTeXExecutable);
+	char *exe= (char *)safe_strdup(MpToTeXExecutable);
 	my_concat3(&exe,own_quote,exe,own_quote);
 	my_concat3(&exe,exe," ",MpFile);
 	my_concat3(&exe,exe," > ",MpTex);
@@ -2769,7 +2769,7 @@ void doRunMP (char *MpName, int MergeBE, Hash mpbetex){
 	      own_quote="";
 	      if (DviToMpExecutable[0] != '"' && (strchr(DviToMpExecutable,' ')!=NULL))
 		own_quote= "\"";
-	      exe= safe_strdup(DviToMpExecutable);
+	      exe= (char *)safe_strdup(DviToMpExecutable);
 	      my_concat3(&exe,own_quote,exe,own_quote);
 	      my_concat3(&exe,exe," ",MpDvi);
 	      my_concat3(&exe,exe," ",MpName);
@@ -2785,7 +2785,7 @@ void doRunMP (char *MpName, int MergeBE, Hash mpbetex){
 	own_quote="";
 	if (MpExecutable[0] != '"' && (strchr(MpExecutable,' ')!=NULL))
 	  own_quote= "\"";
-	exe= safe_strdup(MpExecutable);
+	exe= (char *)safe_strdup(MpExecutable);
 	my_concat3(&exe,own_quote,exe,own_quote);
 	if (EnterMode==Batch)     { my_concat3(&exe,exe," ",MpBatchFlag); }
 	if (EnterMode==NonStop)   { my_concat3(&exe,exe," ",MpNonStopFlag); }
@@ -2803,7 +2803,7 @@ void doRunMP (char *MpName, int MergeBE, Hash mpbetex){
 	my_concat(&file,MpName,".log");
 	safe_fopen( MPL, file, "r" );
 	if (MPL){
-	  char *line = malloc(sizeof(char *)*BUFSIZE);
+	  char *line = (char *)malloc(sizeof(char *)*BUFSIZE);
 	  while (readline(MPL,&line)) {
 	    int val;
 	    char *next;
@@ -2834,7 +2834,7 @@ void RunMP (int ARGC, string *ARGV) {
   if ((MpExecutable) && (MpToTeXExecutable) && (DviToMpExecutable) ) {
     int i;
     for (i=0;i<ARGC;i++) {
-      char *RawMpName = safe_strdup(ARGV[i]);
+      char *RawMpName = (char *)safe_strdup(ARGV[i]);
       char *MpName;
       char *Rest="";
       if (strchr(RawMpName,'.')) {
@@ -2876,7 +2876,7 @@ void RunMPX (char *MpName){
       && ((filesize = file_size(MpFile)) > 5 )
       && (safe_fopen(MP, MpFile, "r")) 
       && MP ) {
-    char *mpdata = malloc(filesize+1);
+    char *mpdata = (char *)malloc(filesize+1);
     fread(mpdata,1,filesize,MP);
     safe_fclose(MP);
     if (strstr(mpdata,"btex")!=NULL ||
@@ -2886,7 +2886,7 @@ void RunMPX (char *MpName){
       char *own_quote = "";
       if (MpToTeXExecutable[0] != '"' && (strchr(MpToTeXExecutable,' ')!=NULL))
 	  own_quote= "\"";
-      char *exe= safe_strdup(MpToTeXExecutable);
+      char *exe= (char *)safe_strdup(MpToTeXExecutable);
       my_concat3(&exe,own_quote,exe,own_quote);
       my_concat3(&exe,exe," ",MpFile);
       my_concat3(&exe,exe," > ",MpTex);
@@ -2906,7 +2906,7 @@ void RunMPX (char *MpName){
 	    own_quote="";
 	    if (DviToMpExecutable[0] != '"' && (strchr(DviToMpExecutable,' ')!=NULL))
 	      own_quote= "\"";
-	    exe= safe_strdup(DviToMpExecutable);
+	    exe= (char *)safe_strdup(DviToMpExecutable);
 	    my_concat3(&exe,own_quote,exe,own_quote);
 	    my_concat3(&exe,exe," ",MpDvi);
 	    my_concat3(&exe,exe," ",MpName);
@@ -2923,12 +2923,12 @@ void RunMPX (char *MpName){
 
 
 void load_set_file (char *file, int trace) {
-  Hash new = make_hash();
-  Hash old = make_hash();
+  Hash new_hash = make_hash();
+  Hash old_hash = make_hash();
   FILE *BAT;
   safe_fopen(BAT,file,"r");
   if (BAT) {
-    char *line = malloc(sizeof(char *)*BUFSIZE);
+    char *line = (char *)malloc(sizeof(char *)*BUFSIZE);
     while (readline(BAT,&line)) {
       line = chomp (line);
       char *next;
@@ -2945,14 +2945,14 @@ void load_set_file (char *file, int trace) {
 	    val = chop (val);
 	    val = getenv(val);
 	  }
-	  if (!get_item(old,var)) {
+	  if (!get_item(old_hash,var)) {
 	    if (getenv(var)!=NULL) { 
-	      set_value(old,var,safe_strdup(getenv(var)));
+	      set_value(old_hash,var,(char *)safe_strdup(getenv(var)));
 	    } else { 
-	    set_value(old,var,safe_strdup(""));
+	    set_value(old_hash,var,(char *)safe_strdup((char *)""));
 	    }
 	  }
-	  set_value(old,var,safe_strdup(val));
+	  set_value(old_hash,var,(char *)safe_strdup(val));
 	  setenv(var,val,1);
 	}
       }
@@ -2961,18 +2961,18 @@ void load_set_file (char *file, int trace) {
   }
   if (trace) {
     string *thekeys;
-    int numkeys = keys(new,&thekeys);
+    int numkeys = keys(new_hash,&thekeys);
     qsort(thekeys,numkeys,sizeof(char *),&my_strcmp);
     int k;
     for (k=0;k<numkeys;k++) {
       char *key = thekeys[k];
-      if (!STREQ(hash_value(old,key),hash_value(new,key))) {
+      if (!STREQ(hash_value(old_hash,key),hash_value(new_hash,key))) {
 	fprintf(stdout, " changing env variable : '%s' from '%s' to '%s'\n",
-		key,hash_value(old,key),hash_value(new,key));
-      } else if (STREQ(hash_value(old,key),"")) {
-	fprintf(stdout, "  setting env variable : '%s' to '%s'\n",key,hash_value(new,key));
+		key,hash_value(old_hash,key),hash_value(new_hash,key));
+      } else if (STREQ(hash_value(old_hash,key),"")) {
+	fprintf(stdout, "  setting env variable : '%s' to '%s'\n",key,hash_value(new_hash,key));
       } else {
-	fprintf(stdout, "  keeping env variable : '%s' at '%s'\n",key,hash_value(new,key));
+	fprintf(stdout, "  keeping env variable : '%s' at '%s'\n",key,hash_value(new_hash,key));
       }
     }
     fprintf(stdout, "\n");
@@ -3066,7 +3066,7 @@ int texexec_main(int ac,  string *av) {
 	  own_file = av[0];
 	}
 #else
-	own_file = malloc(BUFSIZE);
+	own_file = (char *)malloc(BUFSIZE);
 	int chars;
 	chars =readlink("/proc/self/exe",own_file,(BUFSIZE-1));
 	if(chars> 0) {
@@ -3111,7 +3111,7 @@ int texexec_main(int ac,  string *av) {
 	if (!file_exists(IniPath))
 	  IniPath = found_ini_file("rme") ;
 	if (!IniPath)
-	  IniPath = safe_strdup("");
+	  IniPath = (char *)safe_strdup((void *)"");
 #endif
     if (Verbose) {
       if (!strlen(found_kpsewhich)) {
@@ -3309,13 +3309,13 @@ int texexec_main(int ac,  string *av) {
     } else if (ARGC) {
       string *h = ARGV;
       safe_free(help);
-      help = malloc(sizeof(char *)*helpitems);
+      help = (string *)malloc(sizeof(char *)*helpitems);
       string *testhelp;
       int testhelpk = keys (Help,&testhelp);
       helpitems = 0;
       int i,k;
       for (k=0;k<ARGC;k++) {
-	char *a = safe_strdup(h[k]);
+	char *a = (char *)safe_strdup(h[k]);
 	if (strlen(a) && (a[0] == '*' || a[0] == '?')) 
 	  my_concat(&a,".",a) ;
 	if(do_get_value(Help,a)!=NULL) {
@@ -3354,7 +3354,7 @@ int texexec_main(int ac,  string *av) {
       RunFormats(ARGC,ARGV,fmtutil);
     }
   } else if (ARGC) {
-    char *InputFile = safe_strdup(ARGV[0]);
+    char *InputFile = (char *)safe_strdup(ARGV[0]);
     if (ARGC>1) {
       int i;
       for (i = 1; i < ARGC; i++) {
