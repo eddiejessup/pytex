@@ -20,8 +20,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 $Id: epdf.h,v 1.2 2004/04/19 07:21:28 taco Exp taco $
 */
 
-extern "C" {
-
 /* the following code is extremly ugly but needed for including web2c/config.h */
 
 /* #include "../kpathsea/c-proto.h" */   /* define P?H macros */
@@ -92,4 +90,3 @@ extern void convertStringToPDFString(char *in, char *out);
 
 /* config.c */
 extern integer cfgpar(integer);
-}

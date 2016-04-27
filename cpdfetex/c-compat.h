@@ -12,6 +12,7 @@
 #include <string.h> /* strlen */
 
 #define HAVE_STRSTR
+extern "C" {
 #include <kpathsea/lib.h> /* PERROR */
 #include <kpathsea/progname.h> /* program_invocation_name */
 #include <kpathsea/c-pathch.h>
@@ -26,7 +27,7 @@
 #include <kpathsea/readable.h>
 #include <kpathsea/variable.h>
 #include <kpathsea/absolute.h>
-
+}
 
 #define INIT 1
 

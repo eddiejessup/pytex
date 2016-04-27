@@ -21,9 +21,10 @@ $Id: writet3.c,v 1.2 2004/05/11 14:30:32 taco Exp $
 */
 
 #include "ptexlib.h"
+extern "C" {
 #include <kpathsea/tex-glyph.h>
 #include <kpathsea/magstep.h>
-
+}
 #define T3_BUF_SIZE   1024
 
 #define T3_TYPE_PK    0

@@ -24,7 +24,7 @@ OBJS = $(objects) pdftoepdf.o
 
 .SUFFIXES: .cc .c .o
 .c.o: 
-	$(CC)  $(CFLAGS) $(DEFS) -DpdfTeX $(INCLUDES) -c $< -o $@
+	$(CXX)  $(CFLAGS) $(DEFS) -DpdfTeX $(CXXINCLUDES) -c $< -o $@
 .cc.o:
 	$(CXX) $(CFLAGS) $(DEFS) $(CXXINCLUDES) -c $<  -o $@
 
@@ -35,8 +35,8 @@ libpdf.a: $(OBJS) depend
 
 depend:
 	rm -f depend
-	$(CC) $(DEFS) -DpdfTeX $(CXXINCLUDES) -MM >> depend $(sources)
-	$(CC) $(DEFS) $(CXXINCLUDES) -MM >> depend pdftoepdf.cc
+	$(CXX) $(DEFS) -DpdfTeX $(CXXINCLUDES) -MM >> depend $(sources)
+	$(CXX) $(DEFS) $(CXXINCLUDES) -MM >> depend pdftoepdf.cc
  
 
 include depend

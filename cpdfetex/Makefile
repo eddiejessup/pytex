@@ -39,11 +39,11 @@ tex_deps:
 	cd $(LIBDIR)/libpng && $(MAKE)
 
 $(objects): %.o: %.c
-	$(CC) -c $(CFLAGS) -I$(kpathsea_parent)  $< -o $@
+	$(CXX) -c $(CFLAGS) -I$(kpathsea_parent)  $< -o $@
 
 depend:
 	rm -f depend
-	$(CC) -I$(kpathsea_parent) -MM >> depend $(sources)
+	$(CXX) -I$(kpathsea_parent) -MM >> depend $(sources)
 
 include depend
 

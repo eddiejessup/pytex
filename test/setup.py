@@ -9,6 +9,7 @@ ext_modules = [
               ["pytex_main.pyx"],
               library_dirs=['../cpdfetex'],
               libraries=["cpdfetex"],
+              language="c++",
               )
 ]
 setup(

@@ -49,21 +49,8 @@ static const char perforce_id[] =
     "$Id: pdftoepdf.cc,v 1.2 2004/05/11 14:30:59 taco Exp $";
 
 /* we avoid reading all necessary kpathsea headers, but we need xstrdup */
-#ifdef __cplusplus
-extern "C" {
-  extern KPSEDLL char *xstrdup (const char *);
-}
-#else
-  extern KPSEDLL char *xstrdup (const char *);
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-// FIXME: This definition is a duplicate from ../pdftexcoerce.h, which is
-// not usable here because of different macro definitions.
+extern KPSEDLL char *xstrdup (const char *);
 extern integer pdflastpdfboxspec ;
-}
-#endif
 
 /*
  * Used flags below:
