@@ -130,7 +130,7 @@ EXTERN void prompt_file_name (char *ss,char *es);
 #define ensure_dvi_open   if (  output_file_name  == 0  )  {  if (jobname  == 0  )   open_log_file() ;\
                            pack_job_name ( ".dvi" ); while(   ! b_open_out ( dvi_file ) )\
                              prompt_file_name ( "file name for output" , ".dvi");\
-                             output_file_name   =  b_make_name_string ( dvi_file );}
+                             output_file_name   =  b_make_name_string ();}
 
 EXTERN FILE *dvi_file; /* the device-independent output goes here */ 
 EXTERN str_number output_file_name; /* full name of the output file */ 

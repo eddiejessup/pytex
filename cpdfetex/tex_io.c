@@ -749,7 +749,7 @@ open_log_file (void) {
 	prompt_file_name ("transcript file name",".log");
 	/* end expansion of Try to get a different log file name */
   }
-  log_name = a_make_name_string (log_file);
+  log_name = a_make_name_string ();
   selector = log_only;
   log_opened = true;
   /* begin expansion of Print the banner line, including the date and time */
@@ -802,7 +802,7 @@ ensure_pdf_open (void) {
   pack_job_name (".pdf");
   while (!b_open_out (pdf_file))
 	prompt_file_name ("file name for output",".pdf");
-  output_file_name = b_make_name_string (pdf_file);
+  output_file_name = b_make_name_string ();
 }
 
 
@@ -1017,7 +1017,7 @@ start_input (void) { /* \TeX\ will \.{\\input} something */
     prompt_file_name ("input file name","");
   };
  DONE:
-  NAME_FIELD = a_make_name_string (cur_file);
+  NAME_FIELD = a_make_name_string ();
   source_filename_stack[in_open] = NAME_FIELD;
   full_source_filename_stack[in_open] = make_full_name_string();
   if (NAME_FIELD == str_ptr - 1)  {/* we can try to conserve string pool space now */

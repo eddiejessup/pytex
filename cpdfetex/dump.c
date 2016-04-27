@@ -88,7 +88,7 @@ store_fmt_file (void) {
   while (!w_open_out (fmt_file))
 	prompt_file_name ("format file name",format_extension);
   print_nl_string("Beginning to dump on file ");
-  slow_print (w_make_name_string (fmt_file));
+  slow_print (w_make_name_string ());
   flush_string;
   print_nl_string("");
   slow_print (format_ident);
