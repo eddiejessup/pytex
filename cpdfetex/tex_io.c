@@ -61,7 +61,7 @@ integer max_buf_stack; /* largest index used in |buffer| */
 
 void
 realloc_buffer (void) {
-  buffer = xrealloc_array(buffer,sizeof(ASCII_code)*2*buf_size);
+  buffer = (ASCII_code *)xrealloc_array(buffer,sizeof(ASCII_code)*2*buf_size);
   if (buffer == NULL) {
     overflow ("buffer size", buf_size);
   } else {
@@ -146,7 +146,7 @@ input_line (FILE * f) {
     return false;
   /* We didn't get the whole line because our buffer was too small.  */
   if (i != EOF && i != '\n' && i != '\r') {
-    buffer = xrealloc_array(buffer,sizeof(ASCII_code)*2*buf_size);
+    buffer = (ASCII_code *)xrealloc_array(buffer,sizeof(ASCII_code)*2*buf_size);
     if(buffer == NULL) {
       fprintf (stderr, "! Unable to read an entire line---bufsize=%u.\n",(unsigned) buf_size);
       fputs ("Please increase buf_size in texmf.cnf.\n", stderr);

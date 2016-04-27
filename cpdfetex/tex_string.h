@@ -66,7 +66,7 @@ EXTERN str_number init_str_ptr; /* the starting value of |str_ptr| */
 
 #define str_room(arg) {                                                            \
   if (pool_ptr + arg > pool_size) {                                                \
-    str_pool = xrealloc_array(str_pool,sizeof(packed_ASCII_code)*pool_size*2);     \
+    str_pool = (packed_ASCII_code *)xrealloc_array(str_pool,sizeof(packed_ASCII_code)*pool_size*2);     \
 	if (str_pool == NULL) {                                                        \
 	  overflow ("pool size", pool_size - init_pool_ptr);                           \
 	} else {                                                                       \
@@ -82,7 +82,7 @@ EXTERN str_number init_str_ptr; /* the starting value of |str_ptr| */
     if (max_strings*2 > max_halfword) {                                           \
      overflow ("number of strings", max_strings - init_str_ptr);                  \
     } else {                                                                      \
-      str_start = xrealloc_array(str_start,sizeof(pool_pointer)*max_strings*2);   \
+      str_start = (pool_pointer *)xrealloc_array(str_start,sizeof(pool_pointer)*max_strings*2);   \
       if (str_start == NULL) {                                                    \
         overflow ("number of strings", max_strings - init_str_ptr);               \
       } else {                                                                    \
