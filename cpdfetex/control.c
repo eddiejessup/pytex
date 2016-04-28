@@ -833,7 +833,7 @@ main_control (void) {	 /* governs \TeX's activities */
   tail_append (lig_stack);	/* |MAIN_LOOP_LOOKAHEAD| is next */
   /* end expansion of If the cursor is immediately followed by the right boundary, ...*/
  MAIN_LOOP_LOOKAHEAD:
-  /* begin expansion of Look ahead for another character, or leave |lig_stack| EMPTY_CODE if there's none there */
+  /* begin expansion of Look ahead for another character, or leave |lig_stack| empty if there's none there */
   /* module 1183 */
   /* The result of \.{\\char} can participate in a ligature or kern, so we must
    * look ahead for it.
