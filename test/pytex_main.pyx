@@ -12,6 +12,13 @@ cimport pytex_main
 import constants
 
 
+def main(av_list, args):
+    argc = len(av_list)
+    argv = to_cstring_array(av_list)
+    main_init(argc, argv, args)
+    main_body(argc, argv)
+
+
 cdef char **to_cstring_array(list_str):
     cdef char **ret = <char **>malloc(len(list_str) * sizeof(char *))
     for i in range(len(list_str)):
@@ -19,7 +26,7 @@ cdef char **to_cstring_array(list_str):
     return ret
 
 
-cdef main_init_py(int argc, char **argv, parsed_args):
+cdef main_init(int argc, char **argv, parsed_args):
     # Unfortunately, this parsing seems to have some side-effect that is
     # important, so we can't just remove it.
     # Maybe it gobbles up the options so that all that is left is the file
@@ -69,6 +76,88 @@ cdef main_init_py(int argc, char **argv, parsed_args):
 
     global shell_enabled_p
     shell_enabled_p = 1
+
+
+cdef main_body(int argc, char **argv):
+    set_up_bound_variables_py()
+    allocate_memory_for_arrays()
+    check_for_bad_constants_py()
+    # In case we quit during initialization
+    global history; history = constants.fatal_error_stop
+    # get_strings_started is needed always and before initialize
+    get_strings_started_py()
+    # Set global variables to their starting values.
+    initialize()
+    # Call 'primitive' for each primitive.
+    init_prim(not ini_version)
+    if ini_version:
+        global init_str_ptr; init_str_ptr = str_ptr
+        global init_pool_ptr; init_pool_ptr = pool_ptr
+    set_date_and_time_py()
+
+    print('{} {}'.format(constants.banner, '(ini)' if ini_version else ''))
+
+    initialize_output()
+    initialize_input(argc, argv)
+    # TODO: Set if this is wanted as command-line switch.
+    etex_version = True
+    if etex_version and ini_version:
+        initialize_etex()
+    global global_no_new_control_sequence; global_no_new_control_sequence = True
+
+    # If not in extended mode (do not know why this check), and any of:
+    #  - not in initex mode
+    #  - first line of input is an ampersand
+    #  - a \%\AM format line was seen (not sure what this means)
+    if not eTeX_mode and ((not ini_version) or (buffer[loc] == '&') or dump_line):
+        if ini_version:
+            # Erase preloaded format.
+            initialize()
+        open_fmt_file()
+        load_fmt_file()
+        fclose(fmt_file)
+        global loc
+        while loc < cur_input.limit_field and buffer[loc] == ' ':
+            loc += 1
+
+    if eTeX_mode:
+        print("entering extended mode");
+    global buffer; buffer[cur_input.limit_field] = end_line_char
+    if mltex_enabled_p:
+        print("MLTeX v2.2 enabled")
+
+    # If initex without format loaded.
+    if trie_not_ready:
+        trie_xmalloc(trie_size)
+        # Allocate and initialize font arrays.
+        font_xmalloc(font_max)
+        pdffont_xmalloc(font_max)
+        vf_xmalloc(font_max)
+        pdffont_initialize_init(font_max)
+        font_initialize_init()
+    global font_used
+    font_used = <boolean*>malloc((font_max + 1) * sizeof(boolean))
+    for i in range(constants.font_base, font_max):
+        font_used[i] = False
+
+    global selector
+    if interaction == constants.interaction_option_map['batchmode']:
+        selector = constants.no_print
+    else:
+        selector = constants.term_only
+
+    if loc < cur_input.limit_field and cat_code(buffer[loc]) != escape:
+        # \input is assumed.
+        start_input_py()
+
+    # Read values from config file.
+    read_values_from_config_file()
+    history = constants.spotless
+    # Come to life.
+    main_control()
+    # Prepare for death.
+    final_cleanup()
+    close_files_and_terminate()
 
 
 def set_up_bound_variables_py():
@@ -288,90 +377,3 @@ def start_input_py():
     global loc; loc = cur_input.start_field
 
 
-def main(av_list, args):
-    argc = len(av_list)
-    argv = to_cstring_array(av_list)
-    main_init_py(argc, argv, args)
-    main_body_py(argc, argv)
-
-
-cdef main_body_py(int argc, char **argv):
-    set_up_bound_variables_py()
-    allocate_memory_for_arrays()
-    check_for_bad_constants_py()
-    # In case we quit during initialization
-    global history; history = constants.fatal_error_stop
-    # get_strings_started is needed always and before initialize
-    get_strings_started_py()
-    # Set global variables to their starting values.
-    initialize()
-    # Call 'primitive' for each primitive.
-    init_prim(not ini_version)
-    if ini_version:
-        global init_str_ptr; init_str_ptr = str_ptr
-        global init_pool_ptr; init_pool_ptr = pool_ptr
-    set_date_and_time_py()
-
-    print('{} {}'.format(constants.banner, '(ini)' if ini_version else ''))
-
-    initialize_output()
-    initialize_input(argc, argv)
-    # TODO: Set if this is wanted as command-line switch.
-    etex_version = True
-    if etex_version and ini_version:
-        initialize_etex()
-    global global_no_new_control_sequence; global_no_new_control_sequence = True
-
-    # If not in extended mode (do not know why this check), and any of:
-    #  - not in initex mode
-    #  - first line of input is an ampersand
-    #  - a \%\AM format line was seen (not sure what this means)
-    if not eTeX_mode and ((not ini_version) or (buffer[loc] == '&') or dump_line):
-        if ini_version:
-            # Erase preloaded format.
-            initialize()
-        open_fmt_file()
-        load_fmt_file()
-        fclose(fmt_file)
-        global loc
-        while loc < cur_input.limit_field and buffer[loc] == ' ':
-            loc += 1
-
-    if eTeX_mode:
-        print("entering extended mode");
-    global buffer; buffer[cur_input.limit_field] = end_line_char
-    if mltex_enabled_p:
-        print("MLTeX v2.2 enabled")
-
-    # If initex without format loaded.
-    if trie_not_ready:
-        trie_xmalloc(trie_size)
-        # Allocate and initialize font arrays.
-        font_xmalloc(font_max)
-        pdffont_xmalloc(font_max)
-        vf_xmalloc(font_max)
-        pdffont_initialize_init(font_max)
-        font_initialize_init()
-    global font_used
-    font_used = <boolean*>malloc((font_max + 1) * sizeof(boolean))
-    for i in range(constants.font_base, font_max):
-        font_used[i] = False
-
-    global selector
-    if interaction == constants.interaction_option_map['batchmode']:
-        selector = constants.no_print
-    else:
-        selector = constants.term_only
-
-    if loc < cur_input.limit_field and cat_code(buffer[loc]) != escape:
-        # \input is assumed.
-        start_input_py()
-
-    # Read values from config file.
-    read_values_from_config_file()
-    history = constants.spotless
-    # Come to life.
-    main_control()
-    # Prepare for death.
-    final_cleanup()
-    close_files_and_terminate()
