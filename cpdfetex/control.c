@@ -169,7 +169,6 @@ void handle_easy_cases(void) {
     break;
   case hmode + ex_space:
   case mmode + ex_space:
-    do_something;
     append_normal_space();
     break;
 	/* begin expansion of Cases of |main_control| that are not part of the inner loop */
@@ -181,7 +180,6 @@ void handle_easy_cases(void) {
   case vmode + spacer:
   case mmode + spacer:
   case mmode + no_boundary:
-	do_something;
 	break;
 	/* begin expansion of Forbidden cases detected in |main_control| */
 	/* module 1193 */
@@ -945,7 +943,6 @@ void handle_main_loop() {
           wrapup (rt_hit);
           goto MAIN_LOOP_MOVE;
         } else {
-          do_something;
           goto MAIN_LOOP_MOVE1;
         };
       };
@@ -1012,7 +1009,6 @@ main_control (void) {	 /* governs \TeX's activities */
       case hmode + letter:
       case hmode + other_char:
       case hmode + char_given:
-        do_something;
         handle_main_loop();
         continue;
       case hmode + char_num:
@@ -1030,13 +1026,10 @@ main_control (void) {	 /* governs \TeX's activities */
       case ANY_MODE (ignore_spaces):
         /* Get the next non-blank non-call... */
         get_nblank_ncall;
-          do_something;
         continue;
       case vmode + stop:
         if (its_all_over()) {
           return; /* this is the only way out */
-        } else {
-          do_something;
         }
         break;
       default:
