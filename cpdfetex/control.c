@@ -745,6 +745,262 @@ void handle_easy_cases(void) {
 }
 
 
+void handle_main_loop() {
+  /* begin expansion of Append character |cur_chr| and the following characters (if~any)
+     to the current hlist in the current font; |goto reswitch| when a non-character has been fetched */
+  /* module 1179 */
+  /* We leave the |space_factor| unchanged if |sf_code(cur_chr)=0|; otherwise we
+   * set it equal to |sf_code(cur_chr)|, except that it should never change
+   * from a value less than 1000 to a value exceeding 1000. The most common
+   * case is |sf_code(cur_chr)=1000|, so we want that case to be fast.
+   * 
+   * The overall structure of the main loop is presented here. Some program labels
+   * are inside the individual sections.
+   */  
+  adjust_space_factor;
+  main_f = cur_font;
+  bchar = font_bchar[main_f];
+  false_bchar = font_false_bchar[main_f];
+  if (MODE_FIELD > 0)
+    if (language != clang)
+      fix_language();
+  fast_get_avail (lig_stack);
+  font (lig_stack) = main_f;
+  cur_l = qi (cur_chr);
+  character (lig_stack) = cur_l;
+  cur_q = tail;
+  if (cancel_boundary) {
+    cancel_boundary = false;
+    main_k = non_address;
+  } else {
+    main_k = bchar_label[main_f];
+  }
+  if (main_k == non_address)
+    goto MAIN_LOOP_MOVE2;  /* no left boundary processing */ 
+  cur_r = cur_l;
+  cur_l = non_char;
+  main_j = font_info[main_k].qqqq;
+  goto MAIN_LIG_LOOP2;
+  /* Make a ligature node, if |ligature_present|; INSERT_CODE a  null discretionary, if appropriate */
+  wrapup (rt_hit);
+ MAIN_LOOP_MOVE:
+  /* begin expansion of If the cursor is immediately followed by the right boundary, |goto reswitch|;
+     if it's followed by an invalid character, |goto BIG_SWITCH|; otherwise move the cursor one step to 
+     the right and |goto MAIN_LIG_LOOP| */
+  /* module 1181 */
+  if (lig_stack == null)
+    return;
+  cur_q = tail;
+  cur_l = character (lig_stack);
+ MAIN_LOOP_MOVE1:
+  if (!is_char_node(lig_stack))
+    goto MAIN_LOOP_MOVE_LIG;
+ MAIN_LOOP_MOVE2:
+  if ( (effective_char (false, main_f, cur_chr) > font_ec[main_f])
+       || 
+       (effective_char (false, main_f, cur_chr) < font_bc[main_f])) {
+    char_warning (main_f, cur_chr);
+    free_avail (lig_stack);
+    get_x_token();
+    return;
+  };
+  main_i = effective_char_info (main_f, cur_l);
+  if (!char_exists (main_i)) {
+    char_warning (main_f, cur_chr);
+    free_avail (lig_stack);
+    get_x_token();
+    return;
+  };
+  tail_append (lig_stack);  /* |MAIN_LOOP_LOOKAHEAD| is next */
+  /* end expansion of If the cursor is immediately followed by the right boundary, ...*/
+ MAIN_LOOP_LOOKAHEAD:
+  /* begin expansion of Look ahead for another character, or leave |lig_stack| empty if there's none there */
+  /* module 1183 */
+  /* The result of \.{\\char} can participate in a ligature or kern, so we must
+   * look ahead for it.
+   */
+  get_next(); /* set only |cur_cmd| and |cur_chr|, for speed */
+  if (cur_cmd == letter)
+    goto MAIN_LOOP_LOOKAHEAD1;
+  if (cur_cmd == other_char)
+    goto MAIN_LOOP_LOOKAHEAD1;
+  if (cur_cmd == char_given)
+    goto MAIN_LOOP_LOOKAHEAD1;
+  x_token(); /* now expand and set |cur_cmd|, |cur_chr|, |cur_tok| */
+  if (cur_cmd == letter)
+    goto MAIN_LOOP_LOOKAHEAD1;
+  if (cur_cmd == other_char)
+    goto MAIN_LOOP_LOOKAHEAD1;
+  if (cur_cmd == char_given)
+    goto MAIN_LOOP_LOOKAHEAD1;
+  if (cur_cmd == char_num) {
+    scan_char_num();
+    cur_chr = cur_val;
+    goto MAIN_LOOP_LOOKAHEAD1;
+  };
+  if (cur_cmd == no_boundary)
+    bchar = non_char;
+  cur_r = bchar;
+  lig_stack = null;
+  goto MAIN_LIG_LOOP;
+ MAIN_LOOP_LOOKAHEAD1:
+  adjust_space_factor;
+  fast_get_avail (lig_stack);
+  font (lig_stack) = main_f;
+  cur_r = qi (cur_chr);
+  character (lig_stack) = cur_r;
+  if (cur_r == false_bchar)
+    cur_r = non_char;   /* this prevents spurious ligatures */
+  /* end expansion of Look ahead for another character, or leave |lig_stack| EMPTY_CODE if there's none there */
+ MAIN_LIG_LOOP:
+  /* begin expansion of If there's a ligature/kern command relevant to |cur_l| and |cur_r|,
+     adjust the text appropriately; exit to |MAIN_LOOP_WRAPUP| */
+  /* module 1184 */
+  /* Even though comparatively few characters have a lig/kern program, several
+   * of the instructions here count as part of \TeX's inner loop, since a
+   * 
+   * potentially long sequential search must be performed. For example, tests with
+   * Computer Modern Roman showed that about 40 per cent of all characters
+   * actually encountered in practice had a lig/kern program, and that about four
+   * lig/kern commands were investigated for every such character.
+   * 
+   * At the beginning of this code we have |main_i=char_info(main_f,cur_l)|.
+   */
+  if (char_tag (main_i) != lig_tag) {
+    wrapup (rt_hit);
+    goto MAIN_LOOP_MOVE;
+  }
+  main_k = lig_kern_start (main_f,main_i);
+  main_j = font_info[main_k].qqqq;
+  if (skip_byte (main_j) <= stop_flag)
+    goto MAIN_LIG_LOOP2;
+  main_k = lig_kern_restart (main_f,main_j);
+  while (true) {
+  main_j = font_info[main_k].qqqq;
+ MAIN_LIG_LOOP2:
+  if (next_char (main_j) == cur_r)
+    if (skip_byte (main_j) <= stop_flag) {
+      /* begin expansion of Do ligature or kern command, returning to |MAIN_LIG_LOOP| or 
+         |MAIN_LOOP_WRAPUP| or |MAIN_LOOP_MOVE| */
+      /* module 1185 */
+      /* When a ligature or kern instruction matches a character, we know from
+       * |read_font_info| that the character exists in the font, even though we
+       * haven't verified its existence in the normal way.
+       * 
+       * This section could be made into a subroutine, if the code inside
+       * |main_control| needs to be shortened.
+       * 
+       * \chardef\?='174 % vertical line to indicate character retention
+       */
+      if (op_byte (main_j) >= kern_flag) {
+        wrapup (rt_hit);
+        tail_append (new_kern (char_kern (main_f, main_j)));
+        goto MAIN_LOOP_MOVE;
+      };
+      if (cur_l == non_char) {
+        lft_hit = true;
+      } else if (lig_stack == null) {
+        rt_hit = true;
+      };
+      check_interrupt;  /* allow a way out in case there's an infinite ligature loop */
+      switch (op_byte (main_j)) {
+      case qi (1):
+      case qi (5):
+        cur_l = rem_byte (main_j); /* \.{=:\?}, \.{=:\?>} */ 
+        main_i = char_info (main_f,cur_l);
+        ligature_present = true;
+        break;
+      case qi (2):
+      case qi (6):
+        cur_r = rem_byte (main_j); /* \.{\?=:}, \.{\?=:>} */ 
+        if (lig_stack == null) { /* right boundary character is being consumed */
+          lig_stack = new_lig_item (cur_r);
+          bchar = non_char;
+        } else if (is_char_node (lig_stack)) {  /* |link(lig_stack)=null| */
+          main_p = lig_stack;
+          lig_stack = new_lig_item (cur_r);
+          lig_ptr (lig_stack) = main_p;
+        } else {
+          character (lig_stack) = cur_r;
+        }
+        break;
+      case qi (3):
+        cur_r = rem_byte (main_j); /* \.{\?=:\?} */ 
+        main_p = lig_stack;
+        lig_stack = new_lig_item (cur_r);
+        link (lig_stack) = main_p;
+        break;
+      case qi (7):
+      case qi (11):
+        wrapup (false); /* \.{\?=:\?>}, \.{\?=:\?>>} */ 
+        cur_q = tail;
+        cur_l = rem_byte (main_j);
+        main_i = char_info (main_f,cur_l);
+        ligature_present = true;
+        break;
+      default:
+        cur_l = rem_byte (main_j);
+        ligature_present = true; /* \.{=:} */ 
+        if (lig_stack == null) {
+          wrapup (rt_hit);
+          goto MAIN_LOOP_MOVE;
+        } else {
+          do_something;
+          goto MAIN_LOOP_MOVE1;
+        };
+      };
+      if (op_byte (main_j) > qi (4))
+        if (op_byte (main_j) != qi (7)) {
+          wrapup (rt_hit);
+          goto MAIN_LOOP_MOVE;
+        }
+      if (cur_l < non_char)
+        goto MAIN_LIG_LOOP;
+      main_k = bchar_label[main_f];
+      continue;
+    };
+  /* end expansion of Do ligature or kern command, returning to |main_lig_loop| or ... */
+  if (skip_byte (main_j) == qi (0)) {
+    incr (main_k);
+  } else {
+    if (skip_byte (main_j) >= stop_flag) {
+      wrapup (rt_hit);
+      goto MAIN_LOOP_MOVE;
+    }
+    main_k = main_k + qo (skip_byte (main_j)) + 1;
+  };
+  }
+  /* end expansion of If there's a ligature/kern command relevant to |cur_l| and |cur_r|, ... */
+ MAIN_LOOP_MOVE_LIG:
+  /* begin expansion of Move the cursor past a pseudo-ligature, then 
+     |goto MAIN_LOOP_LOOKAHEAD| or |MAIN_LIG_LOOP| */
+  /* module 1182 */
+  /* Here we are at |MAIN_LOOP_move_lig|.
+   * When we begin this code we have |cur_q=tail| and |cur_l=character(lig_stack)|.
+   */
+  main_p = lig_ptr (lig_stack);
+  if (main_p > null)
+    tail_append (main_p);
+  temp_ptr = lig_stack;
+  lig_stack = link (temp_ptr);
+  free_node (temp_ptr, small_node_size);
+  main_i = char_info (main_f,cur_l);
+  ligature_present = true;
+  if (lig_stack == null) {
+    if (main_p > null) {
+      goto MAIN_LOOP_LOOKAHEAD;
+    } else {
+      cur_r = bchar;
+    } 
+  } else {
+    cur_r = character (lig_stack);
+  }
+  goto MAIN_LIG_LOOP;
+  /* end expansion of Move the cursor past a pseudo-ligature, then ...*/
+  /* end expansion of Append character |cur_chr| and the following characters .... */
+}
+
+
 // Returns true if the switch has exit because we have ended,
 // or false if we should go to the main loop.
 int switch_loop(void) {
@@ -754,12 +1010,14 @@ int switch_loop(void) {
       case hmode + other_char:
       case hmode + char_given:
         do_something;
-        return false;
+        handle_main_loop();
+        continue;
       case hmode + char_num:
         scan_char_num();
         cur_chr = cur_val;
         printf("breaking!\n");
-        return false;
+        handle_main_loop();
+        continue;
       case hmode + no_boundary:
         get_x_token();
         if ((cur_cmd == letter) || (cur_cmd == other_char)
@@ -791,263 +1049,11 @@ main_control (void) {	 /* governs \TeX's activities */
   if (every_job!= null)
 	begin_token_list (every_job, every_job_text);
   get_x_token();
- RESWITCH:
   int should_exit = switch_loop();
   if (should_exit) {
       return;
   }
-  /* begin expansion of Append character |cur_chr| and the following characters (if~any)
-	 to the current hlist in the current font; |goto reswitch| when a non-character has been fetched */
-  /* module 1179 */
-  /* We leave the |space_factor| unchanged if |sf_code(cur_chr)=0|; otherwise we
-   * set it equal to |sf_code(cur_chr)|, except that it should never change
-   * from a value less than 1000 to a value exceeding 1000. The most common
-   * case is |sf_code(cur_chr)=1000|, so we want that case to be fast.
-   * 
-   * The overall structure of the main loop is presented here. Some program labels
-   * are inside the individual sections.
-   */  
-  adjust_space_factor;
-  main_f = cur_font;
-  bchar = font_bchar[main_f];
-  false_bchar = font_false_bchar[main_f];
-  if (MODE_FIELD > 0)
-	if (language != clang)
-	  fix_language();
-  fast_get_avail (lig_stack);
-  font (lig_stack) = main_f;
-  cur_l = qi (cur_chr);
-  character (lig_stack) = cur_l;
-  cur_q = tail;
-  if (cancel_boundary) {
-	cancel_boundary = false;
-	main_k = non_address;
-  } else {
-	main_k = bchar_label[main_f];
-  }
-  if (main_k == non_address)
-	goto MAIN_LOOP_MOVE2;  /* no left boundary processing */ 
-  cur_r = cur_l;
-  cur_l = non_char;
-  main_j = font_info[main_k].qqqq;
-  goto MAIN_LIG_LOOP2;
-  /* Make a ligature node, if |ligature_present|; INSERT_CODE a  null discretionary, if appropriate */
-  wrapup (rt_hit);
- MAIN_LOOP_MOVE:
-  /* begin expansion of If the cursor is immediately followed by the right boundary, |goto reswitch|;
-	 if it's followed by an invalid character, |goto BIG_SWITCH|; otherwise move the cursor one step to 
-	 the right and |goto MAIN_LIG_LOOP| */
-  /* module 1181 */
-  if (lig_stack == null)
-	goto RESWITCH;
-  cur_q = tail;
-  cur_l = character (lig_stack);
- MAIN_LOOP_MOVE1:
-  if (!is_char_node(lig_stack))
-	goto MAIN_LOOP_MOVE_LIG;
- MAIN_LOOP_MOVE2:
-  if ( (effective_char (false, main_f, cur_chr) > font_ec[main_f])
-	   || 
-	   (effective_char (false, main_f, cur_chr) < font_bc[main_f])) {
-	char_warning (main_f, cur_chr);
-	free_avail (lig_stack);
-	get_x_token();
-	goto RESWITCH;
-  };
-  main_i = effective_char_info (main_f, cur_l);
-  if (!char_exists (main_i)) {
-	char_warning (main_f, cur_chr);
-	free_avail (lig_stack);
-	get_x_token();
-	goto RESWITCH;
-  };
-  tail_append (lig_stack);	/* |MAIN_LOOP_LOOKAHEAD| is next */
-  /* end expansion of If the cursor is immediately followed by the right boundary, ...*/
- MAIN_LOOP_LOOKAHEAD:
-  /* begin expansion of Look ahead for another character, or leave |lig_stack| empty if there's none there */
-  /* module 1183 */
-  /* The result of \.{\\char} can participate in a ligature or kern, so we must
-   * look ahead for it.
-   */
-  get_next(); /* set only |cur_cmd| and |cur_chr|, for speed */
-  if (cur_cmd == letter)
-	goto MAIN_LOOP_LOOKAHEAD1;
-  if (cur_cmd == other_char)
-	goto MAIN_LOOP_LOOKAHEAD1;
-  if (cur_cmd == char_given)
-	goto MAIN_LOOP_LOOKAHEAD1;
-  x_token(); /* now expand and set |cur_cmd|, |cur_chr|, |cur_tok| */
-  if (cur_cmd == letter)
-	goto MAIN_LOOP_LOOKAHEAD1;
-  if (cur_cmd == other_char)
-	goto MAIN_LOOP_LOOKAHEAD1;
-  if (cur_cmd == char_given)
-	goto MAIN_LOOP_LOOKAHEAD1;
-  if (cur_cmd == char_num) {
-	scan_char_num();
-	cur_chr = cur_val;
-	goto MAIN_LOOP_LOOKAHEAD1;
-  };
-  if (cur_cmd == no_boundary)
-	bchar = non_char;
-  cur_r = bchar;
-  lig_stack = null;
-  goto MAIN_LIG_LOOP;
- MAIN_LOOP_LOOKAHEAD1:
-  adjust_space_factor;
-  fast_get_avail (lig_stack);
-  font (lig_stack) = main_f;
-  cur_r = qi (cur_chr);
-  character (lig_stack) = cur_r;
-  if (cur_r == false_bchar)
-	cur_r = non_char;	/* this prevents spurious ligatures */
-  /* end expansion of Look ahead for another character, or leave |lig_stack| EMPTY_CODE if there's none there */
- MAIN_LIG_LOOP:
-  /* begin expansion of If there's a ligature/kern command relevant to |cur_l| and |cur_r|,
-	 adjust the text appropriately; exit to |MAIN_LOOP_WRAPUP| */
-  /* module 1184 */
-  /* Even though comparatively few characters have a lig/kern program, several
-   * of the instructions here count as part of \TeX's inner loop, since a
-   * 
-   * potentially long sequential search must be performed. For example, tests with
-   * Computer Modern Roman showed that about 40 per cent of all characters
-   * actually encountered in practice had a lig/kern program, and that about four
-   * lig/kern commands were investigated for every such character.
-   * 
-   * At the beginning of this code we have |main_i=char_info(main_f,cur_l)|.
-   */
-  if (char_tag (main_i) != lig_tag) {
-	wrapup (rt_hit);
-	goto MAIN_LOOP_MOVE;
-  }
-  main_k = lig_kern_start (main_f,main_i);
-  main_j = font_info[main_k].qqqq;
-  if (skip_byte (main_j) <= stop_flag)
-	goto MAIN_LIG_LOOP2;
-  main_k = lig_kern_restart (main_f,main_j);
-  while (true) {
-  main_j = font_info[main_k].qqqq;
- MAIN_LIG_LOOP2:
-  if (next_char (main_j) == cur_r)
-	if (skip_byte (main_j) <= stop_flag) {
-	  /* begin expansion of Do ligature or kern command, returning to |MAIN_LIG_LOOP| or 
-		 |MAIN_LOOP_WRAPUP| or |MAIN_LOOP_MOVE| */
-	  /* module 1185 */
-	  /* When a ligature or kern instruction matches a character, we know from
-	   * |read_font_info| that the character exists in the font, even though we
-	   * haven't verified its existence in the normal way.
-	   * 
-	   * This section could be made into a subroutine, if the code inside
-	   * |main_control| needs to be shortened.
-	   * 
-	   * \chardef\?='174 % vertical line to indicate character retention
-	   */
-	  if (op_byte (main_j) >= kern_flag) {
-		wrapup (rt_hit);
-		tail_append (new_kern (char_kern (main_f, main_j)));
-		goto MAIN_LOOP_MOVE;
-	  };
-	  if (cur_l == non_char) {
-		lft_hit = true;
-	  } else if (lig_stack == null) {
-		rt_hit = true;
-	  };
-	  check_interrupt;	/* allow a way out in case there's an infinite ligature loop */
-	  switch (op_byte (main_j)) {
-	  case qi (1):
-	  case qi (5):
-		cur_l = rem_byte (main_j); /* \.{=:\?}, \.{=:\?>} */ 
-		main_i = char_info (main_f,cur_l);
-		ligature_present = true;
-		break;
-	  case qi (2):
-	  case qi (6):
-		cur_r = rem_byte (main_j); /* \.{\?=:}, \.{\?=:>} */ 
-		if (lig_stack == null) { /* right boundary character is being consumed */
-		  lig_stack = new_lig_item (cur_r);
-		  bchar = non_char;
-		} else if (is_char_node (lig_stack)) {	/* |link(lig_stack)=null| */
-		  main_p = lig_stack;
-		  lig_stack = new_lig_item (cur_r);
-		  lig_ptr (lig_stack) = main_p;
-		} else {
-		  character (lig_stack) = cur_r;
-		}
-		break;
-	  case qi (3):
-		cur_r = rem_byte (main_j); /* \.{\?=:\?} */ 
-		main_p = lig_stack;
-		lig_stack = new_lig_item (cur_r);
-		link (lig_stack) = main_p;
-		break;
-	  case qi (7):
-	  case qi (11):
-		wrapup (false); /* \.{\?=:\?>}, \.{\?=:\?>>} */ 
-		cur_q = tail;
-		cur_l = rem_byte (main_j);
-		main_i = char_info (main_f,cur_l);
-		ligature_present = true;
-		break;
-	  default:
-		cur_l = rem_byte (main_j);
-		ligature_present = true; /* \.{=:} */ 
-		if (lig_stack == null) {
-		  wrapup (rt_hit);
-		  goto MAIN_LOOP_MOVE;
-		} else {
-		  do_something;
-		  goto MAIN_LOOP_MOVE1;
-		};
-	  };
-	  if (op_byte (main_j) > qi (4))
-		if (op_byte (main_j) != qi (7)) {
-		  wrapup (rt_hit);
-		  goto MAIN_LOOP_MOVE;
-		}
-	  if (cur_l < non_char)
-		goto MAIN_LIG_LOOP;
-	  main_k = bchar_label[main_f];
-	  continue;
-	};
-  /* end expansion of Do ligature or kern command, returning to |main_lig_loop| or ... */
-  if (skip_byte (main_j) == qi (0)) {
-	incr (main_k);
-  } else {
-	if (skip_byte (main_j) >= stop_flag) {
-	  wrapup (rt_hit);
-	  goto MAIN_LOOP_MOVE;
-	}
-	main_k = main_k + qo (skip_byte (main_j)) + 1;
-  };
-  }
-  /* end expansion of If there's a ligature/kern command relevant to |cur_l| and |cur_r|, ... */
- MAIN_LOOP_MOVE_LIG:
-  /* begin expansion of Move the cursor past a pseudo-ligature, then 
-	 |goto MAIN_LOOP_LOOKAHEAD| or |MAIN_LIG_LOOP| */
-  /* module 1182 */
-  /* Here we are at |MAIN_LOOP_move_lig|.
-   * When we begin this code we have |cur_q=tail| and |cur_l=character(lig_stack)|.
-   */
-  main_p = lig_ptr (lig_stack);
-  if (main_p > null)
-	tail_append (main_p);
-  temp_ptr = lig_stack;
-  lig_stack = link (temp_ptr);
-  free_node (temp_ptr, small_node_size);
-  main_i = char_info (main_f,cur_l);
-  ligature_present = true;
-  if (lig_stack == null) {
-	if (main_p > null) {
-	  goto MAIN_LOOP_LOOKAHEAD;
-	} else {
-	  cur_r = bchar;
-	} 
-  } else {
-	cur_r = character (lig_stack);
-  }
-  goto MAIN_LIG_LOOP;
-  /* end expansion of Move the cursor past a pseudo-ligature, then ...*/
-  /* end expansion of Append character |cur_chr| and the following characters .... */
+
 }
 
 
