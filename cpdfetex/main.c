@@ -170,57 +170,6 @@ struct option long_options[]
       { "jobname",                1, 0, 0 },
       { 0, 0, 0, 0 } };
 
-void parse_options(int argc,  string * argv)
-{
-  int g;   /* `getopt' return code.  */
-  int option_index;
-
-  for (;;) {
-    g = getopt_long_only (argc, argv, "+", long_options, &option_index);
-
-    if (g == -1) /* End of arguments, exit the loop.  */
-      break;
-
-    if (g == '?') { /* Unknown option.  */
-      usage (argv[0]);
-    }
-
-    /*assert (g == 0); */ /* We have no short option names.  */ /*TH and no debug.h ;)*/
-
-	if (ARGUMENT_IS ("progname")) {
-      user_progname = optarg;
-
-    } else if (ARGUMENT_IS ("jobname")) {
-      job_name = optarg;
-      
-    } else if (ARGUMENT_IS (DUMP_OPTION)) {
-      dump_name = optarg;
-      if (!user_progname) user_progname = optarg;
-      dump_option = true;
-
-    } else if (ARGUMENT_IS ("interaction")) {
-        /* These numbers match @d's in *.ch */
-      if (STREQ (optarg, "batchmode")) {
-        interaction_option = 0;
-      } else if (STREQ (optarg, "nonstopmode")) {
-        interaction_option = 1;
-      } else if (STREQ (optarg, "scrollmode")) {
-        interaction_option = 2;
-      } else if (STREQ (optarg, "errorstopmode")) {
-        interaction_option = 3;
-      } else {
-        WARNING1 ("Ignoring unknown argument `%s' to --interaction", optarg);
-      }
-      
-    } else if (ARGUMENT_IS ("help")) {
-       usagehelp (PROGRAM_HELP);
-
-    } else if (ARGUMENT_IS ("version")) {
-      printversionandexit (BANNER, COPYRIGHT_HOLDER, AUTHOR);
-
-    } /* Else it was a flag; getopt has already done the assignment.  */
-  }
-}
 
 /* Return true if FNAME is acceptable as a name for \openout, \openin, or
    \input.  */
