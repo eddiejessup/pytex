@@ -812,7 +812,6 @@ main_control (void) {	 /* governs \TeX's activities */
   get_x_token();
   }
 
- MAIN_LOOP:
   /* begin expansion of Append character |cur_chr| and the following characters (if~any)
 	 to the current hlist in the current font; |goto reswitch| when a non-character has been fetched */
   /* module 1179 */
