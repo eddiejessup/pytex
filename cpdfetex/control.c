@@ -199,6 +199,11 @@ main_control (void) {	 /* governs \TeX's activities */
 		|| (cur_cmd == char_given) || (cur_cmd == char_num))
 	  cancel_boundary = true;
 	goto RESWITCH;
+  case ANY_MODE (ignore_spaces):
+	/* Get the next non-blank non-call... */
+	get_nblank_ncall;
+    do_something;
+	goto RESWITCH;
   case hmode + spacer:
     if (space_factor == 1000) {
       append_normal_space();
@@ -222,11 +227,6 @@ main_control (void) {	 /* governs \TeX's activities */
   case mmode + no_boundary:
 	do_something;
 	break;
-  case ANY_MODE (ignore_spaces):	
-	/* Get the next non-blank non-call... */
-	get_nblank_ncall;
-    do_something;
-	goto RESWITCH;
   case vmode + stop:
 	if (its_all_over()) {
 	  return; /* this is the only way out */
