@@ -846,7 +846,6 @@ main_control (void) {	 /* governs \TeX's activities */
   cur_r = cur_l;
   cur_l = non_char;
   goto MAIN_LIG_LOOP1;  /* begin with cursor after left boundary */ 
- MAIN_LOOP_WRAPUP:
   /* Make a ligature node, if |ligature_present|; INSERT_CODE a  null discretionary, if appropriate */
   wrapup (rt_hit);
  MAIN_LOOP_MOVE:
@@ -932,8 +931,10 @@ main_control (void) {	 /* governs \TeX's activities */
    * 
    * At the beginning of this code we have |main_i=char_info(main_f,cur_l)|.
    */
-  if (char_tag (main_i) != lig_tag)
-	goto MAIN_LOOP_WRAPUP;
+  if (char_tag (main_i) != lig_tag) {
+	wrapup (rt_hit);
+	goto MAIN_LOOP_MOVE;
+  }
   main_k = lig_kern_start (main_f,main_i);
   main_j = font_info[main_k].qqqq;
   if (skip_byte (main_j) <= stop_flag)
@@ -1006,15 +1007,18 @@ main_control (void) {	 /* governs \TeX's activities */
 		cur_l = rem_byte (main_j);
 		ligature_present = true; /* \.{=:} */ 
 		if (lig_stack == null) {
-		  goto MAIN_LOOP_WRAPUP;
+		  wrapup (rt_hit);
+		  goto MAIN_LOOP_MOVE;
 		} else {
 		  do_something;
 		  goto MAIN_LOOP_MOVE1;
 		};
 	  };
 	  if (op_byte (main_j) > qi (4))
-		if (op_byte (main_j) != qi (7))
-		  goto MAIN_LOOP_WRAPUP;
+		if (op_byte (main_j) != qi (7)) {
+		  wrapup (rt_hit);
+		  goto MAIN_LOOP_MOVE;
+		}
 	  if (cur_l < non_char)
 		goto MAIN_LIG_LOOP;
 	  main_k = bchar_label[main_f];
@@ -1024,8 +1028,10 @@ main_control (void) {	 /* governs \TeX's activities */
   if (skip_byte (main_j) == qi (0)) {
 	incr (main_k);
   } else {
-	if (skip_byte (main_j) >= stop_flag)
-	  goto MAIN_LOOP_WRAPUP;
+	if (skip_byte (main_j) >= stop_flag) {
+	  wrapup (rt_hit);
+	  goto MAIN_LOOP_MOVE;
+	}
 	main_k = main_k + qo (skip_byte (main_j)) + 1;
   };
   goto MAIN_LIG_LOOP1;
