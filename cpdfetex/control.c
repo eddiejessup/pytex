@@ -753,25 +753,6 @@ main_control (void) {	 /* governs \TeX's activities */
  RESWITCH:
   int break_from_switch_loop = false;
   while (true) {
-  /* begin expansion of Give diagnostic information, if requested */
-  /* module 1176 */
-  /* When a new token has just been fetched at |BIG_SWITCH|, we have an
-   * ideal place to monitor \TeX's activity.
-   */
-  if (interrupt != 0)
-	if (OK_to_interrupt) {
-	  back_input();
-	  check_interrupt;
-	  get_x_token();
-	  continue;
-	};
-#ifdef TEXMF_DEBUG
-  if (panicking)
-	check_mem (false);
-#endif /* TEXMF_DEBUG */
-  if (tracing_commands > 0)
-	show_cur_cmd_chr();
-  /* end expansion of Give diagnostic information, if requested */
   switch (abs (MODE_FIELD) + cur_cmd) {
   case hmode + letter:
   case hmode + other_char:
