@@ -751,12 +751,13 @@ main_control (void) {	 /* governs \TeX's activities */
 	begin_token_list (every_job, every_job_text);
   get_x_token();
  RESWITCH:
+  int break_from_switch_loop = false;
   while (true) {
   /* begin expansion of Give diagnostic information, if requested */
   /* module 1176 */
   /* When a new token has just been fetched at |BIG_SWITCH|, we have an
    * ideal place to monitor \TeX's activity.
-   */  
+   */
   if (interrupt != 0)
 	if (OK_to_interrupt) {
 	  back_input();
@@ -776,11 +777,14 @@ main_control (void) {	 /* governs \TeX's activities */
   case hmode + other_char:
   case hmode + char_given:
 	do_something;
-	goto MAIN_LOOP;
+	break_from_switch_loop = true;
+	break;
   case hmode + char_num:
 	scan_char_num();
 	cur_chr = cur_val;
-	goto MAIN_LOOP;
+	printf("breaking!\n");
+	break_from_switch_loop = true;
+	break;
   case hmode + no_boundary:
 	get_x_token();
 	if ((cur_cmd == letter) || (cur_cmd == other_char)
@@ -802,6 +806,9 @@ main_control (void) {	 /* governs \TeX's activities */
   default:
     handle_easy_cases();
   }; /* of the big |case| statement */ 
+  if (break_from_switch_loop) {
+    break;
+  }
   get_x_token();
   }
 
