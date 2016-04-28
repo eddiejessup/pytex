@@ -202,7 +202,6 @@ main_control (void) {	 /* governs \TeX's activities */
   case hmode + spacer:
     if (space_factor == 1000) {
       append_normal_space();
-      goto BIG_SWITCH;
     } else {
       app_space();
     }
@@ -211,7 +210,7 @@ main_control (void) {	 /* governs \TeX's activities */
   case mmode + ex_space:
     do_something;
     append_normal_space();
-    goto BIG_SWITCH;
+    break;
 	/* begin expansion of Cases of |main_control| that are not part of the inner loop */
 	/* module 1190 */
 	/* Whew---that covers the main loop. We can now proceed at a leisurely
