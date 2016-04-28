@@ -940,6 +940,7 @@ main_control (void) {	 /* governs \TeX's activities */
   if (skip_byte (main_j) <= stop_flag)
 	goto MAIN_LIG_LOOP2;
   main_k = lig_kern_restart (main_f,main_j);
+  while (true) {
  MAIN_LIG_LOOP1:
   main_j = font_info[main_k].qqqq;
  MAIN_LIG_LOOP2:
@@ -1022,7 +1023,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	  if (cur_l < non_char)
 		goto MAIN_LIG_LOOP;
 	  main_k = bchar_label[main_f];
-	  goto MAIN_LIG_LOOP1;
+	  continue;
 	};
   /* end expansion of Do ligature or kern command, returning to |main_lig_loop| or ... */
   if (skip_byte (main_j) == qi (0)) {
@@ -1034,7 +1035,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	}
 	main_k = main_k + qo (skip_byte (main_j)) + 1;
   };
-  goto MAIN_LIG_LOOP1;
+  }
   /* end expansion of If there's a ligature/kern command relevant to |cur_l| and |cur_r|, ... */
  MAIN_LOOP_MOVE_LIG:
   /* begin expansion of Move the cursor past a pseudo-ligature, then 
