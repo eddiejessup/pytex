@@ -130,6 +130,34 @@ boolean ins_disc; /* should we INSERT_CODE a discretionary node? */
 #define ANY_MODE( arg )           vmode  +  arg: case hmode  +  arg: case mmode  +  arg
 #define NON_MATH( arg )           vmode  +  arg: case hmode  +  arg
 
+
+void append_normal_space(void) {
+  /* begin expansion of Append a normal inter-word space to the current list, then |goto BIG_SWITCH| */
+  /* module 1186 */
+  /* The occurrence of blank spaces is almost part of \TeX's inner loop,
+   * 
+   * since we usually encounter about one space for every five non-blank characters.
+   * Therefore |main_control| gives second-highest priority to ordinary spaces.
+   * 
+   * When a glue parameter like \.{\\spaceskip} is set to `\.{0pt}', we will
+   * see to it later that the corresponding glue specification is precisely
+   * |zero_glue|, not merely a pointer to some specification that happens
+   * to be full of zeroes. Therefore it is simple to test whether a glue parameter
+   * is zero or~not.
+   */
+  if (space_skip == zero_glue) {
+	/* Find the glue specification, |main_p|, for text spaces in the current font */
+	find_glue_spec;
+	temp_ptr = new_glue (main_p);
+  } else {
+	temp_ptr = new_param_glue (space_skip_code);
+  }
+  link (tail) = temp_ptr;
+  tail = temp_ptr;
+  /* end expansion of Append a normal inter-word space to the current list, then |goto BIG_SWITCH| */
+}
+
+
 void 
 main_control (void) {	 /* governs \TeX's activities */
   int t; /* general-purpose temporary variable */ 
@@ -172,16 +200,18 @@ main_control (void) {	 /* governs \TeX's activities */
 	  cancel_boundary = true;
 	goto RESWITCH;
   case hmode + spacer:
-	if (space_factor == 1000) {
-	  goto APPEND_NORMAL_SPACE;
-	} else {
-	  app_space();
-	}
-	break;
+    if (space_factor == 1000) {
+      append_normal_space();
+      goto BIG_SWITCH;
+    } else {
+      app_space();
+    }
+    break;
   case hmode + ex_space:
   case mmode + ex_space:
-	do_something;
-	goto APPEND_NORMAL_SPACE;
+    do_something;
+    append_normal_space();
+    goto BIG_SWITCH;
 	/* begin expansion of Cases of |main_control| that are not part of the inner loop */
 	/* module 1190 */
 	/* Whew---that covers the main loop. We can now proceed at a leisurely
@@ -1010,32 +1040,8 @@ main_control (void) {	 /* governs \TeX's activities */
   goto MAIN_LIG_LOOP;
   /* end expansion of Move the cursor past a pseudo-ligature, then ...*/
   /* end expansion of Append character |cur_chr| and the following characters .... */
- APPEND_NORMAL_SPACE:
-  /* begin expansion of Append a normal inter-word space to the current list, then |goto BIG_SWITCH| */
-  /* module 1186 */
-  /* The occurrence of blank spaces is almost part of \TeX's inner loop,
-   * 
-   * since we usually encounter about one space for every five non-blank characters.
-   * Therefore |main_control| gives second-highest priority to ordinary spaces.
-   * 
-   * When a glue parameter like \.{\\spaceskip} is set to `\.{0pt}', we will
-   * see to it later that the corresponding glue specification is precisely
-   * |zero_glue|, not merely a pointer to some specification that happens
-   * to be full of zeroes. Therefore it is simple to test whether a glue parameter
-   * is zero or~not.
-   */
-  if (space_skip == zero_glue) {
-	/* Find the glue specification, |main_p|, for text spaces in the current font */
-	find_glue_spec;
-	temp_ptr = new_glue (main_p);
-  } else {
-	temp_ptr = new_param_glue (space_skip_code);
-  }
-  link (tail) = temp_ptr;
-  tail = temp_ptr;
-  goto BIG_SWITCH;
-  /* end expansion of Append a normal inter-word space to the current list, then |goto BIG_SWITCH| */
 }
+
 
 /* module 1426 */
 
