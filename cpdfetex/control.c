@@ -752,6 +752,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	begin_token_list (every_job, every_job_text);
   get_x_token();
  RESWITCH:
+  while (true) {
   /* begin expansion of Give diagnostic information, if requested */
   /* module 1176 */
   /* When a new token has just been fetched at |BIG_SWITCH|, we have an
@@ -762,7 +763,7 @@ main_control (void) {	 /* governs \TeX's activities */
 	  back_input();
 	  check_interrupt;
 	  get_x_token();
-	  goto RESWITCH;
+	  continue;
 	};
 #ifdef TEXMF_DEBUG
   if (panicking)
@@ -786,12 +787,12 @@ main_control (void) {	 /* governs \TeX's activities */
 	if ((cur_cmd == letter) || (cur_cmd == other_char)
 		|| (cur_cmd == char_given) || (cur_cmd == char_num))
 	  cancel_boundary = true;
-	goto RESWITCH;
+	continue;
   case ANY_MODE (ignore_spaces):
 	/* Get the next non-blank non-call... */
 	get_nblank_ncall;
     do_something;
-	goto RESWITCH;
+	continue;
   case vmode + stop:
 	if (its_all_over()) {
 	  return; /* this is the only way out */
@@ -803,7 +804,8 @@ main_control (void) {	 /* governs \TeX's activities */
     handle_easy_cases();
   }; /* of the big |case| statement */ 
   get_x_token();
-  goto RESWITCH;
+  }
+
  MAIN_LOOP:
   /* begin expansion of Append character |cur_chr| and the following characters (if~any)
 	 to the current hlist in the current font; |goto reswitch| when a non-character has been fetched */
