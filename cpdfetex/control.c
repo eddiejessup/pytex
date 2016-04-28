@@ -1001,9 +1001,12 @@ void handle_main_loop() {
 }
 
 
-// Returns true if the switch has exit because we have ended,
-// or false if we should go to the main loop.
-int switch_loop(void) {
+
+void
+main_control (void) {	 /* governs \TeX's activities */
+  if (every_job!= null)
+	begin_token_list (every_job, every_job_text);
+  get_x_token();
   while (true) {
     switch (abs (MODE_FIELD) + cur_cmd) {
       case hmode + letter:
@@ -1031,7 +1034,7 @@ int switch_loop(void) {
         continue;
       case vmode + stop:
         if (its_all_over()) {
-          return true; /* this is the only way out */
+          return; /* this is the only way out */
         } else {
           do_something;
         }
@@ -1041,19 +1044,6 @@ int switch_loop(void) {
     }
     get_x_token();
   }
-}
-
-
-void 
-main_control (void) {	 /* governs \TeX's activities */
-  if (every_job!= null)
-	begin_token_list (every_job, every_job_text);
-  get_x_token();
-  int should_exit = switch_loop();
-  if (should_exit) {
-      return;
-  }
-
 }
 
 
