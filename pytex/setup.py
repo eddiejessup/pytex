@@ -7,8 +7,8 @@ from Cython.Build import cythonize
 ext_modules = [
     Extension("pytex_main",
               ["pytex_main.pyx"],
-              library_dirs=['../cpdfetex'],
-              libraries=["cpdfetex"],
+              library_dirs=['../cpdfetex', '../texk/kpathsea/.libs'],
+              libraries=["cpdfetex", "kpathsea"],
               language="c++",
               )
 ]
