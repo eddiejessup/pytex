@@ -750,7 +750,7 @@ main_control (void) {	 /* governs \TeX's activities */
   int t; /* general-purpose temporary variable */ 
   if (every_job!= null)
 	begin_token_list (every_job, every_job_text);
- BIG_SWITCH: get_x_token();
+  get_x_token();
  RESWITCH:
   /* begin expansion of Give diagnostic information, if requested */
   /* module 1176 */
@@ -761,7 +761,8 @@ main_control (void) {	 /* governs \TeX's activities */
 	if (OK_to_interrupt) {
 	  back_input();
 	  check_interrupt;
-	  goto BIG_SWITCH;
+	  get_x_token();
+	  goto RESWITCH;
 	};
 #ifdef TEXMF_DEBUG
   if (panicking)
@@ -801,7 +802,8 @@ main_control (void) {	 /* governs \TeX's activities */
   default:
     handle_easy_cases();
   }; /* of the big |case| statement */ 
-  goto BIG_SWITCH;
+  get_x_token();
+  goto RESWITCH;
  MAIN_LOOP:
   /* begin expansion of Append character |cur_chr| and the following characters (if~any)
 	 to the current hlist in the current font; |goto reswitch| when a non-character has been fetched */
@@ -858,13 +860,15 @@ main_control (void) {	 /* governs \TeX's activities */
 	   (effective_char (false, main_f, cur_chr) < font_bc[main_f])) {
 	char_warning (main_f, cur_chr);
 	free_avail (lig_stack);
-	goto BIG_SWITCH;
+	get_x_token();
+	goto RESWITCH;
   };
   main_i = effective_char_info (main_f, cur_l);
   if (!char_exists (main_i)) {
 	char_warning (main_f, cur_chr);
 	free_avail (lig_stack);
-	goto BIG_SWITCH;
+	get_x_token();
+	goto RESWITCH;
   };
   tail_append (lig_stack);	/* |MAIN_LOOP_LOOKAHEAD| is next */
   /* end expansion of If the cursor is immediately followed by the right boundary, ...*/
