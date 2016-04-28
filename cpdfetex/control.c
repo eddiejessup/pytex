@@ -745,54 +745,57 @@ void handle_easy_cases(void) {
 }
 
 
+// Returns true if the switch has exit because we have ended,
+// or false if we should go to the main loop.
+int switch_loop(void) {
+  while (true) {
+    switch (abs (MODE_FIELD) + cur_cmd) {
+      case hmode + letter:
+      case hmode + other_char:
+      case hmode + char_given:
+        do_something;
+        return false;
+      case hmode + char_num:
+        scan_char_num();
+        cur_chr = cur_val;
+        printf("breaking!\n");
+        return false;
+      case hmode + no_boundary:
+        get_x_token();
+        if ((cur_cmd == letter) || (cur_cmd == other_char)
+          || (cur_cmd == char_given) || (cur_cmd == char_num))
+          cancel_boundary = true;
+        continue;
+      case ANY_MODE (ignore_spaces):
+        /* Get the next non-blank non-call... */
+        get_nblank_ncall;
+          do_something;
+        continue;
+      case vmode + stop:
+        if (its_all_over()) {
+          return true; /* this is the only way out */
+        } else {
+          do_something;
+        }
+        break;
+      default:
+        handle_easy_cases();
+    }
+    get_x_token();
+  }
+}
+
+
 void 
 main_control (void) {	 /* governs \TeX's activities */
   if (every_job!= null)
 	begin_token_list (every_job, every_job_text);
   get_x_token();
  RESWITCH:
-  int break_from_switch_loop = false;
-  while (true) {
-  switch (abs (MODE_FIELD) + cur_cmd) {
-  case hmode + letter:
-  case hmode + other_char:
-  case hmode + char_given:
-	do_something;
-	break_from_switch_loop = true;
-	break;
-  case hmode + char_num:
-	scan_char_num();
-	cur_chr = cur_val;
-	printf("breaking!\n");
-	break_from_switch_loop = true;
-	break;
-  case hmode + no_boundary:
-	get_x_token();
-	if ((cur_cmd == letter) || (cur_cmd == other_char)
-		|| (cur_cmd == char_given) || (cur_cmd == char_num))
-	  cancel_boundary = true;
-	continue;
-  case ANY_MODE (ignore_spaces):
-	/* Get the next non-blank non-call... */
-	get_nblank_ncall;
-    do_something;
-	continue;
-  case vmode + stop:
-	if (its_all_over()) {
-	  return; /* this is the only way out */
-	} else {
-	  do_something;
-	}
-	break;
-  default:
-    handle_easy_cases();
-  }; /* of the big |case| statement */ 
-  if (break_from_switch_loop) {
-    break;
+  int should_exit = switch_loop();
+  if (should_exit) {
+      return;
   }
-  get_x_token();
-  }
-
   /* begin expansion of Append character |cur_chr| and the following characters (if~any)
 	 to the current hlist in the current font; |goto reswitch| when a non-character has been fetched */
   /* module 1179 */
