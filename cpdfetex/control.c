@@ -747,7 +747,6 @@ void handle_easy_cases(void) {
 
 void 
 main_control (void) {	 /* governs \TeX's activities */
-  int t; /* general-purpose temporary variable */ 
   if (every_job!= null)
 	begin_token_list (every_job, every_job_text);
   get_x_token();
