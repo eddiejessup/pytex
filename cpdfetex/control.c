@@ -1014,7 +1014,6 @@ main_control (void) {	 /* governs \TeX's activities */
       case hmode + char_num:
         scan_char_num();
         cur_chr = cur_val;
-        printf("breaking!\n");
         handle_main_loop();
         continue;
       case hmode + no_boundary:
