@@ -8,13 +8,13 @@ all:
 	cd cpdfetex && $(MAKE) libcpdfetex.so
 	cd texutil  && $(MAKE) texutil && cp texutil  ../built
 	cd texutil  && $(MAKE) texexec && cp texexec  ../built
-	cd test && python setup.py build_ext --inplace
-	cd test && install_name_tool -change libcpdfetex.so ../cpdfetex/libcpdfetex.so pytex_main.so
+	cd test && $(MAKE)
 
 clean:
 	cd texk/kpathsea && $(MAKE) clean
 	cd cpdfetex      && $(MAKE) clean
 	cd texutil       && $(MAKE) clean
+	cd test       && $(MAKE) clean
 
 dist: clean
 	ln -s ../current cxtex-$(VERSION)
