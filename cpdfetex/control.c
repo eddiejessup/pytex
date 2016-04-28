@@ -845,7 +845,8 @@ main_control (void) {	 /* governs \TeX's activities */
 	goto MAIN_LOOP_MOVE2;  /* no left boundary processing */ 
   cur_r = cur_l;
   cur_l = non_char;
-  goto MAIN_LIG_LOOP1;  /* begin with cursor after left boundary */ 
+  main_j = font_info[main_k].qqqq;
+  goto MAIN_LIG_LOOP2;
   /* Make a ligature node, if |ligature_present|; INSERT_CODE a  null discretionary, if appropriate */
   wrapup (rt_hit);
  MAIN_LOOP_MOVE:
@@ -941,7 +942,6 @@ main_control (void) {	 /* governs \TeX's activities */
 	goto MAIN_LIG_LOOP2;
   main_k = lig_kern_restart (main_f,main_j);
   while (true) {
- MAIN_LIG_LOOP1:
   main_j = font_info[main_k].qqqq;
  MAIN_LIG_LOOP2:
   if (next_char (main_j) == cur_r)
