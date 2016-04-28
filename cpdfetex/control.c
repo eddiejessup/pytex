@@ -158,52 +158,8 @@ void append_normal_space(void) {
 }
 
 
-void 
-main_control (void) {	 /* governs \TeX's activities */
-  int t; /* general-purpose temporary variable */ 
-  if (every_job!= null)
-	begin_token_list (every_job, every_job_text);
- BIG_SWITCH: get_x_token();
- RESWITCH:
-  /* begin expansion of Give diagnostic information, if requested */
-  /* module 1176 */
-  /* When a new token has just been fetched at |BIG_SWITCH|, we have an
-   * ideal place to monitor \TeX's activity.
-   */  
-  if (interrupt != 0)
-	if (OK_to_interrupt) {
-	  back_input();
-	  check_interrupt;
-	  goto BIG_SWITCH;
-	};
-#ifdef TEXMF_DEBUG
-  if (panicking)
-	check_mem (false);
-#endif /* TEXMF_DEBUG */
-  if (tracing_commands > 0)
-	show_cur_cmd_chr();
-  /* end expansion of Give diagnostic information, if requested */
+void handle_easy_cases(void) {
   switch (abs (MODE_FIELD) + cur_cmd) {
-  case hmode + letter:
-  case hmode + other_char:
-  case hmode + char_given:
-	do_something;
-	goto MAIN_LOOP;
-  case hmode + char_num:
-	scan_char_num();
-	cur_chr = cur_val;
-	goto MAIN_LOOP;
-  case hmode + no_boundary:
-	get_x_token();
-	if ((cur_cmd == letter) || (cur_cmd == other_char)
-		|| (cur_cmd == char_given) || (cur_cmd == char_num))
-	  cancel_boundary = true;
-	goto RESWITCH;
-  case ANY_MODE (ignore_spaces):
-	/* Get the next non-blank non-call... */
-	get_nblank_ncall;
-    do_something;
-	goto RESWITCH;
   case hmode + spacer:
     if (space_factor == 1000) {
       append_normal_space();
@@ -226,13 +182,6 @@ main_control (void) {	 /* governs \TeX's activities */
   case mmode + spacer:
   case mmode + no_boundary:
 	do_something;
-	break;
-  case vmode + stop:
-	if (its_all_over()) {
-	  return; /* this is the only way out */
-	} else {
-	  do_something;
-	}
 	break;
 	/* begin expansion of Forbidden cases detected in |main_control| */
 	/* module 1193 */
@@ -392,9 +341,8 @@ main_control (void) {	 /* governs \TeX's activities */
   case vmode + hmove:
   case hmode + vmove:
   case mmode + vmove:
-	t = cur_chr;
 	scan_normal_dimen;
-	if (t == 0) {
+	if (cur_chr == 0) {
 	  scan_box (cur_val);
 	} else {
 	  scan_box (-cur_val);
@@ -793,6 +741,65 @@ main_control (void) {	 /* governs \TeX's activities */
 	do_extension();
 	/* end expansion of Cases of |main_control| that are for extensions to \TeX */
 	/* end expansion of Cases of |main_control| that are not part of the inner loop */
+  }
+}
+
+
+void 
+main_control (void) {	 /* governs \TeX's activities */
+  int t; /* general-purpose temporary variable */ 
+  if (every_job!= null)
+	begin_token_list (every_job, every_job_text);
+ BIG_SWITCH: get_x_token();
+ RESWITCH:
+  /* begin expansion of Give diagnostic information, if requested */
+  /* module 1176 */
+  /* When a new token has just been fetched at |BIG_SWITCH|, we have an
+   * ideal place to monitor \TeX's activity.
+   */  
+  if (interrupt != 0)
+	if (OK_to_interrupt) {
+	  back_input();
+	  check_interrupt;
+	  goto BIG_SWITCH;
+	};
+#ifdef TEXMF_DEBUG
+  if (panicking)
+	check_mem (false);
+#endif /* TEXMF_DEBUG */
+  if (tracing_commands > 0)
+	show_cur_cmd_chr();
+  /* end expansion of Give diagnostic information, if requested */
+  switch (abs (MODE_FIELD) + cur_cmd) {
+  case hmode + letter:
+  case hmode + other_char:
+  case hmode + char_given:
+	do_something;
+	goto MAIN_LOOP;
+  case hmode + char_num:
+	scan_char_num();
+	cur_chr = cur_val;
+	goto MAIN_LOOP;
+  case hmode + no_boundary:
+	get_x_token();
+	if ((cur_cmd == letter) || (cur_cmd == other_char)
+		|| (cur_cmd == char_given) || (cur_cmd == char_num))
+	  cancel_boundary = true;
+	goto RESWITCH;
+  case ANY_MODE (ignore_spaces):
+	/* Get the next non-blank non-call... */
+	get_nblank_ncall;
+    do_something;
+	goto RESWITCH;
+  case vmode + stop:
+	if (its_all_over()) {
+	  return; /* this is the only way out */
+	} else {
+	  do_something;
+	}
+	break;
+  default:
+    handle_easy_cases();
   }; /* of the big |case| statement */ 
   goto BIG_SWITCH;
  MAIN_LOOP:
