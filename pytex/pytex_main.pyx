@@ -168,31 +168,30 @@ def get_nblank_ncall():
             break
 
 
-def any_mode(arg):
-    return [vmode + arg, hmode + arg, mmode + arg]
+all_modes = [vmode, hmode, mmode]
 
 
 def main_control():
     get_x_token()
     while True:
-        val = abs(cur_list.mode_field) + cur_cmd
-        if val in [hmode + letter, hmode + other_char, hmode + char_given]:
+        mode = abs(cur_list.mode_field)
+        if mode == hmode and cur_cmd in [letter, other_char, char_given]:
             handle_main_loop()
             continue
-        elif val in [hmode + char_num]:
+        elif mode == hmode and cur_cmd == char_num:
             scan_char_num()
             global cur_chr; cur_chr = cur_val
             handle_main_loop()
             continue
-        elif val in [hmode + no_boundary]:
+        elif mode == hmode and cur_cmd == no_boundary:
             get_x_token()
             if cur_cmd in [letter, other_char, char_given, char_num]:
                 global cancel_boundary; cancel_boundary = True
             continue
-        elif val in any_mode(ignore_spaces):
+        elif mode in all_modes and cur_cmd == ignore_spaces:
             get_nblank_ncall()
             continue
-        elif val in [vmode + stop]:
+        elif mode == vmode and cur_cmd == stop:
             if its_all_over():
               # This is the only way out.
               return
