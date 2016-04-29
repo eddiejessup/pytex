@@ -3,10 +3,10 @@
 #include "c-compat.h"
 
 #include "globals.h"
+#include "control.h"
 
 /* forwards */
 static boolean privileged (void);
-static boolean its_all_over (void);
 static void delete_last (void);
 static void issue_message (void);
 static void shift_case (void);
@@ -743,7 +743,7 @@ void handle_easy_cases(void) {
 }
 
 
-void handle_main_loop() {
+void handle_main_loop(void) {
   /* begin expansion of Append character |cur_chr| and the following characters (if~any)
      to the current hlist in the current font; |goto reswitch| when a non-character has been fetched */
   /* module 1179 */
@@ -999,46 +999,6 @@ void handle_main_loop() {
 
 
 
-void
-main_control (void) {	 /* governs \TeX's activities */
-  if (every_job!= null)
-	begin_token_list (every_job, every_job_text);
-  get_x_token();
-  while (true) {
-    switch (abs (MODE_FIELD) + cur_cmd) {
-      case hmode + letter:
-      case hmode + other_char:
-      case hmode + char_given:
-        handle_main_loop();
-        continue;
-      case hmode + char_num:
-        scan_char_num();
-        cur_chr = cur_val;
-        handle_main_loop();
-        continue;
-      case hmode + no_boundary:
-        get_x_token();
-        if ((cur_cmd == letter) || (cur_cmd == other_char)
-          || (cur_cmd == char_given) || (cur_cmd == char_num))
-          cancel_boundary = true;
-        continue;
-      case ANY_MODE (ignore_spaces):
-        /* Get the next non-blank non-call... */
-        get_nblank_ncall;
-        continue;
-      case vmode + stop:
-        if (its_all_over()) {
-          return; /* this is the only way out */
-        }
-        break;
-      default:
-        handle_easy_cases();
-    }
-    get_x_token();
-  }
-}
-
-
 /* module 1426 */
 
 /* If \.{\\errmessage} occurs often in |scroll_mode|, without user-defined
@@ -1095,7 +1055,7 @@ privileged (void) {
  * and contribution list are EMPTY_CODE, and when the last output was not a
  * ``dead cycle.''
  */
-static boolean 
+boolean
 its_all_over (void) { /* do this when \.{\\end} or \.{\\dump} occurs */
   if (privileged()) {
 	if ((page_head == page_tail) && (head == tail) && (dead_cycles == 0)) {

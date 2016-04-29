@@ -7,8 +7,10 @@ ctypedef int boolean
 ctypedef integer str_number
 ctypedef unsigned char packed_ASCII_code
 ctypedef unsigned char ASCII_code
-ctypedef unsigned char quarterword
 ctypedef int halfword
+ctypedef unsigned char quarterword
+ctypedef halfword pointer
+ctypedef unsigned char eight_bits
 
 cdef extern from "main.h":
     void topenin(int argc, char **argv)
@@ -28,6 +30,10 @@ cdef extern from "mainio.h":
 
 cdef extern from "control.h":
     void main_control()
+    boolean its_all_over()
+    void handle_main_loop()
+    void handle_easy_cases()
+    boolean cancel_boundary
 
 cdef extern from "exten.h":
     int shell_enabled_p
@@ -35,6 +41,7 @@ cdef extern from "exten.h":
 cdef extern from "eqtb.h":
     long end_line_char
     long cat_code(ASCII_code)
+    int every_job
 
 cdef extern from "etex.h":
     halfword max_reg_num
@@ -56,6 +63,14 @@ cdef extern from "types.h":
         halfword loc_field,
         halfword limit_field,
         halfword name_field,
+    struct list_state_record:
+        int mode_field,
+        pointer head_field,
+        pointer tail_field,
+        pointer eTeX_aux_field,
+        int pg_field,
+        int ml_field,
+
 
 cdef extern from "globals.h":
     # Defined in tex.c
@@ -90,8 +105,17 @@ cdef extern from "hash.h":
     boolean global_no_new_control_sequence
     const int hash_prime
 
+cdef extern from "nest.h":
+    list_state_record cur_list
+    int hmode, vmode, mmode
+
+cdef extern from "scan.h":
+    void scan_char_num()
+    integer cur_val
+
 cdef extern from "cmdchr.h":
     void cmdchr_initialize()
+    void begin_token_list(pointer p, quarterword t)
     FILE **input_file
     in_state_record cur_input
     # Number of lines in the buffer, minus one.
@@ -102,6 +126,22 @@ cdef extern from "cmdchr.h":
     integer line
     int escape
     int new_line
+    int every_job_text
+    int spacer
+    int letter
+    int other_char
+    int char_given
+    int char_num
+    int no_boundary
+    int ignore_spaces
+    int stop
+    # Current command set by `get_next`.
+    eight_bits cur_cmd
+    # Operand of current command.
+    halfword cur_chr
+
+cdef extern from "tokens.h":
+    void get_x_token()
 
 cdef extern from "tex_string.h":
     str_number search_string(str_number)
