@@ -181,8 +181,16 @@ def append_space():
         app_space()
 
 
+def do_nothing():
+    pass
+
+
 control_maps = (
     ControlMap(modes=(hmode,), commands=(spacer,), function=append_space),
+    ControlMap(modes=(hmode, mmode), commands=(ex_space,), function=append_normal_space),
+    ControlMap(modes=all_modes, commands=(relax,), function=do_nothing),
+    ControlMap(modes=[vmode, mmode], commands=(spacer,), function=do_nothing),
+    ControlMap(modes=[mmode], commands=(no_boundary,), function=do_nothing),
 )
 
 
@@ -214,12 +222,6 @@ def main_control():
             if its_all_over():
                 # This is the only way out.
                 return
-        elif mode in [hmode, mmode] and cur_cmd == ex_space:
-            append_normal_space()
-        elif ((mode in all_modes and cur_cmd == relax) or
-              (mode in [vmode, mmode] and cur_cmd == spacer) or
-              (mode == mmode and cur_cmd == no_boundary)):
-                pass
         else:
             handle_easy_cases()
         get_x_token()
