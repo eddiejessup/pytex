@@ -5,6 +5,7 @@ from libc.stdio cimport fclose
 from cpython.string cimport PyString_AsString
 
 import sys
+from collections import namedtuple
 
 import arrow
 
@@ -171,10 +172,28 @@ def get_nblank_ncall():
 all_modes = [vmode, hmode, mmode]
 
 
+ControlMap = namedtuple('ControlMap', ('modes', 'commands', 'function'))
+
+def append_space():
+    if space_factor == 1000:
+        append_normal_space()
+    else:
+        app_space()
+
+
+control_maps = (
+    ControlMap(modes=(hmode,), commands=(spacer,), function=append_space),
+)
+
+
 def main_control():
     get_x_token()
     while True:
         mode = abs(cur_list.mode_field)
+        for modes, commands, function in control_maps:
+            if mode in modes and cur_cmd in commands:
+                function()
+                break
         if mode == hmode and cur_cmd in [letter, other_char, char_given]:
             handle_main_loop()
             continue
@@ -195,11 +214,6 @@ def main_control():
             if its_all_over():
                 # This is the only way out.
                 return
-        elif mode == hmode and cur_cmd == spacer:
-            if space_factor == 1000:
-                append_normal_space()
-            else:
-                app_space()
         elif mode in [hmode, mmode] and cur_cmd == ex_space:
             append_normal_space()
         elif ((mode in all_modes and cur_cmd == relax) or
