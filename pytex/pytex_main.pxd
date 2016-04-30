@@ -33,6 +33,7 @@ cdef extern from "control.h":
     boolean its_all_over()
     void handle_main_loop()
     void handle_easy_cases()
+    void append_normal_space()
     boolean cancel_boundary
 
 cdef extern from "exten.h":
@@ -71,6 +72,9 @@ cdef extern from "types.h":
         int pg_field,
         int ml_field,
 
+
+cdef extern from "glue.h":
+    void app_space()
 
 cdef extern from "globals.h":
     # Defined in tex.c
@@ -135,6 +139,9 @@ cdef extern from "cmdchr.h":
     int no_boundary
     int ignore_spaces
     int stop
+    int relax
+    int ex_space
+    int space_factor
     # Current command set by `get_next`.
     eight_bits cur_cmd
     # Operand of current command.

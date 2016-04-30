@@ -160,27 +160,6 @@ void append_normal_space(void) {
 
 void handle_easy_cases(void) {
   switch (abs (MODE_FIELD) + cur_cmd) {
-  case hmode + spacer:
-    if (space_factor == 1000) {
-      append_normal_space();
-    } else {
-      app_space();
-    }
-    break;
-  case hmode + ex_space:
-  case mmode + ex_space:
-    append_normal_space();
-    break;
-	/* begin expansion of Cases of |main_control| that are not part of the inner loop */
-	/* module 1190 */
-	/* Whew---that covers the main loop. We can now proceed at a leisurely
-	 * pace through the other combinations of possibilities.
-	 */
-  case ANY_MODE (relax):
-  case vmode + spacer:
-  case mmode + spacer:
-  case mmode + no_boundary:
-	break;
 	/* begin expansion of Forbidden cases detected in |main_control| */
 	/* module 1193 */
 	/* When erroneous situations arise, \TeX\ usually issues an error message

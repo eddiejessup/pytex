@@ -193,8 +193,19 @@ def main_control():
             continue
         elif mode == vmode and cur_cmd == stop:
             if its_all_over():
-              # This is the only way out.
-              return
+                # This is the only way out.
+                return
+        elif mode == hmode and cur_cmd == spacer:
+            if space_factor == 1000:
+                append_normal_space()
+            else:
+                app_space()
+        elif mode in [hmode, mmode] and cur_cmd == ex_space:
+            append_normal_space()
+        elif ((mode in all_modes and cur_cmd == relax) or
+              (mode in [vmode, mmode] and cur_cmd == spacer) or
+              (mode == mmode and cur_cmd == no_boundary)):
+                pass
         else:
             handle_easy_cases()
         get_x_token()

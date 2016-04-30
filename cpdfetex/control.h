@@ -14,6 +14,7 @@ EXTERN void do_assignments (void);
 boolean its_all_over (void);
 void handle_main_loop(void);
 void handle_easy_cases(void);
+void append_normal_space(void);
 
 extern boolean cancel_boundary;
 
