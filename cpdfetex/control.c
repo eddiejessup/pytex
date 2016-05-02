@@ -189,7 +189,7 @@ void handle_easy_cases(void) {
 	/* begin expansion of Math-only cases in non-math modes, or vice versa */
 	/* module 1191 */
 	/* Here is a list of cases where the user has probably gotten into or out of math
-	 * MODE_FIELD by mistake. \TeX\ will INSERT_CODE a dollar sign and rescan the current token.
+	 * MODE_FIELD by mistake. \TeX\ will insert a dollar sign and rescan the current token.
 	 */
   case NON_MATH (sup_mark):
   case NON_MATH (sub_mark):
