@@ -170,6 +170,7 @@ def get_nblank_ncall():
 
 
 all_modes = [vmode, hmode, mmode]
+non_math_modes = [vmode, hmode]
 
 
 ControlMap = namedtuple('ControlMap', ('modes', 'commands', 'function'))
@@ -185,12 +186,23 @@ def do_nothing():
     pass
 
 
+def report_illegal_case():
+    raise Exception('Invalid command')
+
+
 control_maps = (
     ControlMap(modes=(hmode,), commands=(spacer,), function=append_space),
     ControlMap(modes=(hmode, mmode), commands=(ex_space,), function=append_normal_space),
+
     ControlMap(modes=all_modes, commands=(relax,), function=do_nothing),
     ControlMap(modes=[vmode, mmode], commands=(spacer,), function=do_nothing),
     ControlMap(modes=[mmode], commands=(no_boundary,), function=do_nothing),
+
+    ControlMap(modes=[vmode], commands=(vmove, vadjust, ital_corr), function=report_illegal_case),
+    ControlMap(modes=[hmode], commands=(hmove,), function=report_illegal_case),
+    ControlMap(modes=[mmode], commands=(hmove,), function=report_illegal_case),
+    ControlMap(modes=all_modes, commands=(last_item, mac_param), function=report_illegal_case),
+    ControlMap(modes=non_math_modes, commands=(eq_no,), function=report_illegal_case),
 )
 
 

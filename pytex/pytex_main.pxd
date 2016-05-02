@@ -142,6 +142,10 @@ cdef extern from "cmdchr.h":
     int relax
     int ex_space
     int space_factor
+    int eq_no
+    int last_item
+    int mac_param
+    int hmove, vmove, vadjust, ital_corr
     # Current command set by `get_next`.
     eight_bits cur_cmd
     # Operand of current command.

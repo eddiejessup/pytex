@@ -175,16 +175,6 @@ void handle_easy_cases(void) {
 	/* module 1243 */
 	/* module 1256 */
 	/* module 1289 */
-  case vmode + vmove:
-  case hmode + hmove:
-  case mmode + hmove:
-  case ANY_MODE (last_item):
-  case vmode + vadjust:
-  case vmode + ital_corr:
-  case NON_MATH (eq_no):
-  case ANY_MODE (mac_param):
-	report_illegal_case(); 
-	break;
 	/* end expansion of Forbidden cases detected in |main_control| */
 	/* begin expansion of Math-only cases in non-math modes, or vice versa */
 	/* module 1191 */
