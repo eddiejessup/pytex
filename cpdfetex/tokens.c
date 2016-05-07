@@ -749,29 +749,28 @@ get_token (void) {	/* sets |cur_cmd|, |cur_chr|, |cur_tok| */
  */
 void
 get_x_token (void) { /* sets |cur_cmd|, |cur_chr|, |cur_tok|, and expands macros */
- RESTART:
-  get_next();
-  if (cur_cmd <= max_command)
-    goto DONE;
-  if (cur_cmd >= CALL_CODE) {
-    if (cur_cmd < end_template) {
-	  macro_call();
-	} else {
-	  cur_cs = frozen_endv;
-	  cur_cmd = endv;
-	  goto DONE;  /* |cur_chr=null_list| */ 
-	}  
-  } else {
-    expand();
+  while (true) {
+    get_next();
+    if (cur_cmd <= max_command)
+      break;
+    if (cur_cmd >= CALL_CODE) {
+      if (cur_cmd < end_template) {
+        macro_call();
+      } else {
+        cur_cs = frozen_endv;
+        cur_cmd = endv;
+        break;  /* |cur_chr=null_list| */
+      }
+    } else {
+      expand();
+    }
   }
-  goto RESTART;
- DONE:
   if (cur_cs == 0) {
-	cur_tok = (cur_cmd * 256) + cur_chr;
+    cur_tok = (cur_cmd * 256) + cur_chr;
   } else {
     cur_tok = cs_token_flag + cur_cs;
   }
-};
+}
 
 
 /* module 381 */
