@@ -744,26 +744,16 @@ get_token (void) {	/* sets |cur_cmd|, |cur_chr|, |cur_tok| */
 /* module 380 */
 
 /* Here is a recursive procedure that is \TeX's usual way to get the
- * next token of input. It has been slightly optimized to take account of
- * common cases.
+ * next token of input.
  */
 void
 get_x_token (void) { /* sets |cur_cmd|, |cur_chr|, |cur_tok|, and expands macros */
   while (true) {
     get_next();
-    if (cur_cmd <= max_command)
+    if (cur_cmd <= max_command) {
       break;
-    if (cur_cmd >= CALL_CODE) {
-      if (cur_cmd < end_template) {
-        macro_call();
-      } else {
-        cur_cs = frozen_endv;
-        cur_cmd = endv;
-        break;  /* |cur_chr=null_list| */
-      }
-    } else {
-      expand();
     }
+    expand();
   }
   if (cur_cs == 0) {
     cur_tok = (cur_cmd * 256) + cur_chr;
