@@ -203,6 +203,15 @@ control_maps = (
     ControlMap(modes=[mmode], commands=(hmove,), function=report_illegal_case),
     ControlMap(modes=all_modes, commands=(last_item, mac_param), function=report_illegal_case),
     ControlMap(modes=non_math_modes, commands=(eq_no,), function=report_illegal_case),
+
+    # The user has probably gotten into or out of math mode by mistake.
+    # Insert a dollar sign and rescan the current token.
+    ControlMap(modes=non_math_modes,
+               commands=(sup_mark, sub_mark, math_char_num, math_given,
+                         math_comp, delim_num, left_right, above, radical,
+                         math_style, math_choice, vcenter, non_script, mkern,
+                         limit_switch, mskip, math_accent),
+               function=insert_dollar_sign),
 )
 
 
@@ -468,5 +477,3 @@ def start_input_py():
     global buffer; buffer[cur_input.limit_field] = end_line_char
     global first; first = cur_input.limit_field + 1
     global loc; loc = cur_input.start_field
-
-

@@ -160,54 +160,6 @@ void append_normal_space(void) {
 
 void handle_easy_cases(void) {
   switch (abs (MODE_FIELD) + cur_cmd) {
-	/* begin expansion of Forbidden cases detected in |main_control| */
-	/* module 1193 */
-	/* When erroneous situations arise, \TeX\ usually issues an error message
-	 * specific to the particular error. For example, `\.{\\noalign}' should
-	 * not appear in any MODE_FIELD, since it is recognized by the |align_peek| routine
-	 * in all of its legitimate appearances; a special error message is given
-	 * when `\.{\\noalign}' occurs elsewhere. But sometimes the most appropriate
-	 * error message is simply that the user is not allowed to do what he or she
-	 * has attempted. For example, `\.{\\moveleft}' is allowed only in vertical MODE_FIELD,
-	 * and `\.{\\lower}' only in non-vertical modes. Such cases are enumerated
-	 * here and in the other sections referred to under `See also \dots.'
-	 */
-	/* module 1243 */
-	/* module 1256 */
-	/* module 1289 */
-	/* end expansion of Forbidden cases detected in |main_control| */
-	/* begin expansion of Math-only cases in non-math modes, or vice versa */
-	/* module 1191 */
-	/* Here is a list of cases where the user has probably gotten into or out of math
-	 * MODE_FIELD by mistake. \TeX\ will insert a dollar sign and rescan the current token.
-	 */
-  case NON_MATH (sup_mark):
-  case NON_MATH (sub_mark):
-  case NON_MATH (math_char_num):
-  case NON_MATH (math_given):
-  case NON_MATH (math_comp):
-  case NON_MATH (delim_num):
-  case NON_MATH (left_right):
-  case NON_MATH (above):
-  case NON_MATH (radical):
-  case NON_MATH (math_style):
-  case NON_MATH (math_choice):
-  case NON_MATH (vcenter):
-  case NON_MATH (non_script):
-  case NON_MATH (mkern):
-  case NON_MATH (limit_switch):
-  case NON_MATH (mskip):
-  case NON_MATH (math_accent):
-  case mmode + endv:
-  case mmode + par_end:
-  case mmode + stop:
-  case mmode + vskip:
-  case mmode + un_vbox:
-  case mmode + valign:
-  case mmode + hrule:
-	insert_dollar_sign();
-	break;
-	/* end expansion of Math-only cases in non-math modes, or vice versa */
 	/* begin expansion of Cases of |main_control| that build boxes and lists */
 	/* module 1200 */
 	/* 

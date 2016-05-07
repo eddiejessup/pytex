@@ -72,6 +72,8 @@ cdef extern from "types.h":
         int pg_field,
         int ml_field,
 
+cdef extern from "mathbuild.h":
+    void insert_dollar_sign()
 
 cdef extern from "glue.h":
     void app_space()
@@ -146,6 +148,9 @@ cdef extern from "cmdchr.h":
     int last_item
     int mac_param
     int hmove, vmove, vadjust, ital_corr, max_command, cur_tok, cur_cs
+    int sup_mark, sub_mark, math_char_num, math_given, math_comp, delim_num
+    int left_right, above, radical, math_style, math_choice, vcenter
+    int non_script, mkern, limit_switch, mskip, math_accent
     # Current command set by `get_next`.
     eight_bits cur_cmd
     # Operand of current command.
