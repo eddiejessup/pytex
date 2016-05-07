@@ -164,7 +164,7 @@ cdef main_body(int argc, char **argv):
 def get_nblank_ncall():
     """Get the next non-blank non-call."""
     while True:
-        get_x_token()
+        get_x_token_py()
         if cur_cmd != spacer:
             break
 
@@ -206,8 +206,22 @@ control_maps = (
 )
 
 
+def get_x_token_py():
+    """Set cur_cmd, cur_chr, cur_tok, and expand macros."""
+    while True:
+        get_next()
+        if cur_cmd <= max_command:
+            break
+        expand()
+    global cur_tok
+    if cur_cs == 0:
+        cur_tok = (cur_cmd * 256) + cur_chr
+    else:
+        cur_tok = cs_token_flag + cur_cs
+
+
 def main_control():
-    get_x_token()
+    get_x_token_py()
     while True:
         mode = abs(cur_list.mode_field)
         for modes, commands, function in control_maps:
@@ -223,7 +237,7 @@ def main_control():
             handle_main_loop()
             continue
         elif mode == hmode and cur_cmd == no_boundary:
-            get_x_token()
+            get_x_token_py()
             if cur_cmd in [letter, other_char, char_given, char_num]:
                 global cancel_boundary; cancel_boundary = True
             continue
@@ -236,7 +250,7 @@ def main_control():
                 return
         else:
             handle_easy_cases()
-        get_x_token()
+        get_x_token_py()
 
 
 def set_up_bound_variables_py():

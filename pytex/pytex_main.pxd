@@ -145,14 +145,18 @@ cdef extern from "cmdchr.h":
     int eq_no
     int last_item
     int mac_param
-    int hmove, vmove, vadjust, ital_corr
+    int hmove, vmove, vadjust, ital_corr, max_command, cur_tok, cur_cs
     # Current command set by `get_next`.
     eight_bits cur_cmd
     # Operand of current command.
     halfword cur_chr
 
 cdef extern from "tokens.h":
-    void get_x_token()
+    void get_next()
+    void expand()
+
+cdef extern from "tokenlist.h":
+    int cs_token_flag
 
 cdef extern from "tex_string.h":
     str_number search_string(str_number)
