@@ -29,7 +29,6 @@ cdef extern from "mainio.h":
     boolean open_input(FILE** file_ptr, int format, const char *mode)
 
 cdef extern from "control.h":
-    void main_control()
     boolean its_all_over()
     void handle_main_loop()
     void handle_easy_cases()
