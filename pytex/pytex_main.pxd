@@ -76,6 +76,7 @@ cdef extern from "mathbuild.h":
 
 cdef extern from "glue.h":
     void app_space()
+    void append_glue()
 
 cdef extern from "globals.h":
     # Defined in tex.c
@@ -110,12 +111,17 @@ cdef extern from "hash.h":
     boolean global_no_new_control_sequence
     const int hash_prime
 
+cdef extern from "kern.h":
+    void append_kern()
+
 cdef extern from "nest.h":
+    void tail_append(pointer)
     list_state_record cur_list
-    int hmode, vmode, mmode
+    int hmode, vmode, mmode, ignore_depth, prev_depth
 
 cdef extern from "scan.h":
     void scan_char_num()
+    pointer scan_rule_spec()
     integer cur_val
 
 cdef extern from "cmdchr.h":
@@ -150,6 +156,7 @@ cdef extern from "cmdchr.h":
     int sup_mark, sub_mark, math_char_num, math_given, math_comp, delim_num
     int left_right, above, radical, math_style, math_choice, vcenter
     int non_script, mkern, limit_switch, mskip, math_accent
+    int hrule, vrule, hskip, vskip, kern
     # Current command set by `get_next`.
     eight_bits cur_cmd
     # Operand of current command.

@@ -160,51 +160,6 @@ void append_normal_space(void) {
 
 void handle_easy_cases(void) {
   switch (abs (MODE_FIELD) + cur_cmd) {
-	/* begin expansion of Cases of |main_control| that build boxes and lists */
-	/* module 1200 */
-	/* 
-	 * The most important parts of |main_control| are concerned with \TeX's
-	 * chief mission of box-making. We need to control the activities that put
-	 * entries on vlists and hlists, as well as the activities that convert
-	 * those lists into boxes. All of the necessary machinery has already been
-	 * developed; it remains for us to ``push the buttons'' at the right times.
-	 */	
-	/* module 1201 */
-	/* As an introduction to these routines, let's consider one of the simplest
-	 * cases: What happens when `\.{\\hrule}' occurs in vertical MODE_FIELD, or
-	 * `\.{\\vrule}' in horizontal MODE_FIELD or math MODE_FIELD? The code in |main_control|
-	 * is short, since the |scan_rule_spec| routine already does most of what is
-	 * required; thus, there is no need for a special action procedure.
-	 * 
-	 * Note that baselineskip calculations are disabled after a rule in vertical
-	 * MODE_FIELD, by setting |prev_depth:=ignore_depth|.
-	 */
-  case vmode + hrule:
-  case hmode + vrule:
-  case mmode + vrule:
-	tail_append (scan_rule_spec());
-	if (abs (MODE_FIELD) == vmode) {
-	  prev_depth = ignore_depth;
-	} else if (abs (MODE_FIELD) == hmode) {
-	  space_factor = 1000;
-	};
-	break;
-	/* module 1202 */
-	/* The processing of things like \.{\\hskip} and \.{\\vskip} is slightly
-	 * more complicated. But the code in |main_control| is very short, since
-	 * it simply calls on the action routine |append_glue|. Similarly, \.{\\kern}
-	 * activates |append_kern|.
-	 */
-  case vmode + vskip:
-  case hmode + hskip:
-  case mmode + hskip:
-  case mmode + mskip:
-	append_glue();
-	break;
-  case ANY_MODE (kern):
-  case mmode + mkern:
-	append_kern();
-	break;
 	/* module 1207 */
 	/* Many of the actions related to box-making are triggered by the appearance
 	 * of braces in the input. For example, when the user says `\.{\\hbox}

@@ -190,6 +190,21 @@ def report_illegal_case():
     raise Exception('Invalid command')
 
 
+def do_hrule():
+    tail_append(scan_rule_spec())
+    # Disable baselineskip calculations.
+    global prev_depth; prev_depth = ignore_depth
+
+
+def do_m_vrule():
+    tail_append(scan_rule_spec())
+
+
+def do_vrule():
+    do_m_vrule()
+    global space_factor; space_factor = 1000
+
+
 control_maps = (
     ControlMap(modes=(hmode,), commands=(spacer,), function=append_space),
     ControlMap(modes=(hmode, mmode), commands=(ex_space,), function=append_normal_space),
@@ -212,6 +227,19 @@ control_maps = (
                          math_style, math_choice, vcenter, non_script, mkern,
                          limit_switch, mskip, math_accent),
                function=insert_dollar_sign),
+
+    # Cases that build boxes and lists.
+
+    ControlMap(modes=[vmode], commands=[hrule], function=do_hrule),
+    ControlMap(modes=[hmode], commands=[vrule], function=do_vrule),
+    ControlMap(modes=[mmode], commands=[vrule], function=do_m_vrule),
+
+    ControlMap(modes=[vmode], commands=[vskip], function=append_glue),
+    ControlMap(modes=[hmode, mmode], commands=[hskip], function=append_glue),
+    ControlMap(modes=[mmode], commands=[mskip], function=append_glue),
+
+    ControlMap(modes=all_modes, commands=[kern], function=append_kern),
+    ControlMap(modes=[mmode], commands=[mkern], function=append_kern),
 )
 
 
