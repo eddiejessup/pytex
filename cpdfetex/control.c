@@ -10,7 +10,6 @@ static boolean privileged (void);
 static void delete_last (void);
 static void issue_message (void);
 static void shift_case (void);
-static void handle_right_brace (void);
 
 /* module 1177 */
 internal_font_number main_f; /* the current font */
@@ -160,53 +159,6 @@ void append_normal_space(void) {
 
 void handle_easy_cases(void) {
   switch (abs (MODE_FIELD) + cur_cmd) {
-	/* module 1207 */
-	/* Many of the actions related to box-making are triggered by the appearance
-	 * of braces in the input. For example, when the user says `\.{\\hbox}
-	 * \.{to} \.{100pt\{$\langle\,\hbox{hlist}\,\rangle$\}}' in vertical mode,
-	 * the information about the box size (100pt, |exactly|) is put onto |save_stack|
-	 * with a level boundary word just above it, and |cur_group:=adjusted_hbox_group|;
-	 * \TeX\ enters restricted horizontal mode to process the hlist. The right
-	 * brace eventually causes |save_stack| to be restored to its former state,
-	 * at which time the information about the box size (100pt, |exactly|) is
-	 * available once again; a box is packaged and we leave restricted horizontal
-	 * mode, appending the new box to the current list of the enclosing mode
-	 * (in this case to the current list of vertical mode), followed by any
-	 * vertical adjustments that were removed from the box by |hpack|.
-	 * 
-	 * The next few sections of the program are therefore concerned with the
-	 * treatment of left and right curly braces.
-	 */
-	/* module 1208 */
-	/* If a left brace occurs in the middle of a page or paragraph, it simply
-	 * introduces a new level of grouping, and the matching right brace will not have
-	 * such a drastic effect. Such grouping affects neither the mode nor the
-	 * current list.
-	 */
-  case NON_MATH (left_brace):
-	new_save_level (simple_group);
-	break;
-  case ANY_MODE (begin_group):
-	new_save_level (semi_simple_group);
-	break;
-  case ANY_MODE (end_group):
-	if (cur_group == semi_simple_group) {
-	  unsave();
-	} else {
-	  off_save();
-	};
-	break;
-	/* module 1212 */
-	/* The routine for a |right_brace| character branches into many subcases,
-	 * since a variety of things may happen, depending on |cur_group|. Some
-	 * types of groups are not supposed to be ended by a right brace; error
-	 * messages are given in hopes of pinpointing the problem. Most branches
-	 * of this routine will be filled in later, when we are ready to understand
-	 * them; meanwhile, we must prepare ourselves to deal with such errors.
-	 */
-  case ANY_MODE (right_brace):
-	handle_right_brace();
-	break;
 	/* module 1218 */
 	/* Constructions that require a box are started by calling |scan_box| with
 	 * a specified context code. The |scan_box| routine verifies
@@ -951,7 +903,7 @@ its_all_over (void) { /* do this when \.{\\end} or \.{\\dump} occurs */
 
 
 /* module 1213 */
-static void 
+void
 handle_right_brace (void) {
   pointer p, q; /* for short-term use */ 
   scaled d; /* holds |split_max_depth| in |insert_group| */ 

@@ -11,6 +11,7 @@ ctypedef int halfword
 ctypedef unsigned char quarterword
 ctypedef halfword pointer
 ctypedef unsigned char eight_bits
+ctypedef unsigned char group_code
 
 cdef extern from "main.h":
     void topenin(int argc, char **argv)
@@ -33,6 +34,7 @@ cdef extern from "control.h":
     void handle_main_loop()
     void handle_easy_cases()
     void append_normal_space()
+    void handle_right_brace()
     boolean cancel_boundary
 
 cdef extern from "exten.h":
@@ -119,6 +121,14 @@ cdef extern from "nest.h":
     list_state_record cur_list
     int hmode, vmode, mmode, ignore_depth, prev_depth
 
+cdef extern from "save.h":
+    void new_save_level(group_code c)
+    void unsave()
+    pointer scan_rule_spec()
+    integer cur_val
+    group_code simple_group, semi_simple_group
+    group_code cur_group
+
 cdef extern from "scan.h":
     void scan_char_num()
     pointer scan_rule_spec()
@@ -157,6 +167,7 @@ cdef extern from "cmdchr.h":
     int left_right, above, radical, math_style, math_choice, vcenter
     int non_script, mkern, limit_switch, mskip, math_accent
     int hrule, vrule, hskip, vskip, kern
+    int left_brace, right_brace, begin_group, end_group
     # Current command set by `get_next`.
     eight_bits cur_cmd
     # Operand of current command.

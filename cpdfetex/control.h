@@ -15,6 +15,7 @@ boolean its_all_over (void);
 void handle_main_loop(void);
 void handle_easy_cases(void);
 void append_normal_space(void);
+void handle_right_brace (void);
 
 extern boolean cancel_boundary;
 

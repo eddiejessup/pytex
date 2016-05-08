@@ -204,6 +204,25 @@ def do_vrule():
     do_m_vrule()
     global space_factor; space_factor = 1000
 
+def handle_left_brace():
+    # If a left brace occurs in the middle of a page or paragraph, it simply
+    # introduces a new level of grouping, and the matching right brace will not have
+    # such a drastic effect. Such grouping affects neither the mode nor the
+    # current list.
+    new_save_level(simple_group)
+
+
+def handle_begin_group():
+    new_save_level(semi_simple_group)
+
+
+def handle_end_group():
+    if cur_group == semi_simple_group:
+       # Pop the top level off the save stack.
+        unsave()
+    else:
+        raise Exception('Current group code is wrong')
+
 
 control_maps = (
     ControlMap(modes=(hmode,), commands=(spacer,), function=append_space),
@@ -240,6 +259,26 @@ control_maps = (
 
     ControlMap(modes=all_modes, commands=[kern], function=append_kern),
     ControlMap(modes=[mmode], commands=[mkern], function=append_kern),
+
+    # Many of the actions related to box-making are triggered by the appearance
+    # of braces in the input. For example, when the user says `\hbox to 100pt{< hlist >}' in vertical mode,
+    # the information about the box size (100pt) is put onto `save_stack`
+    # with a level boundary word just above it, and `cur_group = adjusted_hbox_group`;
+    # we enter restricted horizontal mode to process the hlist. The right
+    # brace causes `save_stack` to be restored to its former state,
+    # at which time the information about the box size is again
+    # available; a box is packaged and we leave restricted horizontal
+    # mode, appending the new box to the current list of the enclosing mode
+    # (in this case to the current list of vertical mode), followed by any
+    # vertical adjustments that were removed from the box by `hpack`.
+
+    ControlMap(modes=non_math_modes, commands=[left_brace], function=handle_left_brace),
+    # The routine for a `right_brace` character branches into many subcases,
+    # since a variety of things may happen, depending on `cur_group`. Some
+    # types of groups are not supposed to be ended by a right brace.
+    ControlMap(modes=all_modes, commands=[right_brace], function=handle_right_brace),
+    ControlMap(modes=all_modes, commands=[begin_group], function=handle_begin_group),
+    ControlMap(modes=all_modes, commands=[end_group], function=handle_end_group),
 )
 
 
