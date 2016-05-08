@@ -37,6 +37,9 @@ cdef extern from "control.h":
     void handle_right_brace()
     boolean cancel_boundary
 
+cdef extern from "align.h":
+    integer align_state
+
 cdef extern from "exten.h":
     int shell_enabled_p
 
@@ -75,6 +78,9 @@ cdef extern from "types.h":
 
 cdef extern from "mathbuild.h":
     void insert_dollar_sign()
+
+cdef extern from "buildpage.h":
+    void build_page()
 
 cdef extern from "box.h":
     void scan_box(int box_context)
@@ -145,6 +151,10 @@ cdef extern from "scan.h":
 
 cdef extern from "par.h":
     void new_graf(boolean indented)
+    void head_for_vmode()
+    void normal_paragraph()
+    void indent_in_hmode()
+    void end_graf()
 
 cdef extern from "cmdchr.h":
     void cmdchr_initialize()
@@ -182,8 +192,8 @@ cdef extern from "cmdchr.h":
     int non_script, mkern, limit_switch, mskip, math_accent
     int hrule, vrule, hskip, vskip, kern
     int left_brace, right_brace, begin_group, end_group
-    int leader_ship, make_box, start_par
-    int math_shift, un_hbox, accent, discretionary, valign
+    int leader_ship, make_box, start_par, par_end
+    int math_shift, un_hbox, un_vbox, accent, discretionary, valign, halign
     # Current command set by `get_next`.
     eight_bits cur_cmd
     # Operand of current command.

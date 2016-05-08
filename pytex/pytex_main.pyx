@@ -254,6 +254,21 @@ def backup_and_start_paragraph():
     new_graf(indented=True)
 
 
+def end_paragraph_from_v():
+    normal_paragraph()
+    if cur_list.mode_field > 0:
+        build_page()
+
+
+def end_paragraph_from_h():
+    if align_state < 0:
+        raise Exception('Alignment did not end properly')
+    # This takes us to the enclosing `MODE_FIELD`, if `MODE_FIELD` > 0
+    end_graf()
+    if cur_list.mode_field == vmode:
+        build_page()
+
+
 control_maps = (
     ControlMap(modes=(hmode,), commands=(spacer,), function=append_space),
     ControlMap(modes=(hmode, mmode), commands=(ex_space,), function=append_normal_space),
@@ -321,6 +336,14 @@ control_maps = (
                          un_hbox, vrule, accent, discretionary, hskip, valign,
                          ex_space, no_boundary],
                function=backup_and_start_paragraph),
+    ControlMap(modes=[hmode, mmode], commands=[start_par], function=indent_in_hmode),
+
+    # A paragraph ends at a `par_end` command, or when in horizontal mode
+    # and we reach the right brace of vertical mode routines.
+    ControlMap(modes=[vmode], commands=[par_end], function=end_paragraph_from_v),
+    ControlMap(modes=[hmode], commands=[par_end], function=end_paragraph_from_h),
+    ControlMap(modes=[hmode], commands=[stop, vskip, hrule, un_vbox, halign],
+               function=head_for_vmode),
 )
 
 

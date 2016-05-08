@@ -159,35 +159,6 @@ void append_normal_space(void) {
 
 void handle_easy_cases(void) {
   switch (abs (MODE_FIELD) + cur_cmd) {
-	/* module 1237 */
-  case hmode + start_par:
-  case mmode + start_par:
-	indent_in_hmode();
-	break;
-	/* module 1239 */
-	/* A paragraph ends when a |par_end| command is sensed, or when we are in
-	 * horizontal MODE_FIELD when reaching the right brace of vertical-MODE_FIELD routines
-	 * like \.{\\vbox}, \.{\\INSERT_CODE}, or \.{\\output}.
-	 */
-  case vmode + par_end:
-	normal_paragraph();
-	if (MODE_FIELD > 0)
-	  build_page();
-	break;
-  case hmode + par_end:
-	if (align_state < 0)
-	  off_save();	  /* this tries to recover from an alignment that didn't end properly */
-	end_graf(); /* this takes us to the enclosing MODE_FIELD, if |MODE_FIELD>0| */
-	if (MODE_FIELD == vmode)
-	  build_page();
-	break;
-  case hmode + stop:
-  case hmode + vskip:
-  case hmode + hrule:
-  case hmode + un_vbox:
-  case hmode + halign:
-	head_for_vmode();
-	break;
 	/* module 1242 */
 	/* Insertion and adjustment and mark nodes are constructed by the following
 	 * pieces of the program.
