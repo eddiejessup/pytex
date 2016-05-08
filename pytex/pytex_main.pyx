@@ -224,6 +224,36 @@ def handle_end_group():
         raise Exception('Current group code is wrong')
 
 
+def handle_move():
+    scan_dimen(False, False, False)
+    # If operand of current command is relax (I think)
+    if cur_chr == 0:
+        context_code = cur_val
+    else:
+        context_code = -cur_val
+    # `scan_box` verifies that a `make_box` command comes next,
+    # then calls `begin_box`.
+    scan_box(context_code)
+
+
+def handle_leader_ship():
+    context_code = leader_flag - a_leaders + cur_chr
+    scan_box(context_code)
+
+
+def handle_make_box():
+    begin_box(box_context=0)
+
+
+def handle_start_par():
+    new_graf(indented=cur_chr > 0)
+
+
+def backup_and_start_paragraph():
+    back_input()
+    new_graf(indented=True)
+
+
 control_maps = (
     ControlMap(modes=(hmode,), commands=(spacer,), function=append_space),
     ControlMap(modes=(hmode, mmode), commands=(ex_space,), function=append_normal_space),
@@ -279,6 +309,18 @@ control_maps = (
     ControlMap(modes=all_modes, commands=[right_brace], function=handle_right_brace),
     ControlMap(modes=all_modes, commands=[begin_group], function=handle_begin_group),
     ControlMap(modes=all_modes, commands=[end_group], function=handle_end_group),
+
+    ControlMap(modes=[vmode], commands=[hmove], function=handle_move),
+    ControlMap(modes=[hmode, mmode], commands=[vmove], function=handle_move),
+
+    ControlMap(modes=all_modes, commands=[leader_ship], function=handle_leader_ship),
+    ControlMap(modes=all_modes, commands=[make_box], function=handle_make_box),
+    ControlMap(modes=[vmode], commands=[start_par], function=handle_start_par),
+    ControlMap(modes=[vmode],
+               commands=[letter, other_char, char_num, char_given, math_shift,
+                         un_hbox, vrule, accent, discretionary, hskip, valign,
+                         ex_space, no_boundary],
+               function=backup_and_start_paragraph),
 )
 
 

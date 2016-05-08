@@ -76,9 +76,16 @@ cdef extern from "types.h":
 cdef extern from "mathbuild.h":
     void insert_dollar_sign()
 
+cdef extern from "box.h":
+    void scan_box(int box_context)
+    void begin_box(int box_context)
+    void append_glue()
+    int leader_flag
+
 cdef extern from "glue.h":
     void app_space()
     void append_glue()
+    int a_leaders
 
 cdef extern from "globals.h":
     # Defined in tex.c
@@ -132,11 +139,18 @@ cdef extern from "save.h":
 cdef extern from "scan.h":
     void scan_char_num()
     pointer scan_rule_spec()
+    void scan_dimen(boolean mu, boolean inf, boolean shortcut)
+    # Value returned by numeric scanners.
     integer cur_val
+
+cdef extern from "par.h":
+    void new_graf(boolean indented)
 
 cdef extern from "cmdchr.h":
     void cmdchr_initialize()
     void begin_token_list(pointer p, quarterword t)
+    # Put the token just scanned back into the input stream to be read again.
+    void back_input()
     FILE **input_file
     in_state_record cur_input
     # Number of lines in the buffer, minus one.
@@ -168,6 +182,8 @@ cdef extern from "cmdchr.h":
     int non_script, mkern, limit_switch, mskip, math_accent
     int hrule, vrule, hskip, vskip, kern
     int left_brace, right_brace, begin_group, end_group
+    int leader_ship, make_box, start_par
+    int math_shift, un_hbox, accent, discretionary, valign
     # Current command set by `get_next`.
     eight_bits cur_cmd
     # Operand of current command.

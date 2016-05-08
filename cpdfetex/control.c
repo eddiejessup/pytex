@@ -159,47 +159,6 @@ void append_normal_space(void) {
 
 void handle_easy_cases(void) {
   switch (abs (MODE_FIELD) + cur_cmd) {
-	/* module 1218 */
-	/* Constructions that require a box are started by calling |scan_box| with
-	 * a specified context code. The |scan_box| routine verifies
-	 * that a |make_box| command comes next and then it calls |begin_box|.
-	 */
-  case vmode + hmove:
-  case hmode + vmove:
-  case mmode + vmove:
-	scan_normal_dimen;
-	if (cur_chr == 0) {
-	  scan_box (cur_val);
-	} else {
-	  scan_box (-cur_val);
-	};
-	break;
-  case ANY_MODE (leader_ship):
-	scan_box (leader_flag - a_leaders + cur_chr);
-	break;
-  case ANY_MODE (make_box):
-	begin_box (0);
-	break;
-	/* module 1235 */
-  case vmode + start_par:
-	new_graf (cur_chr > 0);
-	break;
-  case vmode + letter:
-  case vmode + other_char:
-  case vmode + char_num:
-  case vmode + char_given:
-  case vmode + math_shift:
-  case vmode + un_hbox:
-  case vmode + vrule:
-  case vmode + accent:
-  case vmode + discretionary:
-  case vmode + hskip:
-  case vmode + valign:
-  case vmode + ex_space:
-  case vmode + no_boundary:
-	back_input();
-	new_graf (true);
-	break;
 	/* module 1237 */
   case hmode + start_par:
   case mmode + start_par:
