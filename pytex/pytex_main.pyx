@@ -190,21 +190,21 @@ def report_illegal_case():
     raise Exception('Invalid command')
 
 
-def do_hrule():
+def make_hrule():
     tail_append(scan_rule_spec())
     # Disable baselineskip calculations.
     global prev_depth; prev_depth = ignore_depth
 
 
-def do_m_vrule():
+def make_vrule_from_m():
     tail_append(scan_rule_spec())
 
 
-def do_vrule():
-    do_m_vrule()
+def make_vrule():
+    make_vrule_from_m()
     global space_factor; space_factor = 1000
 
-def handle_left_brace():
+def start_new_save_level_simple_group():
     # If a left brace occurs in the middle of a page or paragraph, it simply
     # introduces a new level of grouping, and the matching right brace will not have
     # such a drastic effect. Such grouping affects neither the mode nor the
@@ -212,11 +212,11 @@ def handle_left_brace():
     new_save_level(simple_group)
 
 
-def handle_begin_group():
+def begin_a_group():
     new_save_level(semi_simple_group)
 
 
-def handle_end_group():
+def end_a_group():
     if cur_group == semi_simple_group:
        # Pop the top level off the save stack.
         unsave()
@@ -224,7 +224,7 @@ def handle_end_group():
         raise Exception('Current group code is wrong')
 
 
-def handle_move():
+def move():
     scan_dimen(False, False, False)
     # If operand of current command is relax (I think)
     if cur_chr == 0:
@@ -241,11 +241,11 @@ def handle_leader_ship():
     scan_box(context_code)
 
 
-def handle_make_box():
+def begin_new_box():
     begin_box(box_context=0)
 
 
-def handle_start_par():
+def start_paragraph():
     new_graf(indented=cur_chr > 0)
 
 
@@ -279,9 +279,9 @@ control_maps = (
 
     # Cases that build boxes and lists.
 
-    ControlMap(modes=[vmode], commands=[hrule], function=do_hrule),
-    ControlMap(modes=[hmode], commands=[vrule], function=do_vrule),
-    ControlMap(modes=[mmode], commands=[vrule], function=do_m_vrule),
+    ControlMap(modes=[vmode], commands=[hrule], function=make_hrule),
+    ControlMap(modes=[hmode], commands=[vrule], function=make_vrule),
+    ControlMap(modes=[mmode], commands=[vrule], function=make_vrule_from_m),
 
     ControlMap(modes=[vmode], commands=[vskip], function=append_glue),
     ControlMap(modes=[hmode, mmode], commands=[hskip], function=append_glue),
@@ -302,20 +302,20 @@ control_maps = (
     # (in this case to the current list of vertical mode), followed by any
     # vertical adjustments that were removed from the box by `hpack`.
 
-    ControlMap(modes=non_math_modes, commands=[left_brace], function=handle_left_brace),
+    ControlMap(modes=non_math_modes, commands=[left_brace], function=start_new_save_level_simple_group),
     # The routine for a `right_brace` character branches into many subcases,
     # since a variety of things may happen, depending on `cur_group`. Some
     # types of groups are not supposed to be ended by a right brace.
     ControlMap(modes=all_modes, commands=[right_brace], function=handle_right_brace),
-    ControlMap(modes=all_modes, commands=[begin_group], function=handle_begin_group),
-    ControlMap(modes=all_modes, commands=[end_group], function=handle_end_group),
+    ControlMap(modes=all_modes, commands=[begin_group], function=begin_a_group),
+    ControlMap(modes=all_modes, commands=[end_group], function=end_a_group),
 
-    ControlMap(modes=[vmode], commands=[hmove], function=handle_move),
-    ControlMap(modes=[hmode, mmode], commands=[vmove], function=handle_move),
+    ControlMap(modes=[vmode], commands=[hmove], function=move),
+    ControlMap(modes=[hmode, mmode], commands=[vmove], function=move),
 
     ControlMap(modes=all_modes, commands=[leader_ship], function=handle_leader_ship),
-    ControlMap(modes=all_modes, commands=[make_box], function=handle_make_box),
-    ControlMap(modes=[vmode], commands=[start_par], function=handle_start_par),
+    ControlMap(modes=all_modes, commands=[make_box], function=begin_new_box),
+    ControlMap(modes=[vmode], commands=[start_par], function=start_paragraph),
     ControlMap(modes=[vmode],
                commands=[letter, other_char, char_num, char_given, math_shift,
                          un_hbox, vrule, accent, discretionary, hskip, valign,
