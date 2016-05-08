@@ -233,10 +233,6 @@ def main_control():
     get_x_token_py()
     while True:
         mode = abs(cur_list.mode_field)
-        for modes, commands, function in control_maps:
-            if mode in modes and cur_cmd in commands:
-                function()
-                break
         if mode == hmode and cur_cmd in [letter, other_char, char_given]:
             handle_main_loop()
             continue
@@ -258,7 +254,12 @@ def main_control():
                 # This is the only way out.
                 return
         else:
-            handle_easy_cases()
+            for modes, commands, function in control_maps:
+                if mode in modes and cur_cmd in commands:
+                    function()
+                    break
+            else:
+                handle_easy_cases()
         get_x_token_py()
 
 
