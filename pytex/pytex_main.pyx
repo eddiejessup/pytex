@@ -212,10 +212,6 @@ def start_new_save_level_simple_group():
     new_save_level(simple_group)
 
 
-def begin_a_group():
-    new_save_level(semi_simple_group)
-
-
 def end_a_group():
     if cur_group == semi_simple_group:
        # Pop the top level off the save stack.
@@ -241,14 +237,6 @@ def handle_leader_ship():
     scan_box(context_code)
 
 
-def begin_new_box():
-    begin_box(box_context=0)
-
-
-def start_paragraph():
-    new_graf(indented=cur_chr > 0)
-
-
 def backup_and_start_paragraph():
     back_input()
     new_graf(indented=True)
@@ -267,10 +255,6 @@ def end_paragraph_from_h():
     end_graf()
     if cur_list.mode_field == vmode:
         build_page()
-
-
-def append_zero_kern():
-    tail_append(new_kern(0))
 
 
 control_maps = (
@@ -326,15 +310,15 @@ control_maps = (
     # since a variety of things may happen, depending on `cur_group`. Some
     # types of groups are not supposed to be ended by a right brace.
     ControlMap(modes=all_modes, commands=[right_brace], function=handle_right_brace),
-    ControlMap(modes=all_modes, commands=[begin_group], function=begin_a_group),
+    ControlMap(modes=all_modes, commands=[begin_group], function=lambda: new_save_level(semi_simple_group)),
     ControlMap(modes=all_modes, commands=[end_group], function=end_a_group),
 
     ControlMap(modes=[vmode], commands=[hmove], function=move),
     ControlMap(modes=[hmode, mmode], commands=[vmove], function=move),
 
     ControlMap(modes=all_modes, commands=[leader_ship], function=handle_leader_ship),
-    ControlMap(modes=all_modes, commands=[make_box], function=begin_new_box),
-    ControlMap(modes=[vmode], commands=[start_par], function=start_paragraph),
+    ControlMap(modes=all_modes, commands=[make_box], function=lambda: begin_box(box_context=0)),
+    ControlMap(modes=[vmode], commands=[start_par], function=lambda: new_graf(indented=cur_chr > 0)),
     ControlMap(modes=[vmode],
                commands=[letter, other_char, char_num, char_given, math_shift,
                          un_hbox, vrule, accent, discretionary, hskip, valign,
@@ -374,7 +358,7 @@ control_maps = (
     ControlMap(modes=[hmode], commands=[ital_corr], function=append_italic_correction),
     # In math mode the same effect is achieved by appending
     # a kern of zero, since italic corrections are supplied later.
-    ControlMap(modes=[mmode], commands=[ital_corr], function=append_zero_kern),
+    ControlMap(modes=[mmode], commands=[ital_corr], function=lambda: tail_append(new_kern(0))),
 
     ControlMap(modes=[hmode, mmode], commands=[discretionary], function=append_discretionary),
     ControlMap(modes=[hmode], commands=[accent], function=make_accent),
