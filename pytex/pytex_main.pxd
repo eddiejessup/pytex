@@ -12,6 +12,7 @@ ctypedef unsigned char quarterword
 ctypedef halfword pointer
 ctypedef unsigned char eight_bits
 ctypedef unsigned char group_code
+ctypedef integer scaled
 
 cdef extern from "main.h":
     void topenin(int argc, char **argv)
@@ -35,6 +36,7 @@ cdef extern from "control.h":
     void handle_easy_cases()
     void append_normal_space()
     void handle_right_brace()
+    void delete_last()
     boolean cancel_boundary
 
 cdef extern from "align.h":
@@ -86,6 +88,9 @@ cdef extern from "box.h":
     void scan_box(int box_context)
     void begin_box(int box_context)
     void append_glue()
+    void unpackage()
+    void append_italic_correction()
+    void append_discretionary()
     int leader_flag
 
 cdef extern from "glue.h":
@@ -126,8 +131,12 @@ cdef extern from "hash.h":
     boolean global_no_new_control_sequence
     const int hash_prime
 
+cdef extern from "insert.h":
+    void begin_insert_or_adjust()
+
 cdef extern from "kern.h":
     void append_kern()
+    pointer new_kern(scaled w)
 
 cdef extern from "nest.h":
     void tail_append(pointer)
@@ -155,6 +164,12 @@ cdef extern from "par.h":
     void normal_paragraph()
     void indent_in_hmode()
     void end_graf()
+
+cdef extern from "penalty.h":
+    void append_penalty()
+
+cdef extern from "mark.h":
+    void make_mark()
 
 cdef extern from "cmdchr.h":
     void cmdchr_initialize()
@@ -194,6 +209,7 @@ cdef extern from "cmdchr.h":
     int left_brace, right_brace, begin_group, end_group
     int leader_ship, make_box, start_par, par_end
     int math_shift, un_hbox, un_vbox, accent, discretionary, valign, halign
+    int INSERT_CODE, mark, break_penalty, remove_item
     # Current command set by `get_next`.
     eight_bits cur_cmd
     # Operand of current command.
@@ -289,6 +305,7 @@ cdef extern from "mltex.h":
 cdef extern from "font.h":
     void font_xmalloc(integer font_max)
     void font_initialize_init()
+    void make_accent()
     boolean *font_used
 
 cdef extern from "pdffont.h":

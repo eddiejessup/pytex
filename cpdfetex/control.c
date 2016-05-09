@@ -7,7 +7,6 @@
 
 /* forwards */
 static boolean privileged (void);
-static void delete_last (void);
 static void issue_message (void);
 static void shift_case (void);
 
@@ -159,64 +158,6 @@ void append_normal_space(void) {
 
 void handle_easy_cases(void) {
   switch (abs (MODE_FIELD) + cur_cmd) {
-	/* module 1242 */
-	/* Insertion and adjustment and mark nodes are constructed by the following
-	 * pieces of the program.
-	 */
-  case ANY_MODE (INSERT_CODE):
-  case hmode + vadjust:
-  case mmode + vadjust:
-	begin_insert_or_adjust();
-	break;
-  case ANY_MODE (mark):
-	make_mark();
-	break;
-	/* module 1247 */
-	/* Penalty nodes get into a list via the |break_penalty| command. */
-  case ANY_MODE (break_penalty):
-	append_penalty();
-	break;
-	/* module 1249 */
-	/* The |remove_item| command removes a penalty, kern, or glue node if it
-	 * appears at the tail of the current list, using a brute-force linear scan.
-	 * Like \.{\\lastbox}, this command is not allowed in vertical MODE_FIELD (except
-	 * internal vertical MODE_FIELD), since the current list in vertical MODE_FIELD is sent
-	 * to the page builder. But if we happen to be able to implement it in
-	 * vertical MODE_FIELD, we do.
-	 */
-  case ANY_MODE (remove_item):
-	delete_last();
-	break;
-	/* module 1254 */
-	/* The |un_hbox| and |un_vbox| commands unwrap one of the 256 current boxes. */
-  case vmode + un_vbox:
-  case hmode + un_hbox:
-  case mmode + un_hbox:
-	unpackage();
-	break;
-	/* module 1257 */	
-	/* Italic corrections are converted to kern nodes when the |ital_corr| command
-	 * follows a character. In math MODE_FIELD the same effect is achieved by appending
-	 * a kern of zero here, since italic corrections are supplied later.
-	 */
-  case hmode + ital_corr:
-	append_italic_correction();
-	break;
-  case mmode + ital_corr:
-	tail_append (new_kern (0));
-	break;
-	/* module 1261 */
-  case hmode + discretionary:
-  case mmode + discretionary:
-	append_discretionary();
-	break;
-	/* module 1267 */
-	/* We need only one more thing to complete the horizontal MODE_FIELD routines, namely
-	 * the \.{\\accent} primitive.
-	 */
-  case hmode + accent:
-	make_accent();
-	break;
 	/* module 1271 */
 	/* When `\.{\\cr}' or `\.{\\span}' or a tab mark comes through the scanner
 	 * into |main_control|, it might be that the user has foolishly inserted
@@ -1046,8 +987,7 @@ handle_right_brace (void) {
  * will be deleted, if present.
  * A final \.{\\endM} node is temporarily removed.
  */
-static void 
-delete_last (void) {
+void delete_last (void) {
   pointer p, q; /* run through the current list */ 
   quarterword m; /* the length of a replacement list */ 
   if ((MODE_FIELD == vmode) && (tail == head)) {

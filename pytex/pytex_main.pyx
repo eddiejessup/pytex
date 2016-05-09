@@ -269,6 +269,10 @@ def end_paragraph_from_h():
         build_page()
 
 
+def append_zero_kern():
+    tail_append(new_kern(0))
+
+
 control_maps = (
     ControlMap(modes=(hmode,), commands=(spacer,), function=append_space),
     ControlMap(modes=(hmode, mmode), commands=(ex_space,), function=append_normal_space),
@@ -344,6 +348,36 @@ control_maps = (
     ControlMap(modes=[hmode], commands=[par_end], function=end_paragraph_from_h),
     ControlMap(modes=[hmode], commands=[stop, vskip, hrule, un_vbox, halign],
                function=head_for_vmode),
+
+    # Construct insertion, adjustment and mark nodes.
+    ControlMap(modes=all_modes, commands=[INSERT_CODE], function=begin_insert_or_adjust),
+    ControlMap(modes=[hmode, mmode], commands=[vadjust], function=begin_insert_or_adjust),
+    ControlMap(modes=all_modes, commands=[mark], function=make_mark),
+
+    # Put penalty node into a list.
+    ControlMap(modes=all_modes, commands=[break_penalty], function=append_penalty),
+
+    # Remove a penalty, kern, or glue node if it appears at the tail of the
+    # current list.
+    # Like `\lastbox`, this command is not allowed in vertical mode (except
+    # internal vertical mode), since the current list in vertical mode is sent
+    # to the page builder. But if we happen to be able to implement it in
+    # vertical mode, we do.
+    ControlMap(modes=all_modes, commands=[remove_item], function=delete_last),
+
+    # Unwrap one of the 256 current boxes.
+    ControlMap(modes=[vmode], commands=[un_vbox], function=unpackage),
+    ControlMap(modes=[hmode, mmode], commands=[un_hbox], function=unpackage),
+
+    # Italic corrections are converted to kern nodes when `ital_corr`
+    # follows a character.
+    ControlMap(modes=[hmode], commands=[ital_corr], function=append_italic_correction),
+    # In math mode the same effect is achieved by appending
+    # a kern of zero, since italic corrections are supplied later.
+    ControlMap(modes=[mmode], commands=[ital_corr], function=append_zero_kern),
+
+    ControlMap(modes=[hmode, mmode], commands=[discretionary], function=append_discretionary),
+    ControlMap(modes=[hmode], commands=[accent], function=make_accent),
 )
 
 
