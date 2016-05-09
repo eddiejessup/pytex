@@ -52,4 +52,4 @@ clean:
 	cd $(LIBDIR)/xpdf   && $(MAKE) clean
 	cd $(LIBDIR)/zlib   && $(MAKE) clean
 	cd $(LIBDIR)/libpng && $(MAKE) clean
-	rm -f depend *.o cpdfetex cpdfetex.exe *~
+	rm -f depend *.o libcpdfetex.so *~
