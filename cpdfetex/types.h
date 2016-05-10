@@ -174,22 +174,13 @@ typedef union
 {
   struct
   {
-#ifdef WORDS_BIGENDIAN
-    halfword RH, LH;
-#else
     halfword LH, RH;
-#endif
   } v;
 
   struct
   {				/* Make B0,B1 overlap the most significant bytes of LH.  */
-#ifdef WORDS_BIGENDIAN
-    halfword junk;
-    short B0, B1;
-#else				/* not WORDS_BIGENDIAN */
     /* If 32-bit memory words, have to do something.  */
     short B1, B0;
-#endif				/* LittleEndian */
   } u;
 } two_halves;
 
@@ -197,38 +188,28 @@ typedef struct
 {
   struct
   {
-#ifdef WORDS_BIGENDIAN
-    quarterword B0, B1, B2, B3;
-#else
     quarterword B3, B2, B1, B0;
-#endif
   } u;
 } four_quarters;
+
+typedef struct
+{
+  halfword junk;
+  integer CINT;
+} U;
+
+typedef struct
+{
+  halfword junk;
+  four_quarters QQQQ;
+} V;
 
 typedef union
 {
   glue_ratio gr;
   two_halves hh;
-#ifdef WORDS_BIGENDIAN
-  integer cint;
-  four_quarters qqqq;
-#else				/* not WORDS_BIGENDIAN */
-  struct
-  {
-#if defined (TeX) && !defined (SMALLTeX) || defined (MF) && !defined (SMALLMF) || defined (MP) && !defined (SMALLMP)
-    halfword junk;
-#endif				/* big {TeX,MF,MP} */
-    integer CINT;
-  } u;
-
-  struct
-  {
-#if defined (TeX) && !defined (SMALLTeX) || defined (MF) && !defined (SMALLMF) || defined (MP) && !defined (SMALLMP)
-    halfword junk;
-#endif				/* big {TeX,MF,MP} */
-    four_quarters QQQQ;
-  } v;
-#endif				/* not WORDS_BIGENDIAN */
+  U u;
+  V v;
 } memory_word;
 
 
@@ -237,10 +218,6 @@ typedef union
 
 typedef union
 {
-#ifdef WORDS_BIGENDIAN
-  integer cint;
-  four_quarters qqqq;
-#else				/* not WORDS_BIGENDIAN */
   struct
   {
     integer CINT;
@@ -250,7 +227,6 @@ typedef union
   {
     four_quarters QQQQ;
   } v;
-#endif				/* not WORDS_BIGENDIAN */
 } fmemory_word;
 
 /* To keep the original structure accesses working, we must go through
@@ -263,10 +239,8 @@ typedef union
 #define rh v.RH
 #define lhfield	v.LH
 
-#ifndef WORDS_BIGENDIAN
 #define cint u.CINT
 #define qqqq v.QQQQ
-#endif
 
 /* module 115 */
 //#define pointer  halfword
