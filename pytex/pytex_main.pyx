@@ -272,11 +272,9 @@ def texxet_enabled():
 # Some operations are allowed only in privileged modes:
 # where `mode_field > 0`. This detects violations
 # of this rule.
-def privileged():
-    is_privileged = cur_list.mode_field > 0
-    if not is_privileged:
+def check_in_privileged_mode():
+    if not cur_list.mode_field > 0:
         report_illegal_case()
-    return is_privileged
 
 
 def init_align_from_h():
@@ -289,12 +287,12 @@ def init_align_from_h():
 
 
 def init_align_from_m():
-    if privileged():
-        if cur_group == math_shift_group:
-            init_align()
-        else:
-            # Equivalent of `off_save()`
-            raise Exception('Current group code is wrong')
+    check_in_privileged_mode()
+    if cur_group == math_shift_group:
+        init_align()
+    else:
+        # Equivalent of `off_save()`
+        raise Exception('Current group code is wrong')
 
 
 def align_error():
