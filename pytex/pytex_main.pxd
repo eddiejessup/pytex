@@ -196,23 +196,9 @@ cdef extern from "cmdchr.h":
     unsigned int open_parens
     # Current line number in the current source file.
     integer line
-    int escape
-    int new_line
-    int every_job_text
-    int spacer
-    int letter
-    int other_char
-    int char_given
-    int char_num
-    int no_boundary
-    int ignore_spaces
-    int stop
-    int relax
-    int ex_space
-    int space_factor
-    int eq_no
-    int last_item
-    int mac_param
+    int escape, new_line, every_job_text, spacer, letter, other_char, char_given
+    int char_num, no_boundary, ignore_spaces, stop, relax, ex_space, space_factor
+    int eq_no, last_item, mac_param
     int hmove, vmove, vadjust, ital_corr, max_command, cur_tok, cur_cs
     int sup_mark, sub_mark, math_char_num, math_given, math_comp, delim_num
     int left_right, above, radical, math_style, math_choice, vcenter
