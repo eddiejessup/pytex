@@ -158,64 +158,6 @@ void append_normal_space(void) {
 
 void handle_easy_cases(void) {
   switch (abs (MODE_FIELD) + cur_cmd) {
-	/* module 1271 */
-	/* When `\.{\\cr}' or `\.{\\span}' or a tab mark comes through the scanner
-	 * into |main_control|, it might be that the user has foolishly inserted
-	 * one of them into something that has nothing to do with alignment. But it is
-	 * far more likely that a left brace or right brace has been omitted, since
-	 * |get_next| takes actions appropriate to alignment only when `\.{\\cr}'
-	 * or `\.{\\span}' or tab marks occur with |align_state=0|. The following
-	 * program attempts to make an appropriate recovery.
-	 */
-  case ANY_MODE (car_ret):
-  case ANY_MODE (tab_mark):
-	align_error();
-	break;
-  case ANY_MODE (no_align):
-	no_align_error();
-	break;
-  case ANY_MODE (omit):
-	omit_error();
-	break;
-	/* module 1275 */
-	/* An |align_group| code is supposed to remain on the |save_stack|
-	 * during an entire alignment, until |fin_align| removes it.
-	 * 
-	 * A devious user might force an |endv| command to occur just about anywhere;
-	 * we must defeat such hacks.
-	 */
-  case vmode + halign:
-	init_align();
-	break;
-  case hmode + valign:
-	/* begin expansion of Cases of |main_control| for |hmode+valign| */
-	/* module 1649 */
-	if (cur_chr > 0) {
-	  if (eTeX_enabled (TeXXeT_en, cur_cmd, cur_chr))
-		tail_append (new_math (0, cur_chr));
-	} else {
-	  init_align();
-	}
-	/* end expansion of Cases of |main_control| for |hmode+valign| */
-	break;
-  case mmode + halign:
-	if (privileged()) {
-	  if (cur_group == math_shift_group) {
-		init_align();
-	  } else {
-		off_save();
-	  }
-	}
-	break;
-  case vmode + endv:
-  case hmode + endv:
-	do_endv();
-	break;
-	/* module 1279 */
-	/* Finally, \.{\\endcsname} is not supposed to get through to |main_control|.  */
-  case ANY_MODE (end_cs_name):
-	cs_error();
-	break;
 	/* module 1282 */
 	/* We get into math MODE_FIELD from horizontal MODE_FIELD when a `\.\$' (i.e., a
 	 * |math_shift| character) is scanned. We must check to see whether this

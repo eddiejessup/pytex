@@ -13,6 +13,7 @@ ctypedef halfword pointer
 ctypedef unsigned char eight_bits
 ctypedef unsigned char group_code
 ctypedef integer scaled
+ctypedef unsigned char small_number
 
 cdef extern from "main.h":
     void topenin(int argc, char **argv)
@@ -40,12 +41,15 @@ cdef extern from "control.h":
     boolean cancel_boundary
 
 cdef extern from "align.h":
+    void init_align()
+    void do_endv()
     integer align_state
 
 cdef extern from "exten.h":
     int shell_enabled_p
 
 cdef extern from "eqtb.h":
+    memory_word *eqtb
     long end_line_char
     long cat_code(ASCII_code)
     int every_job
@@ -54,6 +58,7 @@ cdef extern from "etex.h":
     halfword max_reg_num
     char *max_reg_help_line
     unsigned char eTeX_mode
+    int eTeX_state_base
 
 cdef extern from "dump.h":
     boolean open_fmt_file()
@@ -77,6 +82,13 @@ cdef extern from "types.h":
         pointer eTeX_aux_field,
         int pg_field,
         int ml_field,
+    struct U:
+        integer CINT
+    struct memory_word:
+        U u
+
+cdef extern from "math.h":
+    pointer new_math(scaled w, small_number s)
 
 cdef extern from "mathbuild.h":
     void insert_dollar_sign()
@@ -148,7 +160,7 @@ cdef extern from "save.h":
     void unsave()
     pointer scan_rule_spec()
     integer cur_val
-    group_code simple_group, semi_simple_group
+    group_code simple_group, semi_simple_group, math_shift_group
     group_code cur_group
 
 cdef extern from "scan.h":
@@ -209,7 +221,8 @@ cdef extern from "cmdchr.h":
     int left_brace, right_brace, begin_group, end_group
     int leader_ship, make_box, start_par, par_end
     int math_shift, un_hbox, un_vbox, accent, discretionary, valign, halign
-    int INSERT_CODE, mark, break_penalty, remove_item
+    int INSERT_CODE, mark, break_penalty, remove_item, endv, end_cs_name
+    int car_ret, tab_mark, no_align, omit
     # Current command set by `get_next`.
     eight_bits cur_cmd
     # Operand of current command.

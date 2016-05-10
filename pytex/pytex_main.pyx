@@ -257,6 +257,54 @@ def end_paragraph_from_h():
         build_page()
 
 
+def etex_state(arg):
+    return eqtb[eTeX_state_base + arg].u.CINT
+
+
+def texxet_state():
+    return etex_state(constants.tex_xet_code)
+
+
+def texxet_enabled():
+    return texxet_state() > 0
+
+
+# Some operations are allowed only in privileged modes:
+# where `mode_field > 0`. This detects violations
+# of this rule.
+def privileged():
+    is_privileged = cur_list.mode_field > 0
+    if not is_privileged:
+        report_illegal_case()
+    return is_privileged
+
+
+def init_align_from_h():
+    if cur_chr > 0:
+        if not texxet_enabled():
+            raise Exception('Improper {} {}; this eTeX feature has been disabled.'.format(cur_cmd, cur_chr))
+        tail_append(new_math(0, cur_chr))
+    else:
+        init_align()
+
+
+def init_align_from_m():
+    if privileged():
+        if cur_group == math_shift_group:
+            init_align()
+        else:
+            # Equivalent of `off_save()`
+            raise Exception('Current group code is wrong')
+
+
+def align_error():
+    raise Exception('Align error')
+
+
+def end_cs_name_error():
+    raise Exception('Extra \endcsname')
+
+
 control_maps = (
     ControlMap(modes=(hmode,), commands=(spacer,), function=append_space),
     ControlMap(modes=(hmode, mmode), commands=(ex_space,), function=append_normal_space),
@@ -362,6 +410,28 @@ control_maps = (
 
     ControlMap(modes=[hmode, mmode], commands=[discretionary], function=append_discretionary),
     ControlMap(modes=[hmode], commands=[accent], function=make_accent),
+
+    # When `\cr` or `\span` or a tab mark comes through the scanner
+    # into `main_control`, maybe the user has foolishly inserted
+    # one of them into something that has nothing to do with alignment. But it is
+    # far more likely that a left brace or right brace has been omitted, since
+    # `get_next` takes actions appropriate to alignment only when these
+    # occur with `align_state = 0`. Regardless, we raise an Exception.
+    ControlMap(modes=all_modes, commands=[car_ret, tab_mark, no_align, omit], function=align_error),
+
+    # An `align_group` code is supposed to remain on the `save_stack`
+    # during an entire alignment, until `fin_align` removes it.
+
+    # A devious user might force an `endv` command to occur just about anywhere;
+    # we must defeat such hacks.
+    ControlMap(modes=[vmode], commands=[halign], function=init_align),
+    ControlMap(modes=[hmode], commands=[valign], function=init_align_from_h),
+    ControlMap(modes=[mmode], commands=[halign], function=init_align_from_m),
+
+    ControlMap(modes=[vmode, hmode], commands=[endv], function=do_endv),
+    ControlMap(modes=[vmode, hmode], commands=[endv], function=do_endv),
+    # \endcsname is not supposed to get here.
+    ControlMap(modes=all_modes, commands=[end_cs_name], function=end_cs_name_error),
 )
 
 

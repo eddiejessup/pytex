@@ -132,3 +132,6 @@ max_selector = 21
 FOPEN_RBIN_MODE = 'r'
 FOPEN_R_MODE = 'r'
 FOPEN_W_MODE = 'w'
+
+# From xet.h
+tex_xet_code = 0
