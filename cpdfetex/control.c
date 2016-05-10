@@ -158,49 +158,6 @@ void append_normal_space(void) {
 
 void handle_easy_cases(void) {
   switch (abs (MODE_FIELD) + cur_cmd) {
-	/* module 1282 */
-	/* We get into math MODE_FIELD from horizontal MODE_FIELD when a `\.\$' (i.e., a
-	 * |math_shift| character) is scanned. We must check to see whether this
-	 * `\.\$' is immediately followed by another, in case display math MODE_FIELD is
-	 * called for.
-	 */
-	case hmode + math_shift:
-	  init_math();
-	  break;
-	  /* module 1285 */
-	  /* We get into ordinary math MODE_FIELD from display math MODE_FIELD when `\.{\\eqno}' or
-	   * `\.{\\leqno}' appears. In such cases |cur_chr| will be 0 or~1, respectively;
-	   * the value of |cur_chr| is placed onto |save_stack| for safe keeping.
-	   */
-  case mmode + eq_no:
-	if (privileged()) {
-	  if (cur_group == math_shift_group) {
-		start_eq_no();
-	  } else {
-		off_save();
-	  }
-	}
-	break;
-	/* module 1295 */
-	/* Subformulas of math formulas cause a new level of math MODE_FIELD to be entered,
-	 * on the semantic nest as well as the save stack. These subformulas arise in
-	 * several ways: (1)~A left brace by itself indicates the beginning of a
-	 * subformula that will be put into a box, thereby freezing its glue and
-	 * preventing line breaks. (2)~A subscript or superscript is treated as a
-	 * subformula if it is not a single character; the same applies to
-	 * the nucleus of things like \.{\\underline}. (3)~The \.{\\left} primitive
-	 * initiates a subformula that will be terminated by a matching \.{\\right}.
-	 * The group codes placed on |save_stack| in these three cases are
-	 * |math_group|, |math_group|, and |math_left_group|, respectively.
-	 * 
-	 * Here is the code that handles case (1); the other cases are not quite as
-	 * trivial, so we shall consider them later.
-	 */
-  case mmode + left_brace:
-	tail_append (new_noad());
-	back_input();
-	scan_math (nucleus (tail));
-	break;
 	/* module 1299 */
 	/* The simplest math formula is, of course, `\.{\${ }\$}', when no noads are
 	 * generated. The next simplest cases involve a single character, e.g.,

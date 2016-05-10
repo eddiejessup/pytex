@@ -91,6 +91,9 @@ cdef extern from "math.h":
     pointer new_math(scaled w, small_number s)
 
 cdef extern from "mathbuild.h":
+    void init_math()
+    void start_eq_no()
+    void scan_math(pointer p)
     void insert_dollar_sign()
 
 cdef extern from "buildpage.h":
@@ -238,6 +241,10 @@ cdef extern from "tex_string.h":
     long init_pool_ptr
     long init_str_ptr
     long make_string()
+
+cdef extern from "tex_math.h":
+    pointer new_noad()
+    int nucleus(int)
 
 cdef extern from "trie.h":
     long trie_size

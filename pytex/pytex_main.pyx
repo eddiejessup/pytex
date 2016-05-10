@@ -303,6 +303,20 @@ def end_cs_name_error():
     raise Exception('Extra \endcsname')
 
 
+def do_eq_no():
+    check_in_privileged_mode()
+    if cur_group == math_shift_group:
+        start_eq_no()
+    else:
+        raise Exception('Current group code is wrong')
+
+
+def left_brace_from_m():
+    tail_append(new_noad())
+    back_input()
+    scan_math(nucleus(cur_list.tail_field))
+
+
 control_maps = (
     ControlMap(modes=(hmode,), commands=(spacer,), function=append_space),
     ControlMap(modes=(hmode, mmode), commands=(ex_space,), function=append_normal_space),
@@ -430,6 +444,29 @@ control_maps = (
     ControlMap(modes=[vmode, hmode], commands=[endv], function=do_endv),
     # \endcsname is not supposed to get here.
     ControlMap(modes=all_modes, commands=[end_cs_name], function=end_cs_name_error),
+
+    # We must check to see whether a `$` is immediately followed by another,
+    # in case 'display math' mode is being asked for.
+    ControlMap(modes=[hmode], commands=[math_shift], function=init_math),
+
+    # We get into ordinary math mode from display math mode when `\eqno` or
+    # `\leqno` is seen. In such cases, `cur_chr` will be 0 or 1, respectively;
+    # the value of `cur_chr` is placed onto `save_stack` for safe keeping.
+    ControlMap(modes=[mmode], commands=[eq_no], function=do_eq_no),
+
+    # Subformulas of math formulas cause a new level of math mode to be entered,
+    # on the semantic nest as well as the save stack. These subformulas arise in
+    # several ways: (1) A left brace by itself indicates the beginning of a
+    # subformula that will be put into a box, thereby freezing its glue and
+    # preventing line breaks. (2) A subscript or superscript is treated as a
+    # subformula if it is not a single character; the same applies to
+    # the nucleus of things like \underline. (3) The \left primitive
+    # initiates a subformula that will be terminated by a matching \right.
+    # The group codes placed on `save_stack` in these three cases are
+    # `math_group`, `math_group`, and `math_left_group`, respectively.
+    # Here we handle case (1); the other cases are not quite as
+    # easy, so we shall consider them later.
+    ControlMap(modes=[mmode], commands=[left_brace], function=left_brace_from_m),
 )
 
 
