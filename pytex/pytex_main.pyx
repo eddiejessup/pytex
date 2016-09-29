@@ -317,6 +317,32 @@ def left_brace_from_m():
     scan_math(nucleus(cur_list.tail_field))
 
 
+def handle_math_letter():
+    set_math_char(ho(math_code(cur_chr)))
+
+
+def handle_char_num():
+    scan_char_num()
+    global cur_chr; cur_chr = cur_val
+    handle_math_letter()
+
+
+def handle_math_char_num():
+    scan_fifteen_bit_int()
+    set_math_char(cur_val)
+
+
+def handle_delim_num():
+    scan_twenty_seven_bit_int()
+    set_math_char(cur_val / 4096)
+
+
+def handle_math_comp():
+    tail_append(new_noad())
+    TYPE_FIELD(cur_list.tail_field) = cur_chr
+    scan_math(nucleus(cur_list.tail_field))
+
+
 control_maps = (
     ControlMap(modes=(hmode,), commands=(spacer,), function=append_space),
     ControlMap(modes=(hmode, mmode), commands=(ex_space,), function=append_normal_space),
@@ -467,6 +493,16 @@ control_maps = (
     # Here we handle case (1); the other cases are not quite as
     # easy, so we shall consider them later.
     ControlMap(modes=[mmode], commands=[left_brace], function=left_brace_from_m),
+
+    ControlMap(modes=[mmode], commands=[letter, other_char, char_given], function=handle_math_letter),
+    ControlMap(modes=[mmode], commands=[char_num], function=handle_char_num),
+    ControlMap(modes=[mmode], commands=[math_char_num], function=handle_math_char_num),
+    ControlMap(modes=[mmode], commands=[math_given], function=lambda: set_math_char(cur_chr)),
+    ControlMap(modes=[mmode], commands=[delim_num], function=handle_delim_num),
+    ControlMap(modes=[mmode], commands=[math_comp], function=handle_math_comp),
+    ControlMap(modes=[mmode], commands=[limit_switch], function=math_limit_switch),
+    ControlMap(modes=[mmode], commands=[radical], function=math_radical),
+    ControlMap(modes=[mmode], commands=[accent, math_accent], function=math_ac),
 )
 
 

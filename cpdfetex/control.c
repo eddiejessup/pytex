@@ -158,52 +158,6 @@ void append_normal_space(void) {
 
 void handle_easy_cases(void) {
   switch (abs (MODE_FIELD) + cur_cmd) {
-	/* module 1299 */
-	/* The simplest math formula is, of course, `\.{\${ }\$}', when no noads are
-	 * generated. The next simplest cases involve a single character, e.g.,
-	 * `\.{\$x\$}'. Even though such cases may not seem to be very interesting,
-	 * the reader can perhaps understand how happy the author was when `\.{\$x\$}'
-	 * was first properly typeset by \TeX. The code in this section was used.
-	 */
-  case mmode + letter:
-  case mmode + other_char:
-  case mmode + char_given:
-	set_math_char (ho (math_code (cur_chr)));
-	break;
-  case mmode + char_num:
-	scan_char_num();
-	cur_chr = cur_val;
-	set_math_char (ho (math_code (cur_chr)));
-	break;
-  case mmode + math_char_num:
-	scan_fifteen_bit_int();
-	set_math_char (cur_val);
-	break;
-  case mmode + math_given:
-	set_math_char (cur_chr);
-	break;
-  case mmode + delim_num:
-	scan_twenty_seven_bit_int();
-	set_math_char (cur_val / 4096);
-	break;
-	/* module 1303 */
-  case mmode + math_comp:
-	tail_append (new_noad());
-	TYPE_FIELD (tail) = cur_chr;
-	scan_math (nucleus (tail));
-	break;
-  case mmode + limit_switch:
-	math_limit_switch();
-	break;
-	/* module 1307 */
-  case mmode + radical:
-	math_radical();
-	break;
-	/* module 1309 */
-  case mmode + accent:
-  case mmode + math_accent:
-	math_ac();
-	break;
 	/* module 1312 */
   case mmode + vcenter:
 	scan_spec (vcenter_group, false);
